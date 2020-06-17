@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SELLER
+  MANAGER
+  ADMIN
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String
+  password String
+  role     Role    @default(SELLER)
+  profile  Profile
+}
+
+model Company {
+  id        Int    @id @default(autoincrement())
+  name      String
+  telephone String
+  cnpj      String
+  units     Unit[]
+}
+
+model Unit {
+  id        Int     @id @default(autoincrement())
+  name      String
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  name      String
+  telephone String
+  enabled   Boolean @default(true)
+  userId    Int
+  companyId Int
+  unitId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id])
+  unit      Unit    @relation(fields: [unitId], references: [id])
+}
+
+model Service {
+  id      Int     @id @default(autoincrement())
+  name    String
+  price   Float
+  enabled Boolean @default(true)
+}
+
+model CompanyService {
+  id        Int     @id @default(autoincrement())
+  price     Float
+  companyId Int
+  serviceId Int
+  company   Company @relation(fields: [companyId], references: [id])
+  service   Service @relation(fields: [serviceId], references: [id])
+}
+
+model Person {
+  id        Int    @id @default(autoincrement())
+  cpf       String
+  name      String
+  telephone String
+}
+
+model Address {
+  id           Int    @id @default(autoincrement())
+  street       String
+  houseNumber  String
+  neighborhood String
+  city         String
+  personId     Int
+  person       Person @relation(fields: [personId], references: [id])
+}
+
+model Car {
+  id       Int    @id @default(autoincrement())
+  car      String
+  carPlate String
+  personId Int
+  person   Person @relation(fields: [personId], references: [id])
+}
+
+model Sale {
+  id           Int      @id @default(autoincrement())
+  requestDate  DateTime
+  deliveryDate DateTime
+  done         Boolean  @default(false)
+  companyPrice Float
+  costPrice    Float
+  sellerId     Int
+  personId     Int
+  carId        Int
+  seller       Profile  @relation(fields: [sellerId], references: [id])
+  person       Person   @relation(fields: [personId], references: [id])
+  car          Car      @relation(fields: [carId], references: [id])
+}
+
+model ServiceSale {
+  id        Int     @id @default(autoincrement())
+  saleId    Int
+  serviceId Int
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  service   Service @relation(fields: [serviceId], references: [id])
+}

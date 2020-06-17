@@ -1,0 +1,81 @@
+Seller: 
+Consulta de serviços
+Registro de vendas
+
+Manager:
+Consulta de serviços
+Registro de sellers
+Alteração de preços de serviços
+Registro de vendas
+Consulta de vendas
+Emissão de relatórios
+
+ADM
+Cadastro de concesionárias
+Cadastro de unidades
+Cadastro de managers e sellers
+Cadastro de serviços
+Consulta de vendas
+Consulta de vendas ainda não realizadas 
+Consulta de vendas realizadas 
+Emissão de relatórios
+
+
+SERVIÇOS:
+Polimento técnico
+Vitrificação de pintura
+Polimento de vidro
+Limpeza, hidratação e higienização de interiores
+
+
+
+Limpeza, hidratação e higienização de couro e superfícies.
+
+
+Consulta de serviços V
+Registro de vendas V
+Registro de sellers V
+Alteração de preços de serviços V
+Consulta de vendas por unidade V
+Emissão de relatórios V
+Cadastro de concesionárias 
+Cadastro de unidades 
+Cadastro de managers e sellers
+Cadastro de serviços 
+Consulta de vendas ainda não realizadas 
+Consulta de vendas realizadas 
+
+MANAGER:
+Consulta de serviços V
+Registro de vendas V
+Registro de sellers V
+Consulta de vendas por unidade V
+Emissão de relatórios V
+Alteração de preços de serviços V
+
+SELLER: 
+Consulta de serviços V
+Registro de vendas V
+
+ADMIN
+Consulta de serviços V
+Cadastro de managers e sellers
+Alteração de preços de serviços V
+Emissão de relatórios V
+
+Cadastro de concesionárias 
+Cadastro de unidades 
+Cadastro de managers e sellers
+Cadastro de serviços 
+
+Consulta de vendas 
+Consulta de vendas ainda não realizadas 
+Consulta de vendas realizadas 
+
+
+
+
+
+
+
+
