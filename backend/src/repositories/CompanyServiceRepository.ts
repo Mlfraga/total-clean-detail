@@ -1,7 +1,7 @@
 import { CompanyServiceGetPayload, CompanyServiceCreateInput, CompanyServiceUpdateInput } from '@prisma/client';
 import BaseRepository from './BaseRepository';
 
-type CompanyService = CompanyServiceGetPayload<{
+export type CompanyService = CompanyServiceGetPayload<{
     include: { company: true, service: true };
 }>
 
@@ -33,6 +33,10 @@ class UserRepository extends BaseRepository<CompanyService, CompanyServiceCreate
 
     findByCompanyIdAndServiceId(companyId: number, serviceId: number): Promise<CompanyService[]> {
         return this.prisma.companyService.findMany({ where: { companyId, serviceId }, include: this.include })
+    }
+
+    updatePrice(id: number, price: number): Promise<CompanyService | null> {
+        return this.prisma.companyService.update({ where: { id }, data: { price }, include: this.include })
     }
 
 }

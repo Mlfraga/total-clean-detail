@@ -1,14 +1,19 @@
 import { Request, Response, json } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
+import { PrismaClient } from '@prisma/client'
 
-import CompanyServiceRepository from '../repositories/CompanyServiceRepository';
+import CompanyServiceRepository, { CompanyService } from '../repositories/CompanyServiceRepository';
 import ServiceRepository from '../repositories/ServiceRepository';
 import CompanyRepository from '../repositories/CompanyRepository';
+import { number } from '@hapi/joi';
+
+import JWT from 'jsonwebtoken';
+import { decode } from 'querystring';
 
 interface Validate {
     store: SchemaOptions;
-    findByCompanyId: SchemaOptions;
     findByCompanyIdAndServiceId: SchemaOptions;
+    updatePrice: SchemaOptions;
 }
 
 class CompanyServiceController {
@@ -20,15 +25,16 @@ class CompanyServiceController {
                 serviceId: Joi.number().required()
             }),
         },
-        findByCompanyId: {
-            params: Joi.object({
-                id: Joi.number().required(),
-            })
-        },
         findByCompanyIdAndServiceId: {
             body: Joi.object({
                 companyId: Joi.number().required(),
                 serviceId: Joi.number().required()
+            })
+        },
+        updatePrice: {
+            body: Joi.object({
+                companyServiceId: Joi.number().required(),
+                price: Joi.number().required()
             })
         }
     }
@@ -58,6 +64,14 @@ class CompanyServiceController {
                 .json({ error: 'No company found with this ID.' })
         }
 
+        const serviceByCompany = CompanyServiceRepository.findByCompanyIdAndServiceId(companyId, serviceId);
+
+        if ((await serviceByCompany).length > 0) {
+            return response
+                .status(409)
+                .json({ error: 'This service was already created by this company.' })
+        }
+
         const companyService = await CompanyServiceRepository.store({
             price: price,
             company: {
@@ -70,11 +84,14 @@ class CompanyServiceController {
 
         return response.json(companyService);
 
-
     }
 
     async findByCompanyId(request: Request, response: Response) {
-        const { id } = request.params;
+        const authHeader = request.headers['authorization'];
+        const token = authHeader && authHeader?.split(' ')[1];
+        const decoded: any = JWT.decode(String(token), { complete: true });
+
+        const id = decoded.payload.user.profile.companyId
 
         const companyServicesByCompany = await CompanyServiceRepository.findByCompanyId(parseInt(id));
 
@@ -88,10 +105,16 @@ class CompanyServiceController {
     }
 
     async findByCompanyIdAndServiceId(request: Request, response: Response) {
-        const { companyId, serviceId } = request.body;
+        const authHeader = request.headers['authorization'];
+        const token = authHeader && authHeader?.split(' ')[1];
+        const decoded: any = JWT.decode(String(token), { complete: true });
+
+        const companyId = decoded.payload.user.profile.companyId;
+
+        const { serviceId } = request.query;
 
         const companyServiceByCompanyIdAndServiceId = await CompanyServiceRepository
-            .findByCompanyIdAndServiceId(parseInt(companyId), parseInt(serviceId));
+            .findByCompanyIdAndServiceId(Number(companyId), Number(serviceId));
 
         if (!companyServiceByCompanyIdAndServiceId) {
             return response
@@ -100,6 +123,29 @@ class CompanyServiceController {
         }
 
         return response.json(companyServiceByCompanyIdAndServiceId);
+    }
+
+    async updatePrice(request: Request, response: Response) {
+        const servicesData: Array<{
+            companyServiceId: number; price: number
+        }> = request.body;
+
+        const promises: Promise<CompanyService | null>[] = servicesData.map(async ({ companyServiceId, price }) => {
+
+            const companyServiceById = await CompanyServiceRepository.findById(companyServiceId);
+
+            if (!companyServiceById) {
+                return null
+            }
+
+            const companyServices = await CompanyServiceRepository.updatePrice(companyServiceId, price);
+
+            return companyServices;
+        })
+
+        const updatedServices = await Promise.all(promises.filter((promise) => promise !== null));
+
+        return response.json(updatedServices);
     }
 
 }

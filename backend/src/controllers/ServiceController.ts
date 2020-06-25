@@ -36,9 +36,9 @@ class ServiceController {
     }
 
     async findIfContainsName(request: Request, response: Response) {
-        const { name } = request.body;
+        const { name } = request.query;
 
-        const services = await ServiceRepository.findIfContainsName(name)
+        const services = await ServiceRepository.findIfContainsName(String(name))
 
         return response.json(services);
     }
@@ -81,8 +81,6 @@ class ServiceController {
 
         return response.json(service);
     }
-
-
 
 }
 

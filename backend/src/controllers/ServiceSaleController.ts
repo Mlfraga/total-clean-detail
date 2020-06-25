@@ -62,7 +62,9 @@ class ServiceSaleController {
             const serviceById = await ServiceRepository.findById(id);
 
             if (!serviceById) {
-                return null;
+                return response
+                    .status(404)
+                    .json({ error: 'Service not found.' })
             }
 
             servicesNames.push(serviceById?.name);
@@ -106,7 +108,7 @@ class ServiceSaleController {
         let services = servicesNames.join(', ');
 
         const subject = `${seller} solicitou uma nova prestação de serviço`;
-        const text = `O vendedor ${seller} da concessionária ${company} unidade ${unit} solicitou uma nova prestação de serviço para ser entregue ao cliente no ${formattedDate}. Serviços a serem realizados: ${services} `;
+        const text = `O vendedor ${seller} da concessionária ${company} unidade ${unit} solicitou uma nova prestação de serviço para ser entregue ao cliente ${saleById.person.name} no ${formattedDate}. Serviços a serem realizados: ${services} `;
 
         let result = Mail.sendMail(text, subject);
 
@@ -123,8 +125,6 @@ class ServiceSaleController {
             Number(unitId),
             new Date(String(startDeliveryDate)),
             new Date(String(endDeliveryDate)));
-
-        console.log(startDeliveryDate)
 
         return response.json(filteredSales);
     }

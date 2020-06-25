@@ -276,6 +276,16 @@ export declare class PrismaClient<T extends PrismaClientOptions = {}, U = keyof 
   get user(): UserDelegate;
 
   /**
+   * `prisma.profile`: Exposes CRUD operations for the **Profile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Profiles
+    * const profiles = await prisma.profile.findMany()
+    * ```
+    */
+  get profile(): ProfileDelegate;
+
+  /**
    * `prisma.company`: Exposes CRUD operations for the **Company** model.
     * Example usage:
     * ```ts
@@ -294,16 +304,6 @@ export declare class PrismaClient<T extends PrismaClientOptions = {}, U = keyof 
     * ```
     */
   get unit(): UnitDelegate;
-
-  /**
-   * `prisma.profile`: Exposes CRUD operations for the **Profile** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Profiles
-    * const profiles = await prisma.profile.findMany()
-    * ```
-    */
-  get profile(): ProfileDelegate;
 
   /**
    * `prisma.service`: Exposes CRUD operations for the **Service** model.
@@ -409,16 +409,22 @@ export declare type Role = (typeof Role)[keyof typeof Role]
 
 export type User = {
   id: number
+  username: string
   email: string
   password: string
   role: Role
+  enabled: boolean
+  firstLogin: boolean
 }
 
 export type UserSelect = {
   id?: boolean
+  username?: boolean
   email?: boolean
   password?: boolean
   role?: boolean
+  enabled?: boolean
+  firstLogin?: boolean
   profile?: boolean | ProfileArgs
 }
 
@@ -818,6 +824,450 @@ export type UserArgs = {
 
 
 /**
+ * Model Profile
+ */
+
+export type Profile = {
+  id: number
+  name: string
+  telephone: string
+  enabled: boolean
+  userId: number
+  companyId: number | null
+  unitId: number | null
+}
+
+export type ProfileSelect = {
+  id?: boolean
+  name?: boolean
+  telephone?: boolean
+  enabled?: boolean
+  userId?: boolean
+  companyId?: boolean
+  unitId?: boolean
+  user?: boolean | UserArgs
+  company?: boolean | CompanyArgs
+  unit?: boolean | UnitArgs
+  sale?: boolean | FindManySaleArgs
+}
+
+export type ProfileInclude = {
+  user?: boolean | UserArgs
+  company?: boolean | CompanyArgs
+  unit?: boolean | UnitArgs
+  sale?: boolean | FindManySaleArgs
+}
+
+export type ProfileGetPayload<
+  S extends boolean | null | undefined | ProfileArgs,
+  U = keyof S
+> = S extends true
+  ? Profile
+  : S extends undefined
+  ? never
+  : S extends ProfileArgs | FindManyProfileArgs
+  ? 'include' extends U
+    ? Profile  & {
+      [P in TrueKeys<S['include']>]:
+      P extends 'user'
+      ? UserGetPayload<S['include'][P]> :
+      P extends 'company'
+      ? CompanyGetPayload<S['include'][P]> | null :
+      P extends 'unit'
+      ? UnitGetPayload<S['include'][P]> | null :
+      P extends 'sale'
+      ? Array<SaleGetPayload<S['include'][P]>> : never
+    }
+  : 'select' extends U
+    ? {
+      [P in TrueKeys<S['select']>]:P extends keyof Profile ? Profile[P]
+: 
+      P extends 'user'
+      ? UserGetPayload<S['select'][P]> :
+      P extends 'company'
+      ? CompanyGetPayload<S['select'][P]> | null :
+      P extends 'unit'
+      ? UnitGetPayload<S['select'][P]> | null :
+      P extends 'sale'
+      ? Array<SaleGetPayload<S['select'][P]>> : never
+    }
+  : Profile
+: Profile
+
+
+export interface ProfileDelegate {
+  /**
+   * Find zero or one Profile.
+   * @param {FindOneProfileArgs} args - Arguments to find a Profile
+   * @example
+   * // Get one Profile
+   * const profile = await prisma.profile.findOne({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+  **/
+  findOne<T extends FindOneProfileArgs>(
+    args: Subset<T, FindOneProfileArgs>
+  ): CheckSelect<T, ProfileClient<Profile | null>, ProfileClient<ProfileGetPayload<T> | null>>
+  /**
+   * Find zero or more Profiles.
+   * @param {FindManyProfileArgs=} args - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all Profiles
+   * const profiles = await prisma.profile.findMany()
+   * 
+   * // Get first 10 Profiles
+   * const profiles = await prisma.profile.findMany({ first: 10 })
+   * 
+   * // Only select the `id`
+   * const profileWithIdOnly = await prisma.profile.findMany({ select: { id: true } })
+   * 
+  **/
+  findMany<T extends FindManyProfileArgs>(
+    args?: Subset<T, FindManyProfileArgs>
+  ): CheckSelect<T, Promise<Array<Profile>>, Promise<Array<ProfileGetPayload<T>>>>
+  /**
+   * Create a Profile.
+   * @param {ProfileCreateArgs} args - Arguments to create a Profile.
+   * @example
+   * // Create one Profile
+   * const user = await prisma.profile.create({
+   *   data: {
+   *     // ... data to create a Profile
+   *   }
+   * })
+   * 
+  **/
+  create<T extends ProfileCreateArgs>(
+    args: Subset<T, ProfileCreateArgs>
+  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
+  /**
+   * Delete a Profile.
+   * @param {ProfileDeleteArgs} args - Arguments to delete one Profile.
+   * @example
+   * // Delete one Profile
+   * const user = await prisma.profile.delete({
+   *   where: {
+   *     // ... filter to delete one Profile
+   *   }
+   * })
+   * 
+  **/
+  delete<T extends ProfileDeleteArgs>(
+    args: Subset<T, ProfileDeleteArgs>
+  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
+  /**
+   * Update one Profile.
+   * @param {ProfileUpdateArgs} args - Arguments to update one Profile.
+   * @example
+   * // Update one Profile
+   * const profile = await prisma.profile.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+  **/
+  update<T extends ProfileUpdateArgs>(
+    args: Subset<T, ProfileUpdateArgs>
+  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
+  /**
+   * Delete zero or more Profiles.
+   * @param {ProfileDeleteManyArgs} args - Arguments to filter Profiles to delete.
+   * @example
+   * // Delete a few Profiles
+   * const { count } = await prisma.profile.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   * 
+  **/
+  deleteMany<T extends ProfileDeleteManyArgs>(
+    args: Subset<T, ProfileDeleteManyArgs>
+  ): Promise<BatchPayload>
+  /**
+   * Update zero or more Profiles.
+   * @param {ProfileUpdateManyArgs} args - Arguments to update one or more rows.
+   * @example
+   * // Update many Profiles
+   * const profile = await prisma.profile.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   * 
+  **/
+  updateMany<T extends ProfileUpdateManyArgs>(
+    args: Subset<T, ProfileUpdateManyArgs>
+  ): Promise<BatchPayload>
+  /**
+   * Create or update one Profile.
+   * @param {ProfileUpsertArgs} args - Arguments to update or create a Profile.
+   * @example
+   * // Update or create a Profile
+   * const profile = await prisma.profile.upsert({
+   *   create: {
+   *     // ... data to create a Profile
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the Profile we want to update
+   *   }
+   * })
+  **/
+  upsert<T extends ProfileUpsertArgs>(
+    args: Subset<T, ProfileUpsertArgs>
+  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
+  /**
+   * 
+   */
+  count(args?: Omit<FindManyProfileArgs, 'select' | 'include'>): Promise<number>
+}
+
+export declare class ProfileClient<T> implements Promise<T> {
+  private readonly _dmmf;
+  private readonly _fetcher;
+  private readonly _queryType;
+  private readonly _rootField;
+  private readonly _clientMethod;
+  private readonly _args;
+  private readonly _dataPath;
+  private readonly _errorFormat;
+  private readonly _measurePerformance?;
+  private _isList;
+  private _callsite;
+  private _requestPromise?;
+  private _collectTimestamps?;
+  constructor(_dmmf: DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+  readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+  user<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, UserClient<User | null>, UserClient<UserGetPayload<T> | null>>;
+
+  company<T extends CompanyArgs = {}>(args?: Subset<T, CompanyArgs>): CheckSelect<T, CompanyClient<Company | null>, CompanyClient<CompanyGetPayload<T> | null>>;
+
+  unit<T extends UnitArgs = {}>(args?: Subset<T, UnitArgs>): CheckSelect<T, UnitClient<Unit | null>, UnitClient<UnitGetPayload<T> | null>>;
+
+  sale<T extends FindManySaleArgs = {}>(args?: Subset<T, FindManySaleArgs>): CheckSelect<T, Promise<Array<Sale>>, Promise<Array<SaleGetPayload<T>>>>;
+
+  private get _document();
+  /**
+   * Attaches callbacks for the resolution and/or rejection of the Promise.
+   * @param onfulfilled The callback to execute when the Promise is resolved.
+   * @param onrejected The callback to execute when the Promise is rejected.
+   * @returns A Promise for the completion of which ever callback is executed.
+   */
+  then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | Promise<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+  /**
+   * Attaches a callback for only the rejection of the Promise.
+   * @param onrejected The callback to execute when the Promise is rejected.
+   * @returns A Promise for the completion of the callback.
+   */
+  catch<TResult = never>(onrejected?: ((reason: any) => TResult | Promise<TResult>) | undefined | null): Promise<T | TResult>;
+  /**
+   * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+   * resolved value cannot be modified from the callback.
+   * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+   * @returns A Promise for the completion of the callback.
+   */
+  finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+}
+
+// Custom InputTypes
+
+/**
+ * Profile findOne
+ */
+export type FindOneProfileArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+  /**
+   * Filter, which Profile to fetch.
+  **/
+  where: ProfileWhereUniqueInput
+}
+
+
+/**
+ * Profile findMany
+ */
+export type FindManyProfileArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+  /**
+   * Filter, which Profiles to fetch.
+  **/
+  where?: ProfileWhereInput
+  /**
+   * Determine the order of the Profiles to fetch.
+  **/
+  orderBy?: ProfileOrderByInput
+  /**
+   * Skip the first `n` Profiles.
+  **/
+  skip?: number
+  /**
+   * Get all Profiles that come after the Profile you provide with the current order.
+  **/
+  after?: ProfileWhereUniqueInput
+  /**
+   * Get all Profiles that come before the Profile you provide with the current order.
+  **/
+  before?: ProfileWhereUniqueInput
+  /**
+   * Get the first `n` Profiles.
+  **/
+  first?: number
+  /**
+   * Get the last `n` Profiles.
+  **/
+  last?: number
+}
+
+
+/**
+ * Profile create
+ */
+export type ProfileCreateArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+  /**
+   * The data needed to create a Profile.
+  **/
+  data: ProfileCreateInput
+}
+
+
+/**
+ * Profile update
+ */
+export type ProfileUpdateArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+  /**
+   * The data needed to update a Profile.
+  **/
+  data: ProfileUpdateInput
+  /**
+   * Choose, which Profile to update.
+  **/
+  where: ProfileWhereUniqueInput
+}
+
+
+/**
+ * Profile updateMany
+ */
+export type ProfileUpdateManyArgs = {
+  data: ProfileUpdateManyMutationInput
+  where?: ProfileWhereInput
+}
+
+
+/**
+ * Profile upsert
+ */
+export type ProfileUpsertArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+  /**
+   * The filter to search for the Profile to update in case it exists.
+  **/
+  where: ProfileWhereUniqueInput
+  /**
+   * In case the Profile found by the `where` argument doesn't exist, create a new Profile with this data.
+  **/
+  create: ProfileCreateInput
+  /**
+   * In case the Profile was found with the provided `where` argument, update it with this data.
+  **/
+  update: ProfileUpdateInput
+}
+
+
+/**
+ * Profile delete
+ */
+export type ProfileDeleteArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+  /**
+   * Filter which Profile to delete.
+  **/
+  where: ProfileWhereUniqueInput
+}
+
+
+/**
+ * Profile deleteMany
+ */
+export type ProfileDeleteManyArgs = {
+  where?: ProfileWhereInput
+}
+
+
+/**
+ * Profile without action
+ */
+export type ProfileArgs = {
+  /**
+   * Select specific fields to fetch from the Profile
+  **/
+  select?: ProfileSelect | null
+  /**
+   * Choose, which related nodes to fetch as well.
+  **/
+  include?: ProfileInclude | null
+}
+
+
+
+/**
  * Model Company
  */
 
@@ -835,13 +1285,13 @@ export type CompanySelect = {
   cnpj?: boolean
   units?: boolean | FindManyUnitArgs
   Profile?: boolean | FindManyProfileArgs
-  CompanyService?: boolean | FindManyCompanyServiceArgs
+  sompanyService?: boolean | FindManyCompanyServiceArgs
 }
 
 export type CompanyInclude = {
   units?: boolean | FindManyUnitArgs
   Profile?: boolean | FindManyProfileArgs
-  CompanyService?: boolean | FindManyCompanyServiceArgs
+  sompanyService?: boolean | FindManyCompanyServiceArgs
 }
 
 export type CompanyGetPayload<
@@ -859,7 +1309,7 @@ export type CompanyGetPayload<
       ? Array<UnitGetPayload<S['include'][P]>> :
       P extends 'Profile'
       ? Array<ProfileGetPayload<S['include'][P]>> :
-      P extends 'CompanyService'
+      P extends 'sompanyService'
       ? Array<CompanyServiceGetPayload<S['include'][P]>> : never
     }
   : 'select' extends U
@@ -870,7 +1320,7 @@ export type CompanyGetPayload<
       ? Array<UnitGetPayload<S['select'][P]>> :
       P extends 'Profile'
       ? Array<ProfileGetPayload<S['select'][P]>> :
-      P extends 'CompanyService'
+      P extends 'sompanyService'
       ? Array<CompanyServiceGetPayload<S['select'][P]>> : never
     }
   : Company
@@ -1037,7 +1487,7 @@ export declare class CompanyClient<T> implements Promise<T> {
 
   Profile<T extends FindManyProfileArgs = {}>(args?: Subset<T, FindManyProfileArgs>): CheckSelect<T, Promise<Array<Profile>>, Promise<Array<ProfileGetPayload<T>>>>;
 
-  CompanyService<T extends FindManyCompanyServiceArgs = {}>(args?: Subset<T, FindManyCompanyServiceArgs>): CheckSelect<T, Promise<Array<CompanyService>>, Promise<Array<CompanyServiceGetPayload<T>>>>;
+  sompanyService<T extends FindManyCompanyServiceArgs = {}>(args?: Subset<T, FindManyCompanyServiceArgs>): CheckSelect<T, Promise<Array<CompanyService>>, Promise<Array<CompanyServiceGetPayload<T>>>>;
 
   private get _document();
   /**
@@ -1254,12 +1704,14 @@ export type CompanyArgs = {
 export type Unit = {
   id: number
   name: string
+  telephone: string
   companyId: number
 }
 
 export type UnitSelect = {
   id?: boolean
   name?: boolean
+  telephone?: boolean
   companyId?: boolean
   company?: boolean | CompanyArgs
   Profile?: boolean | FindManyProfileArgs
@@ -1668,450 +2120,6 @@ export type UnitArgs = {
 
 
 /**
- * Model Profile
- */
-
-export type Profile = {
-  id: number
-  name: string
-  telephone: string
-  enabled: boolean
-  userId: number
-  companyId: number
-  unitId: number
-}
-
-export type ProfileSelect = {
-  id?: boolean
-  name?: boolean
-  telephone?: boolean
-  enabled?: boolean
-  userId?: boolean
-  companyId?: boolean
-  unitId?: boolean
-  user?: boolean | UserArgs
-  company?: boolean | CompanyArgs
-  unit?: boolean | UnitArgs
-  Sale?: boolean | FindManySaleArgs
-}
-
-export type ProfileInclude = {
-  user?: boolean | UserArgs
-  company?: boolean | CompanyArgs
-  unit?: boolean | UnitArgs
-  Sale?: boolean | FindManySaleArgs
-}
-
-export type ProfileGetPayload<
-  S extends boolean | null | undefined | ProfileArgs,
-  U = keyof S
-> = S extends true
-  ? Profile
-  : S extends undefined
-  ? never
-  : S extends ProfileArgs | FindManyProfileArgs
-  ? 'include' extends U
-    ? Profile  & {
-      [P in TrueKeys<S['include']>]:
-      P extends 'user'
-      ? UserGetPayload<S['include'][P]> :
-      P extends 'company'
-      ? CompanyGetPayload<S['include'][P]> :
-      P extends 'unit'
-      ? UnitGetPayload<S['include'][P]> :
-      P extends 'Sale'
-      ? Array<SaleGetPayload<S['include'][P]>> : never
-    }
-  : 'select' extends U
-    ? {
-      [P in TrueKeys<S['select']>]:P extends keyof Profile ? Profile[P]
-: 
-      P extends 'user'
-      ? UserGetPayload<S['select'][P]> :
-      P extends 'company'
-      ? CompanyGetPayload<S['select'][P]> :
-      P extends 'unit'
-      ? UnitGetPayload<S['select'][P]> :
-      P extends 'Sale'
-      ? Array<SaleGetPayload<S['select'][P]>> : never
-    }
-  : Profile
-: Profile
-
-
-export interface ProfileDelegate {
-  /**
-   * Find zero or one Profile.
-   * @param {FindOneProfileArgs} args - Arguments to find a Profile
-   * @example
-   * // Get one Profile
-   * const profile = await prisma.profile.findOne({
-   *   where: {
-   *     // ... provide filter here
-   *   }
-   * })
-  **/
-  findOne<T extends FindOneProfileArgs>(
-    args: Subset<T, FindOneProfileArgs>
-  ): CheckSelect<T, ProfileClient<Profile | null>, ProfileClient<ProfileGetPayload<T> | null>>
-  /**
-   * Find zero or more Profiles.
-   * @param {FindManyProfileArgs=} args - Arguments to filter and select certain fields only.
-   * @example
-   * // Get all Profiles
-   * const profiles = await prisma.profile.findMany()
-   * 
-   * // Get first 10 Profiles
-   * const profiles = await prisma.profile.findMany({ first: 10 })
-   * 
-   * // Only select the `id`
-   * const profileWithIdOnly = await prisma.profile.findMany({ select: { id: true } })
-   * 
-  **/
-  findMany<T extends FindManyProfileArgs>(
-    args?: Subset<T, FindManyProfileArgs>
-  ): CheckSelect<T, Promise<Array<Profile>>, Promise<Array<ProfileGetPayload<T>>>>
-  /**
-   * Create a Profile.
-   * @param {ProfileCreateArgs} args - Arguments to create a Profile.
-   * @example
-   * // Create one Profile
-   * const user = await prisma.profile.create({
-   *   data: {
-   *     // ... data to create a Profile
-   *   }
-   * })
-   * 
-  **/
-  create<T extends ProfileCreateArgs>(
-    args: Subset<T, ProfileCreateArgs>
-  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
-  /**
-   * Delete a Profile.
-   * @param {ProfileDeleteArgs} args - Arguments to delete one Profile.
-   * @example
-   * // Delete one Profile
-   * const user = await prisma.profile.delete({
-   *   where: {
-   *     // ... filter to delete one Profile
-   *   }
-   * })
-   * 
-  **/
-  delete<T extends ProfileDeleteArgs>(
-    args: Subset<T, ProfileDeleteArgs>
-  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
-  /**
-   * Update one Profile.
-   * @param {ProfileUpdateArgs} args - Arguments to update one Profile.
-   * @example
-   * // Update one Profile
-   * const profile = await prisma.profile.update({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: {
-   *     // ... provide data here
-   *   }
-   * })
-   * 
-  **/
-  update<T extends ProfileUpdateArgs>(
-    args: Subset<T, ProfileUpdateArgs>
-  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
-  /**
-   * Delete zero or more Profiles.
-   * @param {ProfileDeleteManyArgs} args - Arguments to filter Profiles to delete.
-   * @example
-   * // Delete a few Profiles
-   * const { count } = await prisma.profile.deleteMany({
-   *   where: {
-   *     // ... provide filter here
-   *   }
-   * })
-   * 
-  **/
-  deleteMany<T extends ProfileDeleteManyArgs>(
-    args: Subset<T, ProfileDeleteManyArgs>
-  ): Promise<BatchPayload>
-  /**
-   * Update zero or more Profiles.
-   * @param {ProfileUpdateManyArgs} args - Arguments to update one or more rows.
-   * @example
-   * // Update many Profiles
-   * const profile = await prisma.profile.updateMany({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: {
-   *     // ... provide data here
-   *   }
-   * })
-   * 
-  **/
-  updateMany<T extends ProfileUpdateManyArgs>(
-    args: Subset<T, ProfileUpdateManyArgs>
-  ): Promise<BatchPayload>
-  /**
-   * Create or update one Profile.
-   * @param {ProfileUpsertArgs} args - Arguments to update or create a Profile.
-   * @example
-   * // Update or create a Profile
-   * const profile = await prisma.profile.upsert({
-   *   create: {
-   *     // ... data to create a Profile
-   *   },
-   *   update: {
-   *     // ... in case it already exists, update
-   *   },
-   *   where: {
-   *     // ... the filter for the Profile we want to update
-   *   }
-   * })
-  **/
-  upsert<T extends ProfileUpsertArgs>(
-    args: Subset<T, ProfileUpsertArgs>
-  ): CheckSelect<T, ProfileClient<Profile>, ProfileClient<ProfileGetPayload<T>>>
-  /**
-   * 
-   */
-  count(args?: Omit<FindManyProfileArgs, 'select' | 'include'>): Promise<number>
-}
-
-export declare class ProfileClient<T> implements Promise<T> {
-  private readonly _dmmf;
-  private readonly _fetcher;
-  private readonly _queryType;
-  private readonly _rootField;
-  private readonly _clientMethod;
-  private readonly _args;
-  private readonly _dataPath;
-  private readonly _errorFormat;
-  private readonly _measurePerformance?;
-  private _isList;
-  private _callsite;
-  private _requestPromise?;
-  private _collectTimestamps?;
-  constructor(_dmmf: DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-  readonly [Symbol.toStringTag]: 'PrismaClientPromise';
-
-  user<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, UserClient<User | null>, UserClient<UserGetPayload<T> | null>>;
-
-  company<T extends CompanyArgs = {}>(args?: Subset<T, CompanyArgs>): CheckSelect<T, CompanyClient<Company | null>, CompanyClient<CompanyGetPayload<T> | null>>;
-
-  unit<T extends UnitArgs = {}>(args?: Subset<T, UnitArgs>): CheckSelect<T, UnitClient<Unit | null>, UnitClient<UnitGetPayload<T> | null>>;
-
-  Sale<T extends FindManySaleArgs = {}>(args?: Subset<T, FindManySaleArgs>): CheckSelect<T, Promise<Array<Sale>>, Promise<Array<SaleGetPayload<T>>>>;
-
-  private get _document();
-  /**
-   * Attaches callbacks for the resolution and/or rejection of the Promise.
-   * @param onfulfilled The callback to execute when the Promise is resolved.
-   * @param onrejected The callback to execute when the Promise is rejected.
-   * @returns A Promise for the completion of which ever callback is executed.
-   */
-  then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | Promise<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
-  /**
-   * Attaches a callback for only the rejection of the Promise.
-   * @param onrejected The callback to execute when the Promise is rejected.
-   * @returns A Promise for the completion of the callback.
-   */
-  catch<TResult = never>(onrejected?: ((reason: any) => TResult | Promise<TResult>) | undefined | null): Promise<T | TResult>;
-  /**
-   * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-   * resolved value cannot be modified from the callback.
-   * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-   * @returns A Promise for the completion of the callback.
-   */
-  finally(onfinally?: (() => void) | undefined | null): Promise<T>;
-}
-
-// Custom InputTypes
-
-/**
- * Profile findOne
- */
-export type FindOneProfileArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-  /**
-   * Filter, which Profile to fetch.
-  **/
-  where: ProfileWhereUniqueInput
-}
-
-
-/**
- * Profile findMany
- */
-export type FindManyProfileArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-  /**
-   * Filter, which Profiles to fetch.
-  **/
-  where?: ProfileWhereInput
-  /**
-   * Determine the order of the Profiles to fetch.
-  **/
-  orderBy?: ProfileOrderByInput
-  /**
-   * Skip the first `n` Profiles.
-  **/
-  skip?: number
-  /**
-   * Get all Profiles that come after the Profile you provide with the current order.
-  **/
-  after?: ProfileWhereUniqueInput
-  /**
-   * Get all Profiles that come before the Profile you provide with the current order.
-  **/
-  before?: ProfileWhereUniqueInput
-  /**
-   * Get the first `n` Profiles.
-  **/
-  first?: number
-  /**
-   * Get the last `n` Profiles.
-  **/
-  last?: number
-}
-
-
-/**
- * Profile create
- */
-export type ProfileCreateArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-  /**
-   * The data needed to create a Profile.
-  **/
-  data: ProfileCreateInput
-}
-
-
-/**
- * Profile update
- */
-export type ProfileUpdateArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-  /**
-   * The data needed to update a Profile.
-  **/
-  data: ProfileUpdateInput
-  /**
-   * Choose, which Profile to update.
-  **/
-  where: ProfileWhereUniqueInput
-}
-
-
-/**
- * Profile updateMany
- */
-export type ProfileUpdateManyArgs = {
-  data: ProfileUpdateManyMutationInput
-  where?: ProfileWhereInput
-}
-
-
-/**
- * Profile upsert
- */
-export type ProfileUpsertArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-  /**
-   * The filter to search for the Profile to update in case it exists.
-  **/
-  where: ProfileWhereUniqueInput
-  /**
-   * In case the Profile found by the `where` argument doesn't exist, create a new Profile with this data.
-  **/
-  create: ProfileCreateInput
-  /**
-   * In case the Profile was found with the provided `where` argument, update it with this data.
-  **/
-  update: ProfileUpdateInput
-}
-
-
-/**
- * Profile delete
- */
-export type ProfileDeleteArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-  /**
-   * Filter which Profile to delete.
-  **/
-  where: ProfileWhereUniqueInput
-}
-
-
-/**
- * Profile deleteMany
- */
-export type ProfileDeleteManyArgs = {
-  where?: ProfileWhereInput
-}
-
-
-/**
- * Profile without action
- */
-export type ProfileArgs = {
-  /**
-   * Select specific fields to fetch from the Profile
-  **/
-  select?: ProfileSelect | null
-  /**
-   * Choose, which related nodes to fetch as well.
-  **/
-  include?: ProfileInclude | null
-}
-
-
-
-/**
  * Model Service
  */
 
@@ -2128,12 +2136,12 @@ export type ServiceSelect = {
   price?: boolean
   enabled?: boolean
   CompanyService?: boolean | FindManyCompanyServiceArgs
-  ServiceSale?: boolean | FindManyServiceSaleArgs
+  serviceSale?: boolean | FindManyServiceSaleArgs
 }
 
 export type ServiceInclude = {
   CompanyService?: boolean | FindManyCompanyServiceArgs
-  ServiceSale?: boolean | FindManyServiceSaleArgs
+  serviceSale?: boolean | FindManyServiceSaleArgs
 }
 
 export type ServiceGetPayload<
@@ -2149,7 +2157,7 @@ export type ServiceGetPayload<
       [P in TrueKeys<S['include']>]:
       P extends 'CompanyService'
       ? Array<CompanyServiceGetPayload<S['include'][P]>> :
-      P extends 'ServiceSale'
+      P extends 'serviceSale'
       ? Array<ServiceSaleGetPayload<S['include'][P]>> : never
     }
   : 'select' extends U
@@ -2158,7 +2166,7 @@ export type ServiceGetPayload<
 : 
       P extends 'CompanyService'
       ? Array<CompanyServiceGetPayload<S['select'][P]>> :
-      P extends 'ServiceSale'
+      P extends 'serviceSale'
       ? Array<ServiceSaleGetPayload<S['select'][P]>> : never
     }
   : Service
@@ -2323,7 +2331,7 @@ export declare class ServiceClient<T> implements Promise<T> {
 
   CompanyService<T extends FindManyCompanyServiceArgs = {}>(args?: Subset<T, FindManyCompanyServiceArgs>): CheckSelect<T, Promise<Array<CompanyService>>, Promise<Array<CompanyServiceGetPayload<T>>>>;
 
-  ServiceSale<T extends FindManyServiceSaleArgs = {}>(args?: Subset<T, FindManyServiceSaleArgs>): CheckSelect<T, Promise<Array<ServiceSale>>, Promise<Array<ServiceSaleGetPayload<T>>>>;
+  serviceSale<T extends FindManyServiceSaleArgs = {}>(args?: Subset<T, FindManyServiceSaleArgs>): CheckSelect<T, Promise<Array<ServiceSale>>, Promise<Array<ServiceSaleGetPayload<T>>>>;
 
   private get _document();
   /**
@@ -2971,15 +2979,15 @@ export type PersonSelect = {
   cpf?: boolean
   name?: boolean
   telephone?: boolean
-  Address?: boolean | FindManyAddressArgs
-  Car?: boolean | FindManyCarArgs
-  Sale?: boolean | FindManySaleArgs
+  address?: boolean | AddressArgs
+  cars?: boolean | FindManyCarArgs
+  sales?: boolean | FindManySaleArgs
 }
 
 export type PersonInclude = {
-  Address?: boolean | FindManyAddressArgs
-  Car?: boolean | FindManyCarArgs
-  Sale?: boolean | FindManySaleArgs
+  address?: boolean | AddressArgs
+  cars?: boolean | FindManyCarArgs
+  sales?: boolean | FindManySaleArgs
 }
 
 export type PersonGetPayload<
@@ -2993,22 +3001,22 @@ export type PersonGetPayload<
   ? 'include' extends U
     ? Person  & {
       [P in TrueKeys<S['include']>]:
-      P extends 'Address'
-      ? Array<AddressGetPayload<S['include'][P]>> :
-      P extends 'Car'
+      P extends 'address'
+      ? AddressGetPayload<S['include'][P]> | null :
+      P extends 'cars'
       ? Array<CarGetPayload<S['include'][P]>> :
-      P extends 'Sale'
+      P extends 'sales'
       ? Array<SaleGetPayload<S['include'][P]>> : never
     }
   : 'select' extends U
     ? {
       [P in TrueKeys<S['select']>]:P extends keyof Person ? Person[P]
 : 
-      P extends 'Address'
-      ? Array<AddressGetPayload<S['select'][P]>> :
-      P extends 'Car'
+      P extends 'address'
+      ? AddressGetPayload<S['select'][P]> | null :
+      P extends 'cars'
       ? Array<CarGetPayload<S['select'][P]>> :
-      P extends 'Sale'
+      P extends 'sales'
       ? Array<SaleGetPayload<S['select'][P]>> : never
     }
   : Person
@@ -3171,11 +3179,11 @@ export declare class PersonClient<T> implements Promise<T> {
   constructor(_dmmf: DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
   readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
-  Address<T extends FindManyAddressArgs = {}>(args?: Subset<T, FindManyAddressArgs>): CheckSelect<T, Promise<Array<Address>>, Promise<Array<AddressGetPayload<T>>>>;
+  address<T extends AddressArgs = {}>(args?: Subset<T, AddressArgs>): CheckSelect<T, AddressClient<Address | null>, AddressClient<AddressGetPayload<T> | null>>;
 
-  Car<T extends FindManyCarArgs = {}>(args?: Subset<T, FindManyCarArgs>): CheckSelect<T, Promise<Array<Car>>, Promise<Array<CarGetPayload<T>>>>;
+  cars<T extends FindManyCarArgs = {}>(args?: Subset<T, FindManyCarArgs>): CheckSelect<T, Promise<Array<Car>>, Promise<Array<CarGetPayload<T>>>>;
 
-  Sale<T extends FindManySaleArgs = {}>(args?: Subset<T, FindManySaleArgs>): CheckSelect<T, Promise<Array<Sale>>, Promise<Array<SaleGetPayload<T>>>>;
+  sales<T extends FindManySaleArgs = {}>(args?: Subset<T, FindManySaleArgs>): CheckSelect<T, Promise<Array<Sale>>, Promise<Array<SaleGetPayload<T>>>>;
 
   private get _document();
   /**
@@ -3395,6 +3403,7 @@ export type Address = {
   houseNumber: string
   neighborhood: string
   city: string
+  uf: string
   personId: number
 }
 
@@ -3404,6 +3413,7 @@ export type AddressSelect = {
   houseNumber?: boolean
   neighborhood?: boolean
   city?: boolean
+  uf?: boolean
   personId?: boolean
   person?: boolean | PersonArgs
 }
@@ -3820,12 +3830,12 @@ export type CarSelect = {
   carPlate?: boolean
   personId?: boolean
   person?: boolean | PersonArgs
-  Sale?: boolean | FindManySaleArgs
+  sale?: boolean | FindManySaleArgs
 }
 
 export type CarInclude = {
   person?: boolean | PersonArgs
-  Sale?: boolean | FindManySaleArgs
+  sale?: boolean | FindManySaleArgs
 }
 
 export type CarGetPayload<
@@ -3841,7 +3851,7 @@ export type CarGetPayload<
       [P in TrueKeys<S['include']>]:
       P extends 'person'
       ? PersonGetPayload<S['include'][P]> :
-      P extends 'Sale'
+      P extends 'sale'
       ? Array<SaleGetPayload<S['include'][P]>> : never
     }
   : 'select' extends U
@@ -3850,7 +3860,7 @@ export type CarGetPayload<
 : 
       P extends 'person'
       ? PersonGetPayload<S['select'][P]> :
-      P extends 'Sale'
+      P extends 'sale'
       ? Array<SaleGetPayload<S['select'][P]>> : never
     }
   : Car
@@ -4015,7 +4025,7 @@ export declare class CarClient<T> implements Promise<T> {
 
   person<T extends PersonArgs = {}>(args?: Subset<T, PersonArgs>): CheckSelect<T, PersonClient<Person | null>, PersonClient<PersonGetPayload<T> | null>>;
 
-  Sale<T extends FindManySaleArgs = {}>(args?: Subset<T, FindManySaleArgs>): CheckSelect<T, Promise<Array<Sale>>, Promise<Array<SaleGetPayload<T>>>>;
+  sale<T extends FindManySaleArgs = {}>(args?: Subset<T, FindManySaleArgs>): CheckSelect<T, Promise<Array<Sale>>, Promise<Array<SaleGetPayload<T>>>>;
 
   private get _document();
   /**
@@ -4254,14 +4264,14 @@ export type SaleSelect = {
   seller?: boolean | ProfileArgs
   person?: boolean | PersonArgs
   car?: boolean | CarArgs
-  ServiceSale?: boolean | FindManyServiceSaleArgs
+  serviceSale?: boolean | FindManyServiceSaleArgs
 }
 
 export type SaleInclude = {
   seller?: boolean | ProfileArgs
   person?: boolean | PersonArgs
   car?: boolean | CarArgs
-  ServiceSale?: boolean | FindManyServiceSaleArgs
+  serviceSale?: boolean | FindManyServiceSaleArgs
 }
 
 export type SaleGetPayload<
@@ -4281,7 +4291,7 @@ export type SaleGetPayload<
       ? PersonGetPayload<S['include'][P]> :
       P extends 'car'
       ? CarGetPayload<S['include'][P]> :
-      P extends 'ServiceSale'
+      P extends 'serviceSale'
       ? Array<ServiceSaleGetPayload<S['include'][P]>> : never
     }
   : 'select' extends U
@@ -4294,7 +4304,7 @@ export type SaleGetPayload<
       ? PersonGetPayload<S['select'][P]> :
       P extends 'car'
       ? CarGetPayload<S['select'][P]> :
-      P extends 'ServiceSale'
+      P extends 'serviceSale'
       ? Array<ServiceSaleGetPayload<S['select'][P]>> : never
     }
   : Sale
@@ -4463,7 +4473,7 @@ export declare class SaleClient<T> implements Promise<T> {
 
   car<T extends CarArgs = {}>(args?: Subset<T, CarArgs>): CheckSelect<T, CarClient<Car | null>, CarClient<CarGetPayload<T> | null>>;
 
-  ServiceSale<T extends FindManyServiceSaleArgs = {}>(args?: Subset<T, FindManyServiceSaleArgs>): CheckSelect<T, Promise<Array<ServiceSale>>, Promise<Array<ServiceSaleGetPayload<T>>>>;
+  serviceSale<T extends FindManyServiceSaleArgs = {}>(args?: Subset<T, FindManyServiceSaleArgs>): CheckSelect<T, Promise<Array<ServiceSale>>, Promise<Array<ServiceSaleGetPayload<T>>>>;
 
   private get _document();
   /**
@@ -5101,6 +5111,7 @@ export type ServiceSaleArgs = {
 export type UnitWhereInput = {
   id?: number | IntFilter
   name?: string | StringFilter
+  telephone?: string | StringFilter
   companyId?: number | IntFilter
   Profile?: ProfileFilter | null
   AND?: Enumerable<UnitWhereInput>
@@ -5115,6 +5126,7 @@ export type AddressWhereInput = {
   houseNumber?: string | StringFilter
   neighborhood?: string | StringFilter
   city?: string | StringFilter
+  uf?: string | StringFilter
   personId?: number | IntFilter
   AND?: Enumerable<AddressWhereInput>
   OR?: Enumerable<AddressWhereInput>
@@ -5127,7 +5139,7 @@ export type CarWhereInput = {
   car?: string | StringFilter
   carPlate?: string | StringFilter
   personId?: number | IntFilter
-  Sale?: SaleFilter | null
+  sale?: SaleFilter | null
   AND?: Enumerable<CarWhereInput>
   OR?: Enumerable<CarWhereInput>
   NOT?: Enumerable<CarWhereInput>
@@ -5139,12 +5151,12 @@ export type PersonWhereInput = {
   cpf?: string | StringFilter
   name?: string | StringFilter
   telephone?: string | StringFilter
-  Address?: AddressFilter | null
-  Car?: CarFilter | null
-  Sale?: SaleFilter | null
+  cars?: CarFilter | null
+  sales?: SaleFilter | null
   AND?: Enumerable<PersonWhereInput>
   OR?: Enumerable<PersonWhereInput>
   NOT?: Enumerable<PersonWhereInput>
+  address?: AddressWhereInput | null
 }
 
 export type SaleWhereInput = {
@@ -5157,7 +5169,7 @@ export type SaleWhereInput = {
   sellerId?: number | IntFilter
   personId?: number | IntFilter
   carId?: number | IntFilter
-  ServiceSale?: ServiceSaleFilter | null
+  serviceSale?: ServiceSaleFilter | null
   AND?: Enumerable<SaleWhereInput>
   OR?: Enumerable<SaleWhereInput>
   NOT?: Enumerable<SaleWhereInput>
@@ -5183,7 +5195,7 @@ export type ServiceWhereInput = {
   price?: number | FloatFilter
   enabled?: boolean | BooleanFilter
   CompanyService?: CompanyServiceFilter | null
-  ServiceSale?: ServiceSaleFilter | null
+  serviceSale?: ServiceSaleFilter | null
   AND?: Enumerable<ServiceWhereInput>
   OR?: Enumerable<ServiceWhereInput>
   NOT?: Enumerable<ServiceWhereInput>
@@ -5208,7 +5220,7 @@ export type CompanyWhereInput = {
   cnpj?: string | StringFilter
   units?: UnitFilter | null
   Profile?: ProfileFilter | null
-  CompanyService?: CompanyServiceFilter | null
+  sompanyService?: CompanyServiceFilter | null
   AND?: Enumerable<CompanyWhereInput>
   OR?: Enumerable<CompanyWhereInput>
   NOT?: Enumerable<CompanyWhereInput>
@@ -5220,9 +5232,9 @@ export type ProfileWhereInput = {
   telephone?: string | StringFilter
   enabled?: boolean | BooleanFilter
   userId?: number | IntFilter
-  companyId?: number | IntFilter
-  unitId?: number | IntFilter
-  Sale?: SaleFilter | null
+  companyId?: number | NullableIntFilter | null
+  unitId?: number | NullableIntFilter | null
+  sale?: SaleFilter | null
   AND?: Enumerable<ProfileWhereInput>
   OR?: Enumerable<ProfileWhereInput>
   NOT?: Enumerable<ProfileWhereInput>
@@ -5233,9 +5245,12 @@ export type ProfileWhereInput = {
 
 export type UserWhereInput = {
   id?: number | IntFilter
+  username?: string | StringFilter
   email?: string | StringFilter
   password?: string | StringFilter
   role?: Role | RoleFilter
+  enabled?: boolean | BooleanFilter
+  firstLogin?: boolean | BooleanFilter
   AND?: Enumerable<UserWhereInput>
   OR?: Enumerable<UserWhereInput>
   NOT?: Enumerable<UserWhereInput>
@@ -5244,6 +5259,8 @@ export type UserWhereInput = {
 
 export type UserWhereUniqueInput = {
   id?: number
+  username?: string
+  email?: string
 }
 
 export type UnitWhereUniqueInput = {
@@ -5252,6 +5269,7 @@ export type UnitWhereUniqueInput = {
 
 export type ProfileWhereUniqueInput = {
   id?: number
+  userId?: number
 }
 
 export type CompanyServiceWhereUniqueInput = {
@@ -5259,10 +5277,6 @@ export type CompanyServiceWhereUniqueInput = {
 }
 
 export type ServiceSaleWhereUniqueInput = {
-  id?: number
-}
-
-export type AddressWhereUniqueInput = {
   id?: number
 }
 
@@ -5276,20 +5290,31 @@ export type SaleWhereUniqueInput = {
 
 export type CompanyWhereUniqueInput = {
   id?: number
+  name?: string
+  cnpj?: string
 }
 
 export type ServiceWhereUniqueInput = {
   id?: number
+  name?: string
 }
 
 export type PersonWhereUniqueInput = {
   id?: number
+  cpf?: string
+}
+
+export type AddressWhereUniqueInput = {
+  id?: number
 }
 
 export type UserCreateWithoutProfileInput = {
+  username: string
   email: string
   password: string
   role?: Role
+  enabled?: boolean
+  firstLogin?: boolean
 }
 
 export type UserCreateOneWithoutProfileInput = {
@@ -5302,11 +5327,12 @@ export type AddressCreateWithoutPersonInput = {
   houseNumber: string
   neighborhood: string
   city: string
+  uf: string
 }
 
-export type AddressCreateManyWithoutPersonInput = {
-  create?: Enumerable<AddressCreateWithoutPersonInput>
-  connect?: Enumerable<AddressWhereUniqueInput>
+export type AddressCreateOneWithoutPersonInput = {
+  create?: AddressCreateWithoutPersonInput
+  connect?: AddressWhereUniqueInput
 }
 
 export type ProfileCreateWithoutCompanyInput = {
@@ -5314,8 +5340,8 @@ export type ProfileCreateWithoutCompanyInput = {
   telephone: string
   enabled?: boolean
   user: UserCreateOneWithoutProfileInput
-  unit: UnitCreateOneWithoutProfileInput
-  Sale?: SaleCreateManyWithoutSellerInput | null
+  unit?: UnitCreateOneWithoutProfileInput | null
+  sale?: SaleCreateManyWithoutSellerInput | null
 }
 
 export type ProfileCreateManyWithoutCompanyInput = {
@@ -5323,7 +5349,7 @@ export type ProfileCreateManyWithoutCompanyInput = {
   connect?: Enumerable<ProfileWhereUniqueInput>
 }
 
-export type CompanyCreateWithoutCompanyServiceInput = {
+export type CompanyCreateWithoutSompanyServiceInput = {
   name: string
   telephone: string
   cnpj: string
@@ -5331,14 +5357,14 @@ export type CompanyCreateWithoutCompanyServiceInput = {
   Profile?: ProfileCreateManyWithoutCompanyInput | null
 }
 
-export type CompanyCreateOneWithoutCompanyServiceInput = {
-  create?: CompanyCreateWithoutCompanyServiceInput
+export type CompanyCreateOneWithoutSompanyServiceInput = {
+  create?: CompanyCreateWithoutSompanyServiceInput
   connect?: CompanyWhereUniqueInput
 }
 
 export type CompanyServiceCreateWithoutServiceInput = {
   price: number
-  company: CompanyCreateOneWithoutCompanyServiceInput
+  company: CompanyCreateOneWithoutSompanyServiceInput
 }
 
 export type CompanyServiceCreateManyWithoutServiceInput = {
@@ -5368,14 +5394,14 @@ export type ServiceSaleCreateManyWithoutSaleInput = {
 }
 
 export type SaleCreateWithoutPersonInput = {
-  requestDate: Date | string
+  requestDate?: Date | string
   deliveryDate: Date | string
   done?: boolean
   companyPrice: number
   costPrice: number
   seller: ProfileCreateOneWithoutSaleInput
   car: CarCreateOneWithoutSaleInput
-  ServiceSale?: ServiceSaleCreateManyWithoutSaleInput | null
+  serviceSale?: ServiceSaleCreateManyWithoutSaleInput | null
 }
 
 export type SaleCreateManyWithoutPersonInput = {
@@ -5383,23 +5409,23 @@ export type SaleCreateManyWithoutPersonInput = {
   connect?: Enumerable<SaleWhereUniqueInput>
 }
 
-export type PersonCreateWithoutCarInput = {
+export type PersonCreateWithoutCarsInput = {
   cpf: string
   name: string
   telephone: string
-  Address?: AddressCreateManyWithoutPersonInput | null
-  Sale?: SaleCreateManyWithoutPersonInput | null
+  address?: AddressCreateOneWithoutPersonInput | null
+  sales?: SaleCreateManyWithoutPersonInput | null
 }
 
-export type PersonCreateOneWithoutCarInput = {
-  create?: PersonCreateWithoutCarInput
+export type PersonCreateOneWithoutCarsInput = {
+  create?: PersonCreateWithoutCarsInput
   connect?: PersonWhereUniqueInput
 }
 
 export type CarCreateWithoutSaleInput = {
   car: string
   carPlate: string
-  person: PersonCreateOneWithoutCarInput
+  person: PersonCreateOneWithoutCarsInput
 }
 
 export type CarCreateOneWithoutSaleInput = {
@@ -5408,13 +5434,13 @@ export type CarCreateOneWithoutSaleInput = {
 }
 
 export type SaleCreateWithoutServiceSaleInput = {
-  requestDate: Date | string
+  requestDate?: Date | string
   deliveryDate: Date | string
   done?: boolean
   companyPrice: number
   costPrice: number
   seller: ProfileCreateOneWithoutSaleInput
-  person: PersonCreateOneWithoutSaleInput
+  person: PersonCreateOneWithoutSalesInput
   car: CarCreateOneWithoutSaleInput
 }
 
@@ -5436,7 +5462,7 @@ export type ServiceCreateWithoutCompanyServiceInput = {
   name: string
   price: number
   enabled?: boolean
-  ServiceSale?: ServiceSaleCreateManyWithoutServiceInput | null
+  serviceSale?: ServiceSaleCreateManyWithoutServiceInput | null
 }
 
 export type ServiceCreateOneWithoutCompanyServiceInput = {
@@ -5459,7 +5485,7 @@ export type CompanyCreateWithoutUnitsInput = {
   telephone: string
   cnpj: string
   Profile?: ProfileCreateManyWithoutCompanyInput | null
-  CompanyService?: CompanyServiceCreateManyWithoutCompanyInput | null
+  sompanyService?: CompanyServiceCreateManyWithoutCompanyInput | null
 }
 
 export type CompanyCreateOneWithoutUnitsInput = {
@@ -5469,6 +5495,7 @@ export type CompanyCreateOneWithoutUnitsInput = {
 
 export type UnitCreateWithoutProfileInput = {
   name: string
+  telephone: string
   company: CompanyCreateOneWithoutUnitsInput
 }
 
@@ -5482,8 +5509,8 @@ export type ProfileCreateWithoutSaleInput = {
   telephone: string
   enabled?: boolean
   user: UserCreateOneWithoutProfileInput
-  company: CompanyCreateOneWithoutProfileInput
-  unit: UnitCreateOneWithoutProfileInput
+  company?: CompanyCreateOneWithoutProfileInput | null
+  unit?: UnitCreateOneWithoutProfileInput | null
 }
 
 export type ProfileCreateOneWithoutSaleInput = {
@@ -5492,14 +5519,14 @@ export type ProfileCreateOneWithoutSaleInput = {
 }
 
 export type SaleCreateWithoutCarInput = {
-  requestDate: Date | string
+  requestDate?: Date | string
   deliveryDate: Date | string
   done?: boolean
   companyPrice: number
   costPrice: number
   seller: ProfileCreateOneWithoutSaleInput
-  person: PersonCreateOneWithoutSaleInput
-  ServiceSale?: ServiceSaleCreateManyWithoutSaleInput | null
+  person: PersonCreateOneWithoutSalesInput
+  serviceSale?: ServiceSaleCreateManyWithoutSaleInput | null
 }
 
 export type SaleCreateManyWithoutCarInput = {
@@ -5510,7 +5537,7 @@ export type SaleCreateManyWithoutCarInput = {
 export type CarCreateWithoutPersonInput = {
   car: string
   carPlate: string
-  Sale?: SaleCreateManyWithoutCarInput | null
+  sale?: SaleCreateManyWithoutCarInput | null
 }
 
 export type CarCreateManyWithoutPersonInput = {
@@ -5518,28 +5545,28 @@ export type CarCreateManyWithoutPersonInput = {
   connect?: Enumerable<CarWhereUniqueInput>
 }
 
-export type PersonCreateWithoutSaleInput = {
+export type PersonCreateWithoutSalesInput = {
   cpf: string
   name: string
   telephone: string
-  Address?: AddressCreateManyWithoutPersonInput | null
-  Car?: CarCreateManyWithoutPersonInput | null
+  address?: AddressCreateOneWithoutPersonInput | null
+  cars?: CarCreateManyWithoutPersonInput | null
 }
 
-export type PersonCreateOneWithoutSaleInput = {
-  create?: PersonCreateWithoutSaleInput
+export type PersonCreateOneWithoutSalesInput = {
+  create?: PersonCreateWithoutSalesInput
   connect?: PersonWhereUniqueInput
 }
 
 export type SaleCreateWithoutSellerInput = {
-  requestDate: Date | string
+  requestDate?: Date | string
   deliveryDate: Date | string
   done?: boolean
   companyPrice: number
   costPrice: number
-  person: PersonCreateOneWithoutSaleInput
+  person: PersonCreateOneWithoutSalesInput
   car: CarCreateOneWithoutSaleInput
-  ServiceSale?: ServiceSaleCreateManyWithoutSaleInput | null
+  serviceSale?: ServiceSaleCreateManyWithoutSaleInput | null
 }
 
 export type SaleCreateManyWithoutSellerInput = {
@@ -5552,8 +5579,8 @@ export type ProfileCreateWithoutUnitInput = {
   telephone: string
   enabled?: boolean
   user: UserCreateOneWithoutProfileInput
-  company: CompanyCreateOneWithoutProfileInput
-  Sale?: SaleCreateManyWithoutSellerInput | null
+  company?: CompanyCreateOneWithoutProfileInput | null
+  sale?: SaleCreateManyWithoutSellerInput | null
 }
 
 export type ProfileCreateManyWithoutUnitInput = {
@@ -5563,6 +5590,7 @@ export type ProfileCreateManyWithoutUnitInput = {
 
 export type UnitCreateWithoutCompanyInput = {
   name: string
+  telephone: string
   Profile?: ProfileCreateManyWithoutUnitInput | null
 }
 
@@ -5576,7 +5604,7 @@ export type CompanyCreateWithoutProfileInput = {
   telephone: string
   cnpj: string
   units?: UnitCreateManyWithoutCompanyInput | null
-  CompanyService?: CompanyServiceCreateManyWithoutCompanyInput | null
+  sompanyService?: CompanyServiceCreateManyWithoutCompanyInput | null
 }
 
 export type CompanyCreateOneWithoutProfileInput = {
@@ -5588,9 +5616,9 @@ export type ProfileCreateWithoutUserInput = {
   name: string
   telephone: string
   enabled?: boolean
-  company: CompanyCreateOneWithoutProfileInput
-  unit: UnitCreateOneWithoutProfileInput
-  Sale?: SaleCreateManyWithoutSellerInput | null
+  company?: CompanyCreateOneWithoutProfileInput | null
+  unit?: UnitCreateOneWithoutProfileInput | null
+  sale?: SaleCreateManyWithoutSellerInput | null
 }
 
 export type ProfileCreateOneWithoutUserInput = {
@@ -5599,17 +5627,23 @@ export type ProfileCreateOneWithoutUserInput = {
 }
 
 export type UserCreateInput = {
+  username: string
   email: string
   password: string
   role?: Role
+  enabled?: boolean
+  firstLogin?: boolean
   profile: ProfileCreateOneWithoutUserInput
 }
 
 export type UserUpdateWithoutProfileDataInput = {
   id?: number
+  username?: string
   email?: string
   password?: string
   role?: Role
+  enabled?: boolean
+  firstLogin?: boolean
 }
 
 export type UserUpsertWithoutProfileInput = {
@@ -5630,54 +5664,21 @@ export type AddressUpdateWithoutPersonDataInput = {
   houseNumber?: string
   neighborhood?: string
   city?: string
+  uf?: string
 }
 
-export type AddressUpdateWithWhereUniqueWithoutPersonInput = {
-  where: AddressWhereUniqueInput
-  data: AddressUpdateWithoutPersonDataInput
-}
-
-export type AddressScalarWhereInput = {
-  id?: number | IntFilter
-  street?: string | StringFilter
-  houseNumber?: string | StringFilter
-  neighborhood?: string | StringFilter
-  city?: string | StringFilter
-  personId?: number | IntFilter
-  AND?: Enumerable<AddressScalarWhereInput>
-  OR?: Enumerable<AddressScalarWhereInput>
-  NOT?: Enumerable<AddressScalarWhereInput>
-}
-
-export type AddressUpdateManyDataInput = {
-  id?: number
-  street?: string
-  houseNumber?: string
-  neighborhood?: string
-  city?: string
-}
-
-export type AddressUpdateManyWithWhereNestedInput = {
-  where: AddressScalarWhereInput
-  data: AddressUpdateManyDataInput
-}
-
-export type AddressUpsertWithWhereUniqueWithoutPersonInput = {
-  where: AddressWhereUniqueInput
+export type AddressUpsertWithoutPersonInput = {
   update: AddressUpdateWithoutPersonDataInput
   create: AddressCreateWithoutPersonInput
 }
 
-export type AddressUpdateManyWithoutPersonInput = {
-  create?: Enumerable<AddressCreateWithoutPersonInput>
-  connect?: Enumerable<AddressWhereUniqueInput>
-  set?: Enumerable<AddressWhereUniqueInput>
-  disconnect?: Enumerable<AddressWhereUniqueInput>
-  delete?: Enumerable<AddressWhereUniqueInput>
-  update?: Enumerable<AddressUpdateWithWhereUniqueWithoutPersonInput>
-  updateMany?: Enumerable<AddressUpdateManyWithWhereNestedInput>
-  deleteMany?: Enumerable<AddressScalarWhereInput>
-  upsert?: Enumerable<AddressUpsertWithWhereUniqueWithoutPersonInput>
+export type AddressUpdateOneWithoutPersonInput = {
+  create?: AddressCreateWithoutPersonInput
+  connect?: AddressWhereUniqueInput
+  disconnect?: boolean
+  delete?: boolean
+  update?: AddressUpdateWithoutPersonDataInput
+  upsert?: AddressUpsertWithoutPersonInput
 }
 
 export type ProfileUpdateWithoutCompanyDataInput = {
@@ -5686,8 +5687,8 @@ export type ProfileUpdateWithoutCompanyDataInput = {
   telephone?: string
   enabled?: boolean
   user?: UserUpdateOneRequiredWithoutProfileInput
-  unit?: UnitUpdateOneRequiredWithoutProfileInput
-  Sale?: SaleUpdateManyWithoutSellerInput
+  unit?: UnitUpdateOneWithoutProfileInput
+  sale?: SaleUpdateManyWithoutSellerInput
 }
 
 export type ProfileUpdateWithWhereUniqueWithoutCompanyInput = {
@@ -5701,9 +5702,9 @@ export type ProfileScalarWhereInput = {
   telephone?: string | StringFilter
   enabled?: boolean | BooleanFilter
   userId?: number | IntFilter
-  companyId?: number | IntFilter
-  unitId?: number | IntFilter
-  Sale?: SaleFilter | null
+  companyId?: number | NullableIntFilter | null
+  unitId?: number | NullableIntFilter | null
+  sale?: SaleFilter | null
   AND?: Enumerable<ProfileScalarWhereInput>
   OR?: Enumerable<ProfileScalarWhereInput>
   NOT?: Enumerable<ProfileScalarWhereInput>
@@ -5739,7 +5740,7 @@ export type ProfileUpdateManyWithoutCompanyInput = {
   upsert?: Enumerable<ProfileUpsertWithWhereUniqueWithoutCompanyInput>
 }
 
-export type CompanyUpdateWithoutCompanyServiceDataInput = {
+export type CompanyUpdateWithoutSompanyServiceDataInput = {
   id?: number
   name?: string
   telephone?: string
@@ -5748,22 +5749,22 @@ export type CompanyUpdateWithoutCompanyServiceDataInput = {
   Profile?: ProfileUpdateManyWithoutCompanyInput
 }
 
-export type CompanyUpsertWithoutCompanyServiceInput = {
-  update: CompanyUpdateWithoutCompanyServiceDataInput
-  create: CompanyCreateWithoutCompanyServiceInput
+export type CompanyUpsertWithoutSompanyServiceInput = {
+  update: CompanyUpdateWithoutSompanyServiceDataInput
+  create: CompanyCreateWithoutSompanyServiceInput
 }
 
-export type CompanyUpdateOneRequiredWithoutCompanyServiceInput = {
-  create?: CompanyCreateWithoutCompanyServiceInput
+export type CompanyUpdateOneRequiredWithoutSompanyServiceInput = {
+  create?: CompanyCreateWithoutSompanyServiceInput
   connect?: CompanyWhereUniqueInput
-  update?: CompanyUpdateWithoutCompanyServiceDataInput
-  upsert?: CompanyUpsertWithoutCompanyServiceInput
+  update?: CompanyUpdateWithoutSompanyServiceDataInput
+  upsert?: CompanyUpsertWithoutSompanyServiceInput
 }
 
 export type CompanyServiceUpdateWithoutServiceDataInput = {
   id?: number
   price?: number
-  company?: CompanyUpdateOneRequiredWithoutCompanyServiceInput
+  company?: CompanyUpdateOneRequiredWithoutSompanyServiceInput
 }
 
 export type CompanyServiceUpdateWithWhereUniqueWithoutServiceInput = {
@@ -5884,7 +5885,7 @@ export type SaleUpdateWithoutPersonDataInput = {
   costPrice?: number
   seller?: ProfileUpdateOneRequiredWithoutSaleInput
   car?: CarUpdateOneRequiredWithoutSaleInput
-  ServiceSale?: ServiceSaleUpdateManyWithoutSaleInput
+  serviceSale?: ServiceSaleUpdateManyWithoutSaleInput
 }
 
 export type SaleUpdateWithWhereUniqueWithoutPersonInput = {
@@ -5902,7 +5903,7 @@ export type SaleScalarWhereInput = {
   sellerId?: number | IntFilter
   personId?: number | IntFilter
   carId?: number | IntFilter
-  ServiceSale?: ServiceSaleFilter | null
+  serviceSale?: ServiceSaleFilter | null
   AND?: Enumerable<SaleScalarWhereInput>
   OR?: Enumerable<SaleScalarWhereInput>
   NOT?: Enumerable<SaleScalarWhereInput>
@@ -5940,32 +5941,32 @@ export type SaleUpdateManyWithoutPersonInput = {
   upsert?: Enumerable<SaleUpsertWithWhereUniqueWithoutPersonInput>
 }
 
-export type PersonUpdateWithoutCarDataInput = {
+export type PersonUpdateWithoutCarsDataInput = {
   id?: number
   cpf?: string
   name?: string
   telephone?: string
-  Address?: AddressUpdateManyWithoutPersonInput
-  Sale?: SaleUpdateManyWithoutPersonInput
+  address?: AddressUpdateOneWithoutPersonInput
+  sales?: SaleUpdateManyWithoutPersonInput
 }
 
-export type PersonUpsertWithoutCarInput = {
-  update: PersonUpdateWithoutCarDataInput
-  create: PersonCreateWithoutCarInput
+export type PersonUpsertWithoutCarsInput = {
+  update: PersonUpdateWithoutCarsDataInput
+  create: PersonCreateWithoutCarsInput
 }
 
-export type PersonUpdateOneRequiredWithoutCarInput = {
-  create?: PersonCreateWithoutCarInput
+export type PersonUpdateOneRequiredWithoutCarsInput = {
+  create?: PersonCreateWithoutCarsInput
   connect?: PersonWhereUniqueInput
-  update?: PersonUpdateWithoutCarDataInput
-  upsert?: PersonUpsertWithoutCarInput
+  update?: PersonUpdateWithoutCarsDataInput
+  upsert?: PersonUpsertWithoutCarsInput
 }
 
 export type CarUpdateWithoutSaleDataInput = {
   id?: number
   car?: string
   carPlate?: string
-  person?: PersonUpdateOneRequiredWithoutCarInput
+  person?: PersonUpdateOneRequiredWithoutCarsInput
 }
 
 export type CarUpsertWithoutSaleInput = {
@@ -5988,7 +5989,7 @@ export type SaleUpdateWithoutServiceSaleDataInput = {
   companyPrice?: number
   costPrice?: number
   seller?: ProfileUpdateOneRequiredWithoutSaleInput
-  person?: PersonUpdateOneRequiredWithoutSaleInput
+  person?: PersonUpdateOneRequiredWithoutSalesInput
   car?: CarUpdateOneRequiredWithoutSaleInput
 }
 
@@ -6037,7 +6038,7 @@ export type ServiceUpdateWithoutCompanyServiceDataInput = {
   name?: string
   price?: number
   enabled?: boolean
-  ServiceSale?: ServiceSaleUpdateManyWithoutServiceInput
+  serviceSale?: ServiceSaleUpdateManyWithoutServiceInput
 }
 
 export type ServiceUpsertWithoutCompanyServiceInput = {
@@ -6087,7 +6088,7 @@ export type CompanyUpdateWithoutUnitsDataInput = {
   telephone?: string
   cnpj?: string
   Profile?: ProfileUpdateManyWithoutCompanyInput
-  CompanyService?: CompanyServiceUpdateManyWithoutCompanyInput
+  sompanyService?: CompanyServiceUpdateManyWithoutCompanyInput
 }
 
 export type CompanyUpsertWithoutUnitsInput = {
@@ -6105,6 +6106,7 @@ export type CompanyUpdateOneRequiredWithoutUnitsInput = {
 export type UnitUpdateWithoutProfileDataInput = {
   id?: number
   name?: string
+  telephone?: string
   company?: CompanyUpdateOneRequiredWithoutUnitsInput
 }
 
@@ -6113,9 +6115,11 @@ export type UnitUpsertWithoutProfileInput = {
   create: UnitCreateWithoutProfileInput
 }
 
-export type UnitUpdateOneRequiredWithoutProfileInput = {
+export type UnitUpdateOneWithoutProfileInput = {
   create?: UnitCreateWithoutProfileInput
   connect?: UnitWhereUniqueInput
+  disconnect?: boolean
+  delete?: boolean
   update?: UnitUpdateWithoutProfileDataInput
   upsert?: UnitUpsertWithoutProfileInput
 }
@@ -6126,8 +6130,8 @@ export type ProfileUpdateWithoutSaleDataInput = {
   telephone?: string
   enabled?: boolean
   user?: UserUpdateOneRequiredWithoutProfileInput
-  company?: CompanyUpdateOneRequiredWithoutProfileInput
-  unit?: UnitUpdateOneRequiredWithoutProfileInput
+  company?: CompanyUpdateOneWithoutProfileInput
+  unit?: UnitUpdateOneWithoutProfileInput
 }
 
 export type ProfileUpsertWithoutSaleInput = {
@@ -6150,8 +6154,8 @@ export type SaleUpdateWithoutCarDataInput = {
   companyPrice?: number
   costPrice?: number
   seller?: ProfileUpdateOneRequiredWithoutSaleInput
-  person?: PersonUpdateOneRequiredWithoutSaleInput
-  ServiceSale?: ServiceSaleUpdateManyWithoutSaleInput
+  person?: PersonUpdateOneRequiredWithoutSalesInput
+  serviceSale?: ServiceSaleUpdateManyWithoutSaleInput
 }
 
 export type SaleUpdateWithWhereUniqueWithoutCarInput = {
@@ -6181,7 +6185,7 @@ export type CarUpdateWithoutPersonDataInput = {
   id?: number
   car?: string
   carPlate?: string
-  Sale?: SaleUpdateManyWithoutCarInput
+  sale?: SaleUpdateManyWithoutCarInput
 }
 
 export type CarUpdateWithWhereUniqueWithoutPersonInput = {
@@ -6194,7 +6198,7 @@ export type CarScalarWhereInput = {
   car?: string | StringFilter
   carPlate?: string | StringFilter
   personId?: number | IntFilter
-  Sale?: SaleFilter | null
+  sale?: SaleFilter | null
   AND?: Enumerable<CarScalarWhereInput>
   OR?: Enumerable<CarScalarWhereInput>
   NOT?: Enumerable<CarScalarWhereInput>
@@ -6229,25 +6233,25 @@ export type CarUpdateManyWithoutPersonInput = {
   upsert?: Enumerable<CarUpsertWithWhereUniqueWithoutPersonInput>
 }
 
-export type PersonUpdateWithoutSaleDataInput = {
+export type PersonUpdateWithoutSalesDataInput = {
   id?: number
   cpf?: string
   name?: string
   telephone?: string
-  Address?: AddressUpdateManyWithoutPersonInput
-  Car?: CarUpdateManyWithoutPersonInput
+  address?: AddressUpdateOneWithoutPersonInput
+  cars?: CarUpdateManyWithoutPersonInput
 }
 
-export type PersonUpsertWithoutSaleInput = {
-  update: PersonUpdateWithoutSaleDataInput
-  create: PersonCreateWithoutSaleInput
+export type PersonUpsertWithoutSalesInput = {
+  update: PersonUpdateWithoutSalesDataInput
+  create: PersonCreateWithoutSalesInput
 }
 
-export type PersonUpdateOneRequiredWithoutSaleInput = {
-  create?: PersonCreateWithoutSaleInput
+export type PersonUpdateOneRequiredWithoutSalesInput = {
+  create?: PersonCreateWithoutSalesInput
   connect?: PersonWhereUniqueInput
-  update?: PersonUpdateWithoutSaleDataInput
-  upsert?: PersonUpsertWithoutSaleInput
+  update?: PersonUpdateWithoutSalesDataInput
+  upsert?: PersonUpsertWithoutSalesInput
 }
 
 export type SaleUpdateWithoutSellerDataInput = {
@@ -6257,9 +6261,9 @@ export type SaleUpdateWithoutSellerDataInput = {
   done?: boolean
   companyPrice?: number
   costPrice?: number
-  person?: PersonUpdateOneRequiredWithoutSaleInput
+  person?: PersonUpdateOneRequiredWithoutSalesInput
   car?: CarUpdateOneRequiredWithoutSaleInput
-  ServiceSale?: ServiceSaleUpdateManyWithoutSaleInput
+  serviceSale?: ServiceSaleUpdateManyWithoutSaleInput
 }
 
 export type SaleUpdateWithWhereUniqueWithoutSellerInput = {
@@ -6291,8 +6295,8 @@ export type ProfileUpdateWithoutUnitDataInput = {
   telephone?: string
   enabled?: boolean
   user?: UserUpdateOneRequiredWithoutProfileInput
-  company?: CompanyUpdateOneRequiredWithoutProfileInput
-  Sale?: SaleUpdateManyWithoutSellerInput
+  company?: CompanyUpdateOneWithoutProfileInput
+  sale?: SaleUpdateManyWithoutSellerInput
 }
 
 export type ProfileUpdateWithWhereUniqueWithoutUnitInput = {
@@ -6321,6 +6325,7 @@ export type ProfileUpdateManyWithoutUnitInput = {
 export type UnitUpdateWithoutCompanyDataInput = {
   id?: number
   name?: string
+  telephone?: string
   Profile?: ProfileUpdateManyWithoutUnitInput
 }
 
@@ -6332,6 +6337,7 @@ export type UnitUpdateWithWhereUniqueWithoutCompanyInput = {
 export type UnitScalarWhereInput = {
   id?: number | IntFilter
   name?: string | StringFilter
+  telephone?: string | StringFilter
   companyId?: number | IntFilter
   Profile?: ProfileFilter | null
   AND?: Enumerable<UnitScalarWhereInput>
@@ -6342,6 +6348,7 @@ export type UnitScalarWhereInput = {
 export type UnitUpdateManyDataInput = {
   id?: number
   name?: string
+  telephone?: string
 }
 
 export type UnitUpdateManyWithWhereNestedInput = {
@@ -6373,7 +6380,7 @@ export type CompanyUpdateWithoutProfileDataInput = {
   telephone?: string
   cnpj?: string
   units?: UnitUpdateManyWithoutCompanyInput
-  CompanyService?: CompanyServiceUpdateManyWithoutCompanyInput
+  sompanyService?: CompanyServiceUpdateManyWithoutCompanyInput
 }
 
 export type CompanyUpsertWithoutProfileInput = {
@@ -6381,9 +6388,11 @@ export type CompanyUpsertWithoutProfileInput = {
   create: CompanyCreateWithoutProfileInput
 }
 
-export type CompanyUpdateOneRequiredWithoutProfileInput = {
+export type CompanyUpdateOneWithoutProfileInput = {
   create?: CompanyCreateWithoutProfileInput
   connect?: CompanyWhereUniqueInput
+  disconnect?: boolean
+  delete?: boolean
   update?: CompanyUpdateWithoutProfileDataInput
   upsert?: CompanyUpsertWithoutProfileInput
 }
@@ -6393,9 +6402,9 @@ export type ProfileUpdateWithoutUserDataInput = {
   name?: string
   telephone?: string
   enabled?: boolean
-  company?: CompanyUpdateOneRequiredWithoutProfileInput
-  unit?: UnitUpdateOneRequiredWithoutProfileInput
-  Sale?: SaleUpdateManyWithoutSellerInput
+  company?: CompanyUpdateOneWithoutProfileInput
+  unit?: UnitUpdateOneWithoutProfileInput
+  sale?: SaleUpdateManyWithoutSellerInput
 }
 
 export type ProfileUpsertWithoutUserInput = {
@@ -6412,17 +6421,51 @@ export type ProfileUpdateOneRequiredWithoutUserInput = {
 
 export type UserUpdateInput = {
   id?: number
+  username?: string
   email?: string
   password?: string
   role?: Role
+  enabled?: boolean
+  firstLogin?: boolean
   profile?: ProfileUpdateOneRequiredWithoutUserInput
 }
 
 export type UserUpdateManyMutationInput = {
   id?: number
+  username?: string
   email?: string
   password?: string
   role?: Role
+  enabled?: boolean
+  firstLogin?: boolean
+}
+
+export type ProfileCreateInput = {
+  name: string
+  telephone: string
+  enabled?: boolean
+  user: UserCreateOneWithoutProfileInput
+  company?: CompanyCreateOneWithoutProfileInput | null
+  unit?: UnitCreateOneWithoutProfileInput | null
+  sale?: SaleCreateManyWithoutSellerInput | null
+}
+
+export type ProfileUpdateInput = {
+  id?: number
+  name?: string
+  telephone?: string
+  enabled?: boolean
+  user?: UserUpdateOneRequiredWithoutProfileInput
+  company?: CompanyUpdateOneWithoutProfileInput
+  unit?: UnitUpdateOneWithoutProfileInput
+  sale?: SaleUpdateManyWithoutSellerInput
+}
+
+export type ProfileUpdateManyMutationInput = {
+  id?: number
+  name?: string
+  telephone?: string
+  enabled?: boolean
 }
 
 export type CompanyCreateInput = {
@@ -6431,7 +6474,7 @@ export type CompanyCreateInput = {
   cnpj: string
   units?: UnitCreateManyWithoutCompanyInput | null
   Profile?: ProfileCreateManyWithoutCompanyInput | null
-  CompanyService?: CompanyServiceCreateManyWithoutCompanyInput | null
+  sompanyService?: CompanyServiceCreateManyWithoutCompanyInput | null
 }
 
 export type CompanyUpdateInput = {
@@ -6441,7 +6484,7 @@ export type CompanyUpdateInput = {
   cnpj?: string
   units?: UnitUpdateManyWithoutCompanyInput
   Profile?: ProfileUpdateManyWithoutCompanyInput
-  CompanyService?: CompanyServiceUpdateManyWithoutCompanyInput
+  sompanyService?: CompanyServiceUpdateManyWithoutCompanyInput
 }
 
 export type CompanyUpdateManyMutationInput = {
@@ -6453,6 +6496,7 @@ export type CompanyUpdateManyMutationInput = {
 
 export type UnitCreateInput = {
   name: string
+  telephone: string
   company: CompanyCreateOneWithoutUnitsInput
   Profile?: ProfileCreateManyWithoutUnitInput | null
 }
@@ -6460,6 +6504,7 @@ export type UnitCreateInput = {
 export type UnitUpdateInput = {
   id?: number
   name?: string
+  telephone?: string
   company?: CompanyUpdateOneRequiredWithoutUnitsInput
   Profile?: ProfileUpdateManyWithoutUnitInput
 }
@@ -6467,34 +6512,7 @@ export type UnitUpdateInput = {
 export type UnitUpdateManyMutationInput = {
   id?: number
   name?: string
-}
-
-export type ProfileCreateInput = {
-  name: string
-  telephone: string
-  enabled?: boolean
-  user: UserCreateOneWithoutProfileInput
-  company: CompanyCreateOneWithoutProfileInput
-  unit: UnitCreateOneWithoutProfileInput
-  Sale?: SaleCreateManyWithoutSellerInput | null
-}
-
-export type ProfileUpdateInput = {
-  id?: number
-  name?: string
   telephone?: string
-  enabled?: boolean
-  user?: UserUpdateOneRequiredWithoutProfileInput
-  company?: CompanyUpdateOneRequiredWithoutProfileInput
-  unit?: UnitUpdateOneRequiredWithoutProfileInput
-  Sale?: SaleUpdateManyWithoutSellerInput
-}
-
-export type ProfileUpdateManyMutationInput = {
-  id?: number
-  name?: string
-  telephone?: string
-  enabled?: boolean
 }
 
 export type ServiceCreateInput = {
@@ -6502,7 +6520,7 @@ export type ServiceCreateInput = {
   price: number
   enabled?: boolean
   CompanyService?: CompanyServiceCreateManyWithoutServiceInput | null
-  ServiceSale?: ServiceSaleCreateManyWithoutServiceInput | null
+  serviceSale?: ServiceSaleCreateManyWithoutServiceInput | null
 }
 
 export type ServiceUpdateInput = {
@@ -6511,7 +6529,7 @@ export type ServiceUpdateInput = {
   price?: number
   enabled?: boolean
   CompanyService?: CompanyServiceUpdateManyWithoutServiceInput
-  ServiceSale?: ServiceSaleUpdateManyWithoutServiceInput
+  serviceSale?: ServiceSaleUpdateManyWithoutServiceInput
 }
 
 export type ServiceUpdateManyMutationInput = {
@@ -6523,14 +6541,14 @@ export type ServiceUpdateManyMutationInput = {
 
 export type CompanyServiceCreateInput = {
   price: number
-  company: CompanyCreateOneWithoutCompanyServiceInput
+  company: CompanyCreateOneWithoutSompanyServiceInput
   service: ServiceCreateOneWithoutCompanyServiceInput
 }
 
 export type CompanyServiceUpdateInput = {
   id?: number
   price?: number
-  company?: CompanyUpdateOneRequiredWithoutCompanyServiceInput
+  company?: CompanyUpdateOneRequiredWithoutSompanyServiceInput
   service?: ServiceUpdateOneRequiredWithoutCompanyServiceInput
 }
 
@@ -6543,9 +6561,9 @@ export type PersonCreateInput = {
   cpf: string
   name: string
   telephone: string
-  Address?: AddressCreateManyWithoutPersonInput | null
-  Car?: CarCreateManyWithoutPersonInput | null
-  Sale?: SaleCreateManyWithoutPersonInput | null
+  address?: AddressCreateOneWithoutPersonInput | null
+  cars?: CarCreateManyWithoutPersonInput | null
+  sales?: SaleCreateManyWithoutPersonInput | null
 }
 
 export type PersonUpdateInput = {
@@ -6553,9 +6571,9 @@ export type PersonUpdateInput = {
   cpf?: string
   name?: string
   telephone?: string
-  Address?: AddressUpdateManyWithoutPersonInput
-  Car?: CarUpdateManyWithoutPersonInput
-  Sale?: SaleUpdateManyWithoutPersonInput
+  address?: AddressUpdateOneWithoutPersonInput
+  cars?: CarUpdateManyWithoutPersonInput
+  sales?: SaleUpdateManyWithoutPersonInput
 }
 
 export type PersonUpdateManyMutationInput = {
@@ -6569,8 +6587,8 @@ export type PersonCreateWithoutAddressInput = {
   cpf: string
   name: string
   telephone: string
-  Car?: CarCreateManyWithoutPersonInput | null
-  Sale?: SaleCreateManyWithoutPersonInput | null
+  cars?: CarCreateManyWithoutPersonInput | null
+  sales?: SaleCreateManyWithoutPersonInput | null
 }
 
 export type PersonCreateOneWithoutAddressInput = {
@@ -6583,6 +6601,7 @@ export type AddressCreateInput = {
   houseNumber: string
   neighborhood: string
   city: string
+  uf: string
   person: PersonCreateOneWithoutAddressInput
 }
 
@@ -6591,8 +6610,8 @@ export type PersonUpdateWithoutAddressDataInput = {
   cpf?: string
   name?: string
   telephone?: string
-  Car?: CarUpdateManyWithoutPersonInput
-  Sale?: SaleUpdateManyWithoutPersonInput
+  cars?: CarUpdateManyWithoutPersonInput
+  sales?: SaleUpdateManyWithoutPersonInput
 }
 
 export type PersonUpsertWithoutAddressInput = {
@@ -6613,6 +6632,7 @@ export type AddressUpdateInput = {
   houseNumber?: string
   neighborhood?: string
   city?: string
+  uf?: string
   person?: PersonUpdateOneRequiredWithoutAddressInput
 }
 
@@ -6622,21 +6642,22 @@ export type AddressUpdateManyMutationInput = {
   houseNumber?: string
   neighborhood?: string
   city?: string
+  uf?: string
 }
 
 export type CarCreateInput = {
   car: string
   carPlate: string
-  person: PersonCreateOneWithoutCarInput
-  Sale?: SaleCreateManyWithoutCarInput | null
+  person: PersonCreateOneWithoutCarsInput
+  sale?: SaleCreateManyWithoutCarInput | null
 }
 
 export type CarUpdateInput = {
   id?: number
   car?: string
   carPlate?: string
-  person?: PersonUpdateOneRequiredWithoutCarInput
-  Sale?: SaleUpdateManyWithoutCarInput
+  person?: PersonUpdateOneRequiredWithoutCarsInput
+  sale?: SaleUpdateManyWithoutCarInput
 }
 
 export type CarUpdateManyMutationInput = {
@@ -6646,15 +6667,15 @@ export type CarUpdateManyMutationInput = {
 }
 
 export type SaleCreateInput = {
-  requestDate: Date | string
+  requestDate?: Date | string
   deliveryDate: Date | string
   done?: boolean
   companyPrice: number
   costPrice: number
   seller: ProfileCreateOneWithoutSaleInput
-  person: PersonCreateOneWithoutSaleInput
+  person: PersonCreateOneWithoutSalesInput
   car: CarCreateOneWithoutSaleInput
-  ServiceSale?: ServiceSaleCreateManyWithoutSaleInput | null
+  serviceSale?: ServiceSaleCreateManyWithoutSaleInput | null
 }
 
 export type SaleUpdateInput = {
@@ -6665,9 +6686,9 @@ export type SaleUpdateInput = {
   companyPrice?: number
   costPrice?: number
   seller?: ProfileUpdateOneRequiredWithoutSaleInput
-  person?: PersonUpdateOneRequiredWithoutSaleInput
+  person?: PersonUpdateOneRequiredWithoutSalesInput
   car?: CarUpdateOneRequiredWithoutSaleInput
-  ServiceSale?: ServiceSaleUpdateManyWithoutSaleInput
+  serviceSale?: ServiceSaleUpdateManyWithoutSaleInput
 }
 
 export type SaleUpdateManyMutationInput = {
@@ -6731,12 +6752,6 @@ export type SaleFilter = {
   none?: SaleWhereInput
 }
 
-export type AddressFilter = {
-  every?: AddressWhereInput
-  some?: AddressWhereInput
-  none?: AddressWhereInput
-}
-
 export type CarFilter = {
   every?: CarWhereInput
   some?: CarWhereInput
@@ -6788,6 +6803,17 @@ export type UnitFilter = {
   none?: UnitWhereInput
 }
 
+export type NullableIntFilter = {
+  equals?: number | null
+  not?: number | null | NullableIntFilter
+  in?: Enumerable<number> | null
+  notIn?: Enumerable<number> | null
+  lt?: number | null
+  lte?: number | null
+  gt?: number | null
+  gte?: number | null
+}
+
 export type RoleFilter = {
   equals?: Role
   not?: Role | RoleFilter
@@ -6797,14 +6823,18 @@ export type RoleFilter = {
 
 export type UserOrderByInput = {
   id?: OrderByArg | null
+  username?: OrderByArg | null
   email?: OrderByArg | null
   password?: OrderByArg | null
   role?: OrderByArg | null
+  enabled?: OrderByArg | null
+  firstLogin?: OrderByArg | null
 }
 
 export type UnitOrderByInput = {
   id?: OrderByArg | null
   name?: OrderByArg | null
+  telephone?: OrderByArg | null
   companyId?: OrderByArg | null
 }
 
@@ -6829,15 +6859,6 @@ export type ServiceSaleOrderByInput = {
   id?: OrderByArg | null
   saleId?: OrderByArg | null
   serviceId?: OrderByArg | null
-}
-
-export type AddressOrderByInput = {
-  id?: OrderByArg | null
-  street?: OrderByArg | null
-  houseNumber?: OrderByArg | null
-  neighborhood?: OrderByArg | null
-  city?: OrderByArg | null
-  personId?: OrderByArg | null
 }
 
 export type CarOrderByInput = {
@@ -6878,6 +6899,16 @@ export type PersonOrderByInput = {
   cpf?: OrderByArg | null
   name?: OrderByArg | null
   telephone?: OrderByArg | null
+}
+
+export type AddressOrderByInput = {
+  id?: OrderByArg | null
+  street?: OrderByArg | null
+  houseNumber?: OrderByArg | null
+  neighborhood?: OrderByArg | null
+  city?: OrderByArg | null
+  uf?: OrderByArg | null
+  personId?: OrderByArg | null
 }
 
 /**

@@ -17,46 +17,56 @@ enum Role {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String
-  password String
-  role     Role    @default(SELLER)
-  profile  Profile
-}
-
-model Company {
-  id        Int    @id @default(autoincrement())
-  name      String
-  telephone String
-  cnpj      String
-  units     Unit[]
-}
-
-model Unit {
-  id        Int     @id @default(autoincrement())
-  name      String
-  companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
+  id         Int     @id @default(autoincrement())
+  username   String  @unique
+  email      String  @unique
+  password   String
+  role       Role    @default(SELLER)
+  enabled    Boolean @default(true)
+  firstLogin Boolean @default(true)
+  profile    Profile
 }
 
 model Profile {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
   telephone String
-  enabled   Boolean @default(true)
-  userId    Int
+  enabled   Boolean  @default(true)
+  userId    Int      @unique
+  companyId Int?
+  unitId    Int?
+  user      User     @relation(fields: [userId], references: [id])
+  company   Company? @relation(fields: [companyId], references: [id])
+  unit      Unit?    @relation(fields: [unitId], references: [id])
+  sale      Sale[]
+}
+
+model Company {
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  telephone      String
+  cnpj           String           @unique
+  units          Unit[]
+  Profile        Profile[]
+  sompanyService CompanyService[]
+}
+
+model Unit {
+  id        Int       @id @default(autoincrement())
+  name      String
+  telephone String
   companyId Int
-  unitId    Int
-  user      User    @relation(fields: [userId], references: [id])
-  company   Company @relation(fields: [companyId], references: [id])
-  unit      Unit    @relation(fields: [unitId], references: [id])
+  company   Company   @relation(fields: [companyId], references: [id])
+  Profile   Profile[]
 }
 
 model Service {
-  id      Int     @id @default(autoincrement())
-  name    String
-  price   Float
-  enabled Boolean @default(true)
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  price          Float
+  enabled        Boolean          @default(true)
+  CompanyService CompanyService[]
+  serviceSale    ServiceSale[]
 }
 
 model CompanyService {
@@ -69,10 +79,13 @@ model CompanyService {
 }
 
 model Person {
-  id        Int    @id @default(autoincrement())
-  cpf       String
+  id        Int      @id @default(autoincrement())
+  cpf       String   @unique
   name      String
   telephone String
+  address   Address?
+  cars      Car[]
+  sales     Sale[]
 }
 
 model Address {
@@ -81,6 +94,7 @@ model Address {
   houseNumber  String
   neighborhood String
   city         String
+  uf           String
   personId     Int
   person       Person @relation(fields: [personId], references: [id])
 }
@@ -91,21 +105,23 @@ model Car {
   carPlate String
   personId Int
   person   Person @relation(fields: [personId], references: [id])
+  sale     Sale[]
 }
 
 model Sale {
-  id           Int      @id @default(autoincrement())
-  requestDate  DateTime
+  id           Int           @id @default(autoincrement())
+  requestDate  DateTime      @default(now())
   deliveryDate DateTime
-  done         Boolean  @default(false)
+  done         Boolean       @default(false)
   companyPrice Float
   costPrice    Float
   sellerId     Int
   personId     Int
   carId        Int
-  seller       Profile  @relation(fields: [sellerId], references: [id])
-  person       Person   @relation(fields: [personId], references: [id])
-  car          Car      @relation(fields: [carId], references: [id])
+  seller       Profile       @relation(fields: [sellerId], references: [id])
+  person       Person        @relation(fields: [personId], references: [id])
+  car          Car           @relation(fields: [carId], references: [id])
+  serviceSale  ServiceSale[]
 }
 
 model ServiceSale {

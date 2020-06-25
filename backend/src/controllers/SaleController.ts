@@ -1,13 +1,20 @@
 import { Request, Response } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
 
+import JWT from 'jsonwebtoken';
+
 import SaleRepository from '../repositories/SaleRepository';
 import PersonRepository from '../repositories/PersonRepository';
 import CarRepository from '../repositories/CarRepository';
 import AddressRepository from '../repositories/AddressRepository';
+import UnitRepository from '../repositories/UnitRepository';
+import ProfileRepository from '../repositories/ProfileRepository';
 
 interface Validate {
     store: SchemaOptions;
+    findByStatus: SchemaOptions;
+    findByUnit: SchemaOptions;
+    findBySeller: SchemaOptions;
 }
 
 class SaleController {
@@ -27,7 +34,21 @@ class SaleController {
                 neighborhood: Joi.string().required(),
                 city: Joi.string().required(),
             })
-
+        },
+        findByStatus: {
+            body: Joi.object({
+                doneSearch: Joi.boolean().required(),
+            })
+        },
+        findByUnit: {
+            body: Joi.object({
+                unitId: Joi.number().required(),
+            })
+        },
+        findBySeller: {
+            body: Joi.object({
+                sellerId: Joi.number().required(),
+            })
         }
     }
 
@@ -95,13 +116,47 @@ class SaleController {
     }
 
     async findByStatus(request: Request, response: Response) {
-        const doneSearch = request.query.done;
+        const { done } = request.query;
 
-        const done = doneSearch === 'true' ? true : false
+        const parsedDone = done === "true";
 
-        const sales = await SaleRepository.findByStatus(done);
+        const sales = await SaleRepository.findByStatus(parsedDone);
 
         return response.json(sales)
+    }
+
+    async findByUnit(request: Request, response: Response) {
+        const { unitId } = request.params;
+
+        console.log(unitId);
+
+        const unit = await UnitRepository.findById(parseInt(unitId));
+
+        if (!unit) {
+            return response
+                .status(404)
+                .json({ error: 'Unit not found.' })
+        }
+
+        const sales = await SaleRepository.findByUnit(parseInt(unitId));
+
+        return response.json(sales);
+
+    }
+
+    async findBySeller(request: Request, response: Response) {
+        console.log(request.headers['authorization']);
+
+        const authHeader = request.headers['authorization'];
+        const token = authHeader && authHeader?.split(' ')[1];
+        const decoded: any = JWT.decode(String(token), { complete: true });
+
+        const sellerId = decoded.payload.user.id
+
+        const sales = await SaleRepository.findBySeller(parseInt(sellerId));
+
+        return response.json(sales);
+
     }
 
     async setDone(request: Request, response: Response) {

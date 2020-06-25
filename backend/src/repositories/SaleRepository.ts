@@ -28,11 +28,19 @@ class SaleRepository extends BaseRepository<Sale, SaleCreateInput, SaleUpdateInp
     }
 
     findByStatus(done: boolean): Promise<Sale[]> {
-        return this.prisma.sale.findMany({ where: { done }, include: this.include })
+        return this.prisma.sale.findMany({ where: { done }, include: this.include });
+    }
+
+    findByUnit(unitId: number): Promise<Sale[]> {
+        return this.prisma.sale.findMany({ where: { seller: { unitId } }, include: this.include });
+    }
+
+    findBySeller(sellerId: number): Promise<Sale[]> {
+        return this.prisma.sale.findMany({ where: { sellerId }, include: this.include });
     }
 
     setDone(id: number): Promise<Sale | null> {
-        return this.prisma.sale.update({ where: { id }, data: { done: true }, include: this.include })
+        return this.prisma.sale.update({ where: { id }, data: { done: true }, include: this.include });
     }
 }
 

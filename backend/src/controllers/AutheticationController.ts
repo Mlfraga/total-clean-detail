@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
+
+import JWT from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import UserRepository from '../repositories/UserRepositry';
 import CompanyRepository from '../repositories/CompanyRepository';
 import UnitRepository from '../repositories/UnitRepository';
+import { object } from '@hapi/joi';
 
+import AutheticationMiddleware from '../middlewares/AutheticationMiddleware';
 
 interface Validate {
     login: SchemaOptions;
@@ -29,8 +33,8 @@ class AutheticationController {
                 name: Joi.string().required(),
                 telephone: Joi.string().required(),
                 enabled: Joi.boolean().required(),
-                companyId: Joi.number().required(),
-                unitId: Joi.number().required(),
+                companyId: Joi.number(),
+                unitId: Joi.number(),
             }),
         }
     };
@@ -60,9 +64,12 @@ class AutheticationController {
                 .json({ error: 'Invalid username or password.' })
         }
 
+        const accessToken = await AutheticationMiddleware.generateAccessToken(userByUsername);
+        const refreshToken = await AutheticationMiddleware.generateReefreshToken(userByUsername);
+
         return response
             .status(200)
-            .json(userByUsername)
+            .json({ userByUsername, accessToken, refreshToken })
     }
 
     async signUp(request: Request, response: Response) {
@@ -84,48 +91,69 @@ class AutheticationController {
                 .json({ error: 'Already has an user with this email.' })
         }
 
+        if (companyId && unitId) {
 
-        const companyById = await CompanyRepository.findById(companyId);
+            const companyById = await CompanyRepository.findById(companyId);
 
-        if (!companyById) {
-            return response
-                .status(404)
-                .json({ error: 'Invalid companyId.' })
-        }
-
-        const unitById = await UnitRepository.findById(unitId);
-
-        if (!unitById) {
-            return response
-                .status(404)
-                .json({ error: 'Invalid unitId.' })
-        }
-
-        const passwordCrypt = await bcrypt.hash(password, 10)
-
-        const user = await UserRepository.create({
-            username: username,
-            email: email,
-            password: passwordCrypt,
-            role: role,
-            profile: {
-                create: {
-                    name: name,
-                    telephone: telephone,
-                    enabled: enabled,
-                    company: {
-                        connect: { id: companyId }
-                    },
-                    unit: {
-                        connect: { id: unitId }
-                    }
-
-                }
+            if (!companyById) {
+                return response
+                    .status(404)
+                    .json({ error: 'Invalid companyId.' })
             }
 
-        })
+            const unitById = await UnitRepository.findById(unitId);
 
-        return response.json(user);
+            if (!unitById) {
+                return response
+                    .status(404)
+                    .json({ error: 'Invalid unitId.' })
+            }
+
+            const passwordCrypt = await bcrypt.hash(password, 10)
+
+            const user = await UserRepository.create({
+                username: username,
+                email: email,
+                password: passwordCrypt,
+                role: role,
+                profile: {
+                    create: {
+                        name: name,
+                        telephone: telephone,
+                        enabled: enabled,
+                        company: {
+                            connect: { id: companyId }
+                        },
+                        unit: {
+                            connect: { id: unitId }
+                        }
+
+                    }
+                }
+
+            })
+
+            return response.json(user);
+        } else {
+            const passwordCrypt = await bcrypt.hash(password, 10)
+
+            const user = await UserRepository.create({
+                username: username,
+                email: email,
+                password: passwordCrypt,
+                role: role,
+                profile: {
+                    create: {
+                        name: name,
+                        telephone: telephone,
+                        enabled: enabled
+                    }
+                }
+            })
+
+            return response.json(user);
+        }
+
     }
 
     async update(request: Request, response: Response) {
