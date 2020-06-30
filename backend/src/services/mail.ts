@@ -21,7 +21,7 @@ class Mail {
             const mailSent = await transporter.sendMail({
                 text: text,
                 subject: subject,
-                from: "porta-ltotalclean@gmail.com",
+                from: "portaltotalclean@gmail.com",
                 to: "matheuslf44@gmail.com",
             });
             console.log(run);

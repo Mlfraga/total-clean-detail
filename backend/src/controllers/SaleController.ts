@@ -9,6 +9,8 @@ import CarRepository from '../repositories/CarRepository';
 import AddressRepository from '../repositories/AddressRepository';
 import UnitRepository from '../repositories/UnitRepository';
 import ProfileRepository from '../repositories/ProfileRepository';
+import { stat } from 'fs';
+import { Status } from '@prisma/client';
 
 interface Validate {
     store: SchemaOptions;
@@ -37,7 +39,7 @@ class SaleController {
         },
         findByStatus: {
             body: Joi.object({
-                doneSearch: Joi.boolean().required(),
+                doneSearch: Joi.string().required(),
             })
         },
         findByUnit: {
@@ -92,7 +94,6 @@ class SaleController {
         const sale = await SaleRepository.create(
             {
                 deliveryDate,
-                done,
                 companyPrice,
                 costPrice,
                 seller: {
@@ -116,11 +117,15 @@ class SaleController {
     }
 
     async findByStatus(request: Request, response: Response) {
-        const { done } = request.query;
+        const { status } = request.query;
 
-        const parsedDone = done === "true";
+        if (status !== "PENDING" && status !== "CONFIRMED" && status !== "CANCELED" && status !== "FINISHED") {
+            return response
+                .status(400)
+                .json({ error: "Status not found." })
+        }
 
-        const sales = await SaleRepository.findByStatus(parsedDone);
+        const sales = await SaleRepository.findByStatus(status as Status);
 
         return response.json(sales)
     }
@@ -159,12 +164,22 @@ class SaleController {
 
     }
 
-    async setDone(request: Request, response: Response) {
+    async updateStatus(request: Request, response: Response) {
         const { id } = request.params;
+        const { status } = request.body;
 
-        const doneSale = await SaleRepository.setDone(parseInt(id));
+        if (status !== "PENDING" && status !== "CONFIRMED" && status !== "CANCELED" && status !== "FINISHED") {
+            return response
+                .status(400)
+                .json({ error: "Status not found." })
+        }
 
-        return response.json(doneSale);
+        const updatedSale = await SaleRepository.changeStatus(Number(id), status);
+
+        return response
+            .status(200)
+            .json(updatedSale);
+
     }
 
 }

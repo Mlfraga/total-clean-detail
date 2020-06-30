@@ -55,7 +55,7 @@ routes.get('/sale', SaleController.index); // ALL USERS
 routes.get('/salestatus', RoleMiddleware.isAdmin, SaleController.findByStatus); // ADMIN
 routes.get('/sale/unit/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findByUnit), SaleController.findByUnit); // SELLER OU MANAGERS
 routes.get('/sale/seller/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findBySeller), SaleController.findBySeller); // SELLER OU MANAGERS
-routes.patch('/sale/:id', RoleMiddleware.isAdmin, SaleController.setDone) // ADMIN
+routes.patch('/sale/:id', RoleMiddleware.isAdmin, SaleController.updateStatus) // ADMIN
 
 routes.post('/servicesale', RoleMiddleware.isManagerOrSeller, celebrate(ServiceSaleController.validate.store), ServiceSaleController.store); //SELLER OU MANAGERS
 routes.get('/servicesale', ServiceSaleController.index);  // ALL USERS

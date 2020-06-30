@@ -16,7 +16,7 @@ class CarController {
             body: Joi.object({
                 personId: Joi.number().required(),
                 car: Joi.string().required(),
-                carPlate: Joi.string().length(7).required(),
+                carPlate: Joi.string().min(6).max(7).required(),
             })
 
         }
