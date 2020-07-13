@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import logo from "../../assets/Icon.svg"
-
 import Container from './styles';
 
 import Button from '../../components/Button';
@@ -9,38 +9,53 @@ import Button from '../../components/Button';
 import api from '../../services/api';
 
 function initialState() {
-    return { user: '', password: '' }
+    return { username: '', password: '' }
 }
 
 const Login = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [values, setValues] = useState(initialState);
+    const [invalidLogin, setInvalidLogin] = useState('');
 
-    const [values, setValues] = useState(initialState)
 
-    function onChange(event: ChangeEvent<HTMLInputElement>) {
+    const history = useHistory();
+
+    function handleOnChangeInput(event: ChangeEvent<HTMLInputElement>) {
         const { value, name } = event.target
 
         setValues({ ...values, [name]: value, });
     }
 
-    async function handleLogin(event: FormEvent) {
-        event.preventDefault();
-        const data = {
-            username: username,
-            password: password
-        }
-
+    async function login(values: any) {
         try {
-            const response = await api.post('auth/login', data)
+            const response = await api.post('auth/login', values)
 
-            localStorage.setItem('token', response.data.accessToken);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            console.log(localStorage.token)
-            console.log(localStorage.refreshToken)
+            const token = response.data.accessToken;
+            const refreshToken = response.data.refreshToken;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            return token;
 
         } catch (err) {
-            alert('Login inválido.');
+            setValues(initialState);
+            setInvalidLogin('Usuário ou senha inválidos.')
+        }
+
+    }
+
+    async function handleSubmit(event: FormEvent) {
+        event.preventDefault();
+
+        if (!values.password || !values.username) {
+            return
+        }
+
+        const token = await login(values);
+
+        if (token) {
+
+            return history.push('/serviços');
         }
 
     }
@@ -53,14 +68,15 @@ const Login = () => {
                         <h1>Total Clean</h1>
                         <img src={logo} alt="TotalClean"></img>
                     </div>
-                    <form onSubmit={() => console.log("ok")}>
+                    <form onSubmit={handleSubmit}>
                         <div className="inputs">
-                            <input className="input"
-                                id="user"
+                            <input
+                                className="input"
+                                id="username"
                                 type="text"
-                                name="user"
-                                onChange={onChange}
-                                value={values.user}
+                                name="username"
+                                onChange={handleOnChangeInput}
+                                value={values.username}
                                 placeholder="Usuário"
                             />
 
@@ -69,10 +85,11 @@ const Login = () => {
                                 id="password"
                                 type="password"
                                 name="password"
-                                onChange={onChange}
+                                onChange={handleOnChangeInput}
                                 value={values.password}
                                 placeholder="Senha"
                             />
+                            <span>{invalidLogin}</span>
                         </div>
                         <Button buttonType="submit" text="Entrar" />
                     </form>

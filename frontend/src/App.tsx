@@ -2,14 +2,13 @@ import React from 'react';
 
 import GlobaStyle from './styles/global'
 
-import Login from './pages/Login';
-import Header from './pages/Login';
+import Routes from './routes/routes';
 
 function App() {
   return (
     <>
       <GlobaStyle />
-      <Login />
+      <Routes />
     </>
   );
 }

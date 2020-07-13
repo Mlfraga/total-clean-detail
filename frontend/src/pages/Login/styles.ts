@@ -46,6 +46,10 @@ padding-right: 27px;
 }
 
 .inputs{
+    span{
+        color: #ff6659;
+        margin-left: 100px;
+    }
     padding-right: 9px;
 } input{
 width: 272px;
@@ -54,7 +58,6 @@ height: 35px;
 
 .wallpaper {
 width: 100%;
-
     img {
     opacity: 25%;
     width: 100%;

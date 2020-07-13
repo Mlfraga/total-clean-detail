@@ -16,6 +16,7 @@ import { appendFile } from 'fs';
 
 import AuthenticationMiddleware from './middlewares/AutheticationMiddleware'
 import RoleMiddleware from './middlewares/RoleMiddleware'
+import HeaderMiddleware from './middlewares/HeaderMiddleware'
 
 const routes = express.Router();
 
@@ -30,7 +31,7 @@ routes.delete('/auth/logout', AuthenticationMiddleware.logout) // ALL USERS
 routes.post('/auth/signup', celebrate(AutheticationController.validate.signUp), AutheticationController.signUp); // ALL USERS
 
 routes.post('/companies', RoleMiddleware.isAdmin, celebrate(CompanyController.validate.store), CompanyController.store); // ADMINS
-routes.get('/companies', RoleMiddleware.isAdmin, CompanyController.index); // ADMINS
+routes.get('/companies', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.index); // ADMINS
 
 routes.get('/units/:companyId', RoleMiddleware.isAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany); // ADMINS
 routes.post('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.store); // ADMINS
