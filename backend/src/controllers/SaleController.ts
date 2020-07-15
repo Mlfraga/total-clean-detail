@@ -27,7 +27,6 @@ class SaleController {
                 done: Joi.boolean().required(),
                 companyPrice: Joi.number().required(),
                 costPrice: Joi.number().required(),
-                sellerId: Joi.number().required(),
                 cpf: Joi.string().required(),
                 car: Joi.string().required(),
                 carPlate: Joi.string().required(),
@@ -60,7 +59,19 @@ class SaleController {
     }
 
     async store(request: Request, response: Response) {
-        const { deliveryDate, done, companyPrice, costPrice, sellerId, cpf, car, carPlate, street, houseNumber, neighborhood, city } = request.body;
+        const { deliveryDate, done, companyPrice, costPrice, cpf, car, carPlate, street, houseNumber, neighborhood, city } = request.body;
+        const authHeader = request.headers['authorization'];
+        const token = authHeader && authHeader?.split(' ')[1];
+        const decoded: any = JWT.decode(String(token), { complete: true });
+
+        const sellerId = decoded.payload.user.id;
+        const role = decoded.payload.user.role;
+
+        if(role !== "MANAGER" && role !== "SELLER"){
+            return response
+                .status(404)
+                .json({ error: 'User is not allowed to make sales.' })
+        }
 
         const personByCpf = await PersonRepository.findByCpf(cpf);
 

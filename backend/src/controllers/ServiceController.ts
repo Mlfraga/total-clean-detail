@@ -18,10 +18,12 @@ class ServiceController {
         },
         update: {
             body: Joi.object().keys({
-                id: Joi.number().required(),
                 name: Joi.string().required(),
                 price: Joi.number().required()
             }),
+            params: Joi.object().keys({
+                id: Joi.number().required(),
+            })
         },
         findIfContainsName: {
             body: Joi.object().keys({
@@ -64,7 +66,8 @@ class ServiceController {
     }
 
     async update(request: Request, response: Response) {
-        const { id, name, price } = request.body;
+        const {id} = request.params;
+        const {  name, price } = request.body;
 
         const serviceByName = await ServiceRepository.findByName(name);
 
@@ -74,7 +77,7 @@ class ServiceController {
                 .json({ error: 'Already has a service with this name.' });
         }
 
-        const service = await ServiceRepository.update(id, {
+        const service = await ServiceRepository.update(Number(id), {
             name: name,
             price: price
         })

@@ -90,8 +90,14 @@ class CompanyServiceController {
         const authHeader = request.headers['authorization'];
         const token = authHeader && authHeader?.split(' ')[1];
         const decoded: any = JWT.decode(String(token), { complete: true });
-
-        const id = decoded.payload.user.profile.companyId
+        
+        const id = decoded.payload.user.profile.companyId;
+        
+        if(!id ){
+            return response 
+            .status(404)
+            .json({message: "This user is not linked to a company."})
+        }
 
         const companyServicesByCompany = await CompanyServiceRepository.findByCompanyId(parseInt(id));
 

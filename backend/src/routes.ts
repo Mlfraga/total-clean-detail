@@ -24,50 +24,47 @@ routes.post('/auth/login', celebrate(AutheticationController.validate.login), Au
 
 routes.post('/auth/refresh', AuthenticationMiddleware.refreshToken)
 
-routes.use(AuthenticationMiddleware.authenticateToken);
+routes.use(AuthenticationMiddleware.authenticateToken);  
 
-routes.delete('/auth/logout', AuthenticationMiddleware.logout) // ALL USERS
+routes.delete('/auth/logout', AuthenticationMiddleware.logout) 
 
-routes.post('/auth/signup', celebrate(AutheticationController.validate.signUp), AutheticationController.signUp); // ALL USERS
+routes.post('/auth/signup', celebrate(AutheticationController.validate.signUp), AutheticationController.signUp); 
 
-routes.post('/companies', RoleMiddleware.isAdmin, celebrate(CompanyController.validate.store), CompanyController.store); // ADMINS
-routes.get('/companies', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.index); // ADMINS
+routes.post('/companies', RoleMiddleware.isAdmin, celebrate(CompanyController.validate.store), CompanyController.store); 
+routes.get('/companies', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.index); 
 
-routes.get('/units/:companyId', RoleMiddleware.isAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany); // ADMINS
-routes.post('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.store); // ADMINS
+routes.get('/units/:companyId', RoleMiddleware.isAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany); 
+routes.post('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.store); 
 
-routes.get('/users', RoleMiddleware.isAdmin, ProfileController.index); // ADMINS
-routes.get('/users/unit/', RoleMiddleware.isManager, ProfileController.findByUnitId); // MANAGERS 
-routes.get('/user/filtered', RoleMiddleware.isManagerOrAdmin, ProfileController.findByName); // MANAGERS or ADMINS
+routes.get('/users', RoleMiddleware.isAdmin, ProfileController.index); 
+routes.get('/users/unit/', RoleMiddleware.isManager, ProfileController.findByUnitId);routes.get('/user/filtered', RoleMiddleware.isManagerOrAdmin, ProfileController.findByName);
 
-routes.get('/services', ServiceController.index); // ALL USERS
-routes.post('/services', RoleMiddleware.isAdmin, celebrate(ServiceController.validate.store), ServiceController.store); // ADMINS
-routes.put('/services', RoleMiddleware.isAdmin, celebrate(ServiceController.validate.update), ServiceController.update); // ADMINS 
-routes.get('/services/search', celebrate(ServiceController.validate.findIfContainsName), ServiceController.findIfContainsName); // ALL USERS 
+routes.get('/services', ServiceController.index); 
+routes.post('/services', RoleMiddleware.isAdmin, celebrate(ServiceController.validate.store), ServiceController.store); 
+routes.put('/services/:id', RoleMiddleware.isAdmin, celebrate(ServiceController.validate.update), ServiceController.update);  
+routes.get('/services/search', celebrate(ServiceController.validate.findIfContainsName), ServiceController.findIfContainsName);  
 
 routes.get('/companyservices', CompanyServiceController.index);
-routes.post('/companyservices', RoleMiddleware.isManager, celebrate(CompanyServiceController.validate.store), CompanyServiceController.store); // MANAGERS
-routes.get('/companyservices/company', RoleMiddleware.isManagerOrSeller, CompanyServiceController.findByCompanyId); // MANAGERS OR SELLERS
-routes.get('/companyservices/sale', RoleMiddleware.isManagerOrSeller, celebrate(CompanyServiceController.validate.findByCompanyIdAndServiceId), CompanyServiceController.findByCompanyIdAndServiceId); // MANAGERS OR SELLERS
-routes.put('/companyservices/updateprice', RoleMiddleware.isManager, CompanyServiceController.updatePrice); // MANAGERS
+routes.post('/companyservices', RoleMiddleware.isManager, celebrate(CompanyServiceController.validate.store), CompanyServiceController.store);
+routes.get('/companyservices/company', RoleMiddleware.isManagerOrSeller, CompanyServiceController.findByCompanyId);
+routes.get('/companyservices/sale', RoleMiddleware.isManagerOrSeller, celebrate(CompanyServiceController.validate.findByCompanyIdAndServiceId), CompanyServiceController.findByCompanyIdAndServiceId);
+routes.put('/companyservices/updateprice', RoleMiddleware.isManager, CompanyServiceController.updatePrice);
 
-routes.post('/sale', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.store), SaleController.store); // SELLERS OR MANAGERS
-routes.get('/sale', SaleController.index); // ALL USERS
-routes.get('/salestatus', RoleMiddleware.isAdmin, SaleController.findByStatus); // ADMIN
-routes.get('/sale/unit/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findByUnit), SaleController.findByUnit); // SELLER OU MANAGERS
-routes.get('/sale/seller/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findBySeller), SaleController.findBySeller); // SELLER OU MANAGERS
-routes.patch('/sale/:id', RoleMiddleware.isAdmin, SaleController.updateStatus) // ADMIN
+routes.post('/sale', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.store), SaleController.store); 
+routes.get('/sale', SaleController.index); 
+routes.get('/sale/status', RoleMiddleware.isAdmin, SaleController.findByStatus); 
+routes.get('/sale/unit/:unitId', celebrate(SaleController.validate.findByUnit), SaleController.findByUnit); 
+routes.get('/sale/seller/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findBySeller), SaleController.findBySeller); 
+routes.patch('/sale/status/:id', RoleMiddleware.isAdmin, SaleController.updateStatus) 
 
-routes.post('/servicesale', RoleMiddleware.isManagerOrSeller, celebrate(ServiceSaleController.validate.store), ServiceSaleController.store); //SELLER OU MANAGERS
-routes.get('/servicesale', ServiceSaleController.index);  // ALL USERS
-routes.get('/servicesale/filtered', ServiceSaleController.filterSale); // ALL USERS 
+routes.post('/servicesale', RoleMiddleware.isManagerOrSeller, celebrate(ServiceSaleController.validate.store), ServiceSaleController.store); 
+routes.get('/servicesale', ServiceSaleController.index);  
+routes.get('/servicesale/filtered', ServiceSaleController.filterSale);  
 
-routes.post('/person', RoleMiddleware.isManagerOrSeller, celebrate(PersonController.validate.store), PersonController.store); //SELLER OU MANAGERS
+routes.post('/person', RoleMiddleware.isManagerOrSeller, celebrate(PersonController.validate.store), PersonController.store); 
 
-routes.post('/address', RoleMiddleware.isManagerOrSeller, celebrate(AddressController.validate.store), AddressController.store); //SELLER OU MANAGERS
+routes.post('/address', RoleMiddleware.isManagerOrSeller, celebrate(AddressController.validate.store), AddressController.store); 
 
-routes.post('/car', RoleMiddleware.isManagerOrSeller, celebrate(CarController.validate.store), CarController.store); //SELLER OU MANAGERS
-
-
+routes.post('/car', RoleMiddleware.isManagerOrSeller, celebrate(CarController.validate.store), CarController.store); 
 
 export default routes;
