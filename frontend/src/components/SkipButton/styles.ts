@@ -4,10 +4,12 @@ export const Container = styled.button`
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
+
 width: 80px;
 height: 43px;
-background: #ff6659;
-border: 0;
+background: #434343;
+border: 1.5px solid #FF6F60;
+box-sizing: border-box;
 border-radius: 6px;
 color: #FFF;
 font-weight: 700;
@@ -21,5 +23,8 @@ transition: filter 0.2s;
 :hover{
 opacity: 0.8;
  }
+
+
+
 
  `

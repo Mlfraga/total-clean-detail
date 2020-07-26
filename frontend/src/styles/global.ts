@@ -10,7 +10,7 @@ outline: 0;
 box-sizing: border-box;
 }
 
-html, body, #root{  
+html, body, #root{
 height: 100%;
 }
 

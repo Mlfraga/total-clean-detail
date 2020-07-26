@@ -22,7 +22,7 @@ flex-wrap: wrap;
 }
 
 .images{
-width:300px;
+width:75%;
 height: 170.21px;
 border-radius: 8px;
 margin-bottom: 6px;
@@ -33,8 +33,8 @@ display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
-max-width: 385px;
-width: 100%; 
+max-width: 32%;
+width: 100%;
 margin-bottom: 30px;
 min-height: 230px;
 background-color: #383838;
@@ -46,6 +46,7 @@ border-radius: 10px;
 
 #text{
 font: 15px 'Roboto', sans-serif;
+font-weight: bold;
 color: #ccc;
 }
 }

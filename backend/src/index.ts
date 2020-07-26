@@ -14,5 +14,5 @@ app.use(routes);
 app.use(errors())
 
 app.listen(3333, () => {
-    console.log("🚀 Backend started!");
+  console.log("🚀 Backend started!");
 });;

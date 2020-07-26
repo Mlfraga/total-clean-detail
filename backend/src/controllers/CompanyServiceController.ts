@@ -11,148 +11,167 @@ import JWT from 'jsonwebtoken';
 import { decode } from 'querystring';
 
 interface Validate {
-    store: SchemaOptions;
-    findByCompanyIdAndServiceId: SchemaOptions;
-    updatePrice: SchemaOptions;
+  store: SchemaOptions;
+  findByCompanyIdAndServiceId: SchemaOptions;
+  updatePrice: SchemaOptions;
+}
+
+interface Services {
+  serviceId: number;
+  price: number;
+}
+
+interface CreateCompanyServices {
+  companyId: number;
+  services: Services[];
 }
 
 class CompanyServiceController {
-    readonly validate: Validate = {
-        store: {
-            body: Joi.object({
-                price: Joi.number().required(),
-                companyId: Joi.number().required(),
-                serviceId: Joi.number().required()
-            }),
+  readonly validate: Validate = {
+    store: {
+      body: Joi.object({
+        companyId: Joi.number().required(),
+        services: Joi.array().required(),
+      }),
+    },
+    findByCompanyIdAndServiceId: {
+      body: Joi.object({
+        companyId: Joi.number().required(),
+        serviceId: Joi.number().required()
+      })
+    },
+    updatePrice: {
+      body: Joi.object({
+        companyServiceId: Joi.number().required(),
+        price: Joi.number().required()
+      })
+    }
+  }
+
+  async index(request: Request, response: Response) {
+    const services = await CompanyServiceRepository.findAll();
+
+    return response.json(services);
+  }
+
+  async store(request: Request, response: Response) {
+    const { companyId, services } = request.body;
+
+    const companyById = CompanyRepository.findById(companyId);
+
+    if (!companyById) {
+      return response
+        .status(404)
+        .json({ error: 'No company found with this ID.' })
+    }
+
+    const promises: Promise<CreateCompanyServices>[] = services.map(async (service: Services) => {
+      const serviceById = ServiceRepository.findById(service.serviceId);
+
+      if (!serviceById) {
+        return response
+          .status(404)
+          .json({ error: 'No service found with this ID.' })
+      }
+
+      const serviceByCompany = CompanyServiceRepository.findByCompanyIdAndServiceId(companyId, service.serviceId);
+      if ((await serviceByCompany).length > 0) {
+        return response
+          .status(409)
+          .json({ error: 'This service was already created by this company.' })
+      }
+
+      const data = await CompanyServiceRepository.store({
+        price: service.price,
+        company: {
+          connect: { id: companyId }
         },
-        findByCompanyIdAndServiceId: {
-            body: Joi.object({
-                companyId: Joi.number().required(),
-                serviceId: Joi.number().required()
-            })
-        },
-        updatePrice: {
-            body: Joi.object({
-                companyServiceId: Joi.number().required(),
-                price: Joi.number().required()
-            })
+        service: {
+          connect: { id: service.serviceId }
         }
+      })
+
+      if (!data) {
+        return null;
+      }
+
+      return data;
+
+    })
+
+    const companyService = await Promise.all<CreateCompanyServices>(promises);
+
+    return response.json(companyService);
+
+  }
+
+  async findByCompanyId(request: Request, response: Response) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
+
+    const id = decoded.payload.user.profile.companyId;
+
+    if (!id) {
+      return response
+        .status(404)
+        .json({ message: "This user is not linked to a company." })
     }
 
-    async index(request: Request, response: Response) {
-        const services = await CompanyServiceRepository.findAll();
+    const companyServicesByCompany = await CompanyServiceRepository.findByCompanyId(parseInt(id));
 
-        return response.json(services);
+    if (!companyServicesByCompany) {
+      return response
+        .status(404)
+        .json({ error: 'No service from this company was found.' })
     }
 
-    async store(request: Request, response: Response) {
-        const { companyId, serviceId, price } = request.body;
+    return response.json(companyServicesByCompany)
+  }
 
-        const serviceById = ServiceRepository.findById(serviceId);
+  async findByCompanyIdAndServiceId(request: Request, response: Response) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
 
-        if (!serviceById) {
-            return response
-                .status(404)
-                .json({ error: 'No service found with this ID.' })
-        }
+    const companyId = decoded.payload.user.profile.companyId;
 
-        const companyById = CompanyRepository.findById(companyId);
+    const { serviceId } = request.query;
 
-        if (!companyById) {
-            return response
-                .status(404)
-                .json({ error: 'No company found with this ID.' })
-        }
+    const companyServiceByCompanyIdAndServiceId = await CompanyServiceRepository
+      .findByCompanyIdAndServiceId(Number(companyId), Number(serviceId));
 
-        const serviceByCompany = CompanyServiceRepository.findByCompanyIdAndServiceId(companyId, serviceId);
-
-        if ((await serviceByCompany).length > 0) {
-            return response
-                .status(409)
-                .json({ error: 'This service was already created by this company.' })
-        }
-
-        const companyService = await CompanyServiceRepository.store({
-            price: price,
-            company: {
-                connect: { id: companyId }
-            },
-            service: {
-                connect: { id: serviceId }
-            }
-        })
-
-        return response.json(companyService);
-
+    if (!companyServiceByCompanyIdAndServiceId) {
+      return response
+        .status(404)
+        .json({ error: 'No service from this company was found.' })
     }
 
-    async findByCompanyId(request: Request, response: Response) {
-        const authHeader = request.headers['authorization'];
-        const token = authHeader && authHeader?.split(' ')[1];
-        const decoded: any = JWT.decode(String(token), { complete: true });
-        
-        const id = decoded.payload.user.profile.companyId;
-        
-        if(!id ){
-            return response 
-            .status(404)
-            .json({message: "This user is not linked to a company."})
-        }
+    return response.json(companyServiceByCompanyIdAndServiceId);
+  }
 
-        const companyServicesByCompany = await CompanyServiceRepository.findByCompanyId(parseInt(id));
+  async updatePrice(request: Request, response: Response) {
+    const servicesData: Array<{
+      companyServiceId: number; price: number
+    }> = request.body;
 
-        if (!companyServicesByCompany) {
-            return response
-                .status(404)
-                .json({ error: 'No service from this company was found.' })
-        }
+    const promises: Promise<CompanyService | null>[] = servicesData.map(async ({ companyServiceId, price }) => {
 
-        return response.json(companyServicesByCompany)
-    }
+      const companyServiceById = await CompanyServiceRepository.findById(companyServiceId);
 
-    async findByCompanyIdAndServiceId(request: Request, response: Response) {
-        const authHeader = request.headers['authorization'];
-        const token = authHeader && authHeader?.split(' ')[1];
-        const decoded: any = JWT.decode(String(token), { complete: true });
+      if (!companyServiceById) {
+        return null
+      }
 
-        const companyId = decoded.payload.user.profile.companyId;
+      const companyServices = await CompanyServiceRepository.updatePrice(companyServiceId, price);
 
-        const { serviceId } = request.query;
+      return companyServices;
+    })
 
-        const companyServiceByCompanyIdAndServiceId = await CompanyServiceRepository
-            .findByCompanyIdAndServiceId(Number(companyId), Number(serviceId));
+    const updatedServices = await Promise.all(promises.filter((promise) => promise !== null));
 
-        if (!companyServiceByCompanyIdAndServiceId) {
-            return response
-                .status(404)
-                .json({ error: 'No service from this company was found.' })
-        }
-
-        return response.json(companyServiceByCompanyIdAndServiceId);
-    }
-
-    async updatePrice(request: Request, response: Response) {
-        const servicesData: Array<{
-            companyServiceId: number; price: number
-        }> = request.body;
-
-        const promises: Promise<CompanyService | null>[] = servicesData.map(async ({ companyServiceId, price }) => {
-
-            const companyServiceById = await CompanyServiceRepository.findById(companyServiceId);
-
-            if (!companyServiceById) {
-                return null
-            }
-
-            const companyServices = await CompanyServiceRepository.updatePrice(companyServiceId, price);
-
-            return companyServices;
-        })
-
-        const updatedServices = await Promise.all(promises.filter((promise) => promise !== null));
-
-        return response.json(updatedServices);
-    }
+    return response.json(updatedServices);
+  }
 
 }
 export default new CompanyServiceController();

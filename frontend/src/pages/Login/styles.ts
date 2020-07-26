@@ -16,7 +16,9 @@ align-items: center;
 justify-content: center;
 
 height: 100vh;
-min-width: 440px;
+width:40%;
+max-width: 600px;
+
 background: #303030;
 }
 .form .inputs{
@@ -31,10 +33,10 @@ align-items: center;
 justify-content: center;
 padding-bottom: 16px;
 padding-right: 27px;
-    h1{  
+    h1{
     font: 42px 'Ubuntu', sans-serif;
-    position: absolute;        
-    color: #ff6659; 
+    position: absolute;
+    color: #ff6659;
     }
 
     img{

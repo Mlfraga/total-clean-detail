@@ -23,12 +23,12 @@ display: flex;
 margin-bottom: 100px;
 span{
 width: 100%;
-font: 16px 'Roboto', sans-serif;
+font: 20px 'Roboto', sans-serif;
 line-height: 28px;
 text-align: justify;
 color: #ccc;
 margin-top: 10px;
-padding:0 15px; 
+padding:0 15px;
 }
 }
 

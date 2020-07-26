@@ -10,69 +10,69 @@ dotenv.config();
 
 class RoleMiddleware {
 
-    async isAdmin(request: Request, response: Response, next: NextFunction) {
-        const authHeader = request.headers['authorization'];
-        const token = authHeader && authHeader?.split(' ')[1];
-        const decoded: any = JWT.decode(String(token), { complete: true });
+  async isAdmin(request: Request, response: Response, next: NextFunction) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
 
-        const role = decoded.payload.user.role;
+    const role = decoded.payload.user.role;
 
-        if (role !== "ADMIN") {
-            return response
-                .status(403)
-                .json({ error: "User does not have admin permission." })
-        }
-
-        next();
+    if (role !== "ADMIN") {
+      return response
+        .status(403)
+        .json({ error: "User does not have admin permission." })
     }
 
-    async isManager(request: Request, response: Response, next: NextFunction) {
-        const authHeader = request.headers['authorization'];
-        const token = authHeader && authHeader?.split(' ')[1];
-        const decoded: any = JWT.decode(String(token), { complete: true });
+    next();
+  }
 
-        const role = decoded.payload.user.role;
+  async isManager(request: Request, response: Response, next: NextFunction) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
 
-        if (role !== "MANAGER") {
-            return response
-                .status(403)
-                .json({ error: "User does not have manager permission." })
-        }
+    const role = decoded.payload.user.role;
 
-        next();
+    if (role !== "MANAGER") {
+      return response
+        .status(403)
+        .json({ error: "User does not have manager permission." })
     }
 
-    async isManagerOrAdmin(request: Request, response: Response, next: NextFunction) {
-        const authHeader = request.headers['authorization'];
-        const token = authHeader && authHeader?.split(' ')[1];
-        const decoded: any = JWT.decode(String(token), { complete: true });
+    next();
+  }
 
-        const role = decoded.payload.user.role;
+  async isManagerOrAdmin(request: Request, response: Response, next: NextFunction) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
 
-        if (role !== "MANAGER" && role !== "ADMIN") {
-            return response
-                .status(403)
-                .json({ error: "User does not have manager or admin permission." })
-        }
+    const role = decoded.payload.user.role;
 
-        next();
+    if (role !== "MANAGER" && role !== "ADMIN") {
+      return response
+        .status(403)
+        .json({ error: "User does not have manager or admin permission." })
     }
 
-    async isManagerOrSeller(request: Request, response: Response, next: NextFunction) {
-        const authHeader = request.headers['authorization'];
-        const token = authHeader && authHeader?.split(' ')[1];
-        const decoded: any = JWT.decode(String(token), { complete: true });
+    next();
+  }
 
-        const role = decoded.payload.user.role;
+  async isManagerOrSeller(request: Request, response: Response, next: NextFunction) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
 
-        if (role !== "MANAGER" && role !== "SELLER") {
-            return response
-                .status(403)
-                .json({ error: "User does not have manager or seller permission." })
-        }
+    const role = decoded.payload.user.role;
 
-        next();
+    if (role !== "MANAGER" && role !== "SELLER") {
+      return response
+        .status(403)
+        .json({ error: "User does not have manager or seller permission." })
     }
+
+    next();
+  }
 
 
 

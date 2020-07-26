@@ -6,9 +6,9 @@ const Container = styled.div`
 padding-top: 85px;
 
 .breadcrumb{
-font: 16px 'Roboto', sans-serif;
+font: 18px 'Roboto', sans-serif;
 background-color: #ff6659;
-width: 1200px;
+max-width: 1200px;
 color: #EEE;
 display: block;
 margin-left: auto;

@@ -19,10 +19,10 @@ display: flex;
 align-items: center;
 justify-content: center;
 padding-left: 35px;
-    h1{  
+    h1{
     font: 30px 'Ubuntu', sans-serif;
-    position: absolute;        
-    color: #ff6659; 
+    position: absolute;
+    color: #ff6659;
     }
     img{
     height: 46px;
@@ -39,8 +39,8 @@ height: 100%;
 display: flex;
 flex-direction: row-reverse;
 align-items: center;
-background: #383838;    
-    
+background: #383838;
+
 }
 
 .buttons{
