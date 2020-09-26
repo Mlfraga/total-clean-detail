@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
 
+import { ptBR } from 'date-fns/locale'
+import { parseISO, format, formatRelative, formatDistance, } from 'date-fns';
 import JWT from 'jsonwebtoken';
 
 import SaleRepository from '../repositories/SaleRepository';
@@ -8,8 +10,9 @@ import PersonRepository from '../repositories/PersonRepository';
 import CarRepository from '../repositories/CarRepository';
 import AddressRepository from '../repositories/AddressRepository';
 import UnitRepository from '../repositories/UnitRepository';
-import ProfileRepository from '../repositories/ProfileRepository';
-import { stat } from 'fs';
+import UserRepository from '../repositories/UserRepository';
+import Mail from "../services/mail";
+
 import { Status } from '@prisma/client';
 
 interface Validate {
@@ -27,6 +30,7 @@ class SaleController {
         done: Joi.boolean().required(),
         companyPrice: Joi.number().required(),
         costPrice: Joi.number().required(),
+        source: Joi.string().required(),
         cpf: Joi.string().required(),
         car: Joi.string().required(),
         carPlate: Joi.string().required(),
@@ -59,7 +63,7 @@ class SaleController {
   }
 
   async store(request: Request, response: Response) {
-    const { deliveryDate, done, companyPrice, costPrice, cpf, car, carPlate, street, houseNumber, neighborhood, city } = request.body;
+    const { deliveryDate, done, companyPrice, costPrice, source, cpf, car, carPlate, street, houseNumber, neighborhood, city } = request.body;
     const authHeader = request.headers['authorization'];
     const token = authHeader && authHeader?.split(' ')[1];
     const decoded: any = JWT.decode(String(token), { complete: true });
@@ -107,6 +111,7 @@ class SaleController {
         deliveryDate,
         companyPrice,
         costPrice,
+        source,
         seller: {
           connect: {
             userId: sellerId
@@ -161,13 +166,11 @@ class SaleController {
   }
 
   async findBySeller(request: Request, response: Response) {
-    console.log(request.headers['authorization']);
-
     const authHeader = request.headers['authorization'];
     const token = authHeader && authHeader?.split(' ')[1];
     const decoded: any = JWT.decode(String(token), { complete: true });
 
-    const sellerId = decoded.payload.user.id
+    const sellerId = decoded.payload.user.id;
 
     const sales = await SaleRepository.findBySeller(parseInt(sellerId));
 
@@ -185,7 +188,46 @@ class SaleController {
         .json({ error: "Status not found." })
     }
 
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
+
     const updatedSale = await SaleRepository.changeStatus(Number(id), status);
+    const subject = `Alteração no status do pedido ${id}`;
+    let text;
+
+    const sale = await SaleRepository.findById(Number(id));
+
+    if (!sale) {
+      return null;
+    }
+
+    let formattedDate: string | null = null;
+
+    formattedDate = format(
+      sale?.deliveryDate,
+      "'Dia' dd 'de' MMMM', às ' HH:mm'h'",
+      { locale: ptBR }
+    );
+
+    let statusText;
+    if (status === 'CONFIRMED') {
+      statusText = 'confirmado'
+    }
+    if (status === 'CANCELED') {
+      statusText = 'cancelado'
+    }
+    if (status === 'FINISHED') {
+      statusText = 'finalizado'
+    }
+
+    text = `O pedido do cliente ${sale?.person.name}, slocitado pelo vendedor ${sale?.seller.name} no ${formattedDate} teve seu status alterado para ${statusText}. `
+
+    const sellerUser = await UserRepository.findById(sale.seller.id);
+    const sellerEmail = sellerUser?.email;
+    let result = Mail.sendMail(text, subject, String(sellerEmail));
+
+    console.log(sellerUser?.email);
 
     return response
       .status(200)

@@ -4,7 +4,7 @@ import { SchemaOptions, Joi } from 'celebrate';
 import JWT from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import UserRepository from '../repositories/UserRepositry';
+import UserRepository from '../repositories/UserRepository';
 import CompanyRepository from '../repositories/CompanyRepository';
 import UnitRepository from '../repositories/UnitRepository';
 import { object } from '@hapi/joi';

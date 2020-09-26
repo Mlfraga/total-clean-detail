@@ -110,9 +110,9 @@ class ServiceSaleController {
     const subject = `${seller} solicitou uma nova prestação de serviço`;
     const text = `O vendedor ${seller} da concessionária ${company} unidade ${unit} solicitou uma nova prestação de serviço para ser entregue ao cliente ${saleById.person.name} no ${formattedDate}. Serviços a serem realizados: ${services} `;
 
-    let result = Mail.sendMail(text, subject);
+    let result = Mail.sendMailToAdmin(text, subject);
 
-    console.log(result);
+    // console.log(result);
     return response.json(servicesSales);
   }
 

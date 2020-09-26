@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -24,7 +24,7 @@ enum Status {
 }
 
 enum Source {
-  NEW
+  FACTORY
   USED
   WORKSHOP
 }
