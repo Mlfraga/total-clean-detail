@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Container from './styles';
@@ -7,11 +7,12 @@ import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 
 const Services = () => {
+
   const history = useHistory();
   return (
     <Container>
       <div className="header">
-        <Header buttons={[{ name: 'Serviços', route: 'serviços' }, { name: 'Teste', route: 'serviço/vitrificacao' }]}></Header>
+        {/* <Header buttons={}></Header> */}
       </div>
       <div className="body">
         <Breadcrumb text='Serviços' />

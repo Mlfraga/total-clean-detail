@@ -1,71 +1,58 @@
 import styled from 'styled-components';
 
-const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
-#login-page{
-display: flex;
-width: 100%;
-margin: 0;
-padding: 0;
-border: 0;
-}
-.form{
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
+import signInBackgroundImg from '../../assets/sign-in-background-6.jpg';
 
-height: 100vh;
-width:40%;
-max-width: 600px;
+export const Container = styled.div`
+  height: 100vh;
 
-background: #303030;
-}
-.form .inputs{
-display: flex;
-flex-direction: column;
-}
+  display: flex;
+  align-items: stretch;
+`
+export const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #282828;
 
-.form .logo{
-max-width: 400px;
-display: flex;
-align-items: center;
-justify-content: center;
-padding-bottom: 16px;
-padding-right: 27px;
-    h1{
-    font: 42px 'Ubuntu', sans-serif;
-    position: absolute;
+  width: 100%;
+  max-width: 700px;
+
+  .logo{
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #ff6659;
+
+    h1{
+    font: 45px 'Ubuntu', sans-serif;
+    position: absolute;
     }
 
     img{
     height: 58px;
     width: 58px;
-    margin-left: 232px;
+    margin-left: 246px;
     padding-bottom: 13.4px;
     }
 }
 
-.inputs{
-    span{
-        color: #ff6659;
-        margin-left: 100px;
-    }
-    padding-right: 9px;
-} input{
-width: 272px;
-height: 35px;
-}
+  form {
+    margin: 80px 0;
+    width: 340px;
+    text-align: center;
 
-.wallpaper {
-width: 100%;
-    img {
-    opacity: 25%;
-    width: 100%;
-    height: 100%;
+    h1 {
+      margin-bottom: 24px;
     }
-}
+  }
 `;
 
-export default Container;
+export const Background = styled.div`
+  flex: 1;
+  background: url(${signInBackgroundImg}) no-repeat center;
+  background-size: cover;
+
+  filter: grayscale(85%);
+  `;

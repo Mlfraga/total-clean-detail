@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
 import SkipButton from '../../components/SkipButton';
+import Input from '../../components/Input';
 
 import api from '../../services/api';
 import { currencyMasker } from './masks'
@@ -154,7 +155,7 @@ const SetCompanyPrices = () => {
   return (
     <Container>
       <div className="header">
-        <Header buttons={[{ name: '', route: '  ' }]}></Header>
+        <Header ></Header>
       </div>
       <div className="body">
         <form onSubmit={handleSubmit}>
@@ -171,7 +172,7 @@ const SetCompanyPrices = () => {
                 </div>
                 <div className="input-container">
                   <span>R$</span>
-                  <input
+                  <Input
                     className="input"
                     id={`${service.id}`}
                     type="string"
@@ -187,7 +188,7 @@ const SetCompanyPrices = () => {
           <div className="buttons">
             <span id='errorMessage'>{emptyErrorMessage}</span>
             <SkipButton buttonType="button" text="Pular" />
-            <Button buttonType="submit" text="Salvar" />
+            <Button type="submit">Salvar</Button>
           </div>
         </form>
 

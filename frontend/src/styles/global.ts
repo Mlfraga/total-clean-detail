@@ -16,28 +16,18 @@ height: 100%;
 
 body {
 font: 14px 'Roboto', sans-serif;
-background: #434343;
+background: #383838;
 color: #EEE;
 text-rendering: optimizeLegibility;
 -webkit-font-smoothing: antialiased;
 }
 
+input, button {
+  font: 16px 'Roboto', sans-serif;
+}
+
 ul{
 list-style: none;
 }
-
-.input{
-margin-top: 16px;
-margin-bottom: 8px;
-background: #424242;
-border: 0.25px solid #787878;
-border-radius: 8px;
-font-size: 18px;
-padding:  16px 14px;
-color: #cccccc;
-display: inline-block;
-}
-
- `
-
+`
 export default GlobalStyle;

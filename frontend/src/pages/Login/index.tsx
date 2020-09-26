@@ -1,109 +1,79 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useHistory } from 'react-router-dom';
-
-import logo from "../../assets/Icon.svg"
-import Container from './styles';
+import React, { useRef, useCallback } from 'react';
+import { FiLock, FiUser } from 'react-icons/fi'
+import { FormHandles } from '@unform/core'
+import { Form } from '@unform/web'
+import * as Yup from 'yup';
 
 import Button from '../../components/Button';
+import Input from '../../components/Input';
 
-import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import logo from "../../assets/Icon.svg"
 
-function initialState() {
-  return { username: '', password: '' }
+import { Container, Content, Background } from './styles';
+
+interface SignInFormData {
+  username: string;
+  password: string;
 }
 
 const Login = () => {
-  const [values, setValues] = useState(initialState);
-  const [invalidLogin, setInvalidLogin] = useState('');
+  const formRef = useRef<FormHandles>(null);
 
+  const { signIn } = useAuth();
 
-  const history = useHistory();
-
-  function handleOnChangeInput(event: ChangeEvent<HTMLInputElement>) {
-    const { value, name } = event.target
-
-    setValues({ ...values, [name]: value, });
-  }
-
-  async function login(values: any) {
+  const handleSubmit = useCallback(async (data: SignInFormData) => {
     try {
-      const response = await api.post('auth/login', values)
+      formRef.current?.setErrors({});
 
-      const token = response.data.accessToken;
-      const refreshToken = response.data.refreshToken;
+      const schema = Yup.object().shape({
+        username: Yup.string().required('Usuário obrigatório'),
+        password: Yup.string().required('Senha obrigatória'),
+      });
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('refreshToken', refreshToken);
+      await schema.validate(data, {
+        abortEarly: false
+      });
 
-      return token;
+      signIn({
+        username: data.username,
+        password: data.password
+      });
 
     } catch (err) {
-      setValues(initialState);
-      setInvalidLogin('Usuário ou senha inválidos.')
+      console.log(err);
     }
-
-  }
-
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-
-    if (!values.password || !values.username) {
-      return
-    }
-
-    const token = await login(values);
-
-    if (token) {
-
-      return history.push('/configurar-precos');
-    }
-
-  }
+  }, [signIn]);
 
   return (
     <Container>
-      <div id='login-page'>
-        <div className="form">
-          <div className="logo">
-            <h1>Total Clean</h1>
-            <img src={logo} alt="TotalClean"></img>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="inputs">
-              <input
-                className="input"
-                id="username"
-                type="text"
-                name="username"
-                onChange={handleOnChangeInput}
-                value={values.username}
-                placeholder="Usuário"
-              />
-
-              <input
-                className="input"
-                id="password"
-                type="password"
-                name="password"
-                onChange={handleOnChangeInput}
-                value={values.password}
-                placeholder="Senha"
-              />
-              <span>{invalidLogin}</span>
-            </div>
-            <Button buttonType="submit" text="Entrar" />
-          </form>
+      <Content>
+        <div className="logo">
+          <h1>Total Clean</h1>
+          <img src={logo} alt="TotalClean"></img>
         </div>
-        <div className="wallpaper">
-          <img
-            id="wallpaper"
-            alt="Wallpaper"
-            src="https://images.unsplash.com/photo-1523676060187-f55189a71f5e?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"
-          >
-          </img>
-        </div>
+        <Form onSubmit={handleSubmit}>
+          <Input
+            className="input"
+            id="username"
+            type="text"
+            name="username"
+            placeholder="Usuário"
+            icon={FiUser}
+          />
 
-      </div>
+          <Input
+            className="input"
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Senha"
+            icon={FiLock}
+          />
+          <Button type="submit">Entrar</Button>
+        </Form>
+      </Content>
+      < Background />
     </Container >
   );
 }

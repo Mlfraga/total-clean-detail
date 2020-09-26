@@ -24,7 +24,4 @@ transition: filter 0.2s;
 opacity: 0.8;
  }
 
-
-
-
  `

@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
 import { Container } from './styles';
 
-interface ButtonProps {
-  text: string;
-  buttonType: "button" | "submit" | "reset" | undefined;
-}
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button: React.FC<ButtonProps> = (props) => {
   return (
-    <Container type={props.buttonType}>{props.text}</Container>
+    <Container type={props.type}>
+      {props.children}
+    </Container >
   )
 }
 

@@ -62,13 +62,13 @@ margin-left: 22px;
 margin-bottom: 25px;
     span{
     font-weight: bold;
-    font-size: 25px
+    font-size: 25px;
     }
-.input{
-margin-left: 15px;
-width: 80%;
-height: 38px;
-}
+    input{
+    margin-left: 50px;
+    width: 80%;
+    height: 38px;
+    }
 }
 }
 

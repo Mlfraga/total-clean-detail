@@ -15,7 +15,7 @@ const Service: React.FC<ServiceProps> = (props) => {
   return (
     <Container>
       <div className="header">
-        <Header buttons={[{ name: 'Serviços', route: 'serviços' }, { name: 'Teste', route: 'serviço/vitrificacao' }]}></Header>
+        <Header></Header>
       </div>
       <div className="body">
         <Breadcrumb text='Polimento técnico.' />
