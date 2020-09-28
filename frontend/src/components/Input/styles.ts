@@ -1,7 +1,13 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { shade } from 'polished';
 
-export const Container = styled.div`
+import ToolTip from '../ToolTip';
+
+interface ContainerProps {
+  isErrored: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
@@ -21,6 +27,12 @@ export const Container = styled.div`
       margin-top: 8px;
     }
 
+    ${props =>
+    props.isErrored &&
+    css`
+     border-color: #c53030;
+    `}
+
     input {
     flex: 1;
     background: transparent;
@@ -37,3 +49,20 @@ export const Container = styled.div`
       margin-bottom: 2px;
     }
 `
+export const Error = styled(ToolTip)`
+  height: 20px;
+  margin-left:  16px;
+
+  svg {
+    margin: 0;
+  }
+
+  span{
+    background: #c53030;
+    color: #fff;
+
+    &::before {
+    border-color: #c53030 transparent;
+    }
+  }
+`;

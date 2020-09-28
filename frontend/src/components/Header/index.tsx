@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Container from './styles';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/auth';
 
 import logo from '../../assets/Icon.svg'
 

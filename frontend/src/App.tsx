@@ -4,15 +4,15 @@ import Login from './pages/Login';
 import Header from './components/Header';
 import GlobaStyle from './styles/global'
 
-import { AuthProvider } from './context/AuthContext';
+import AppProvider from './context/index';
 // import Routes from './routes/routes';
 
 function App() {
   return (
     <>
-      <AuthProvider>
+      <AppProvider>
         <Login />
-      </AuthProvider>
+      </AppProvider>
 
       <GlobaStyle />
     </>

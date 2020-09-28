@@ -7,7 +7,10 @@ import * as Yup from 'yup';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
-import { useAuth } from '../../context/AuthContext';
+import getValidationsErrors from '../../utils/getValidationError';
+
+import { useAuth } from '../../context/auth';
+import { useToast } from '../../context/toast';
 import logo from "../../assets/Icon.svg"
 
 import { Container, Content, Background } from './styles';
@@ -21,6 +24,7 @@ const Login = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(async (data: SignInFormData) => {
     try {
@@ -35,15 +39,21 @@ const Login = () => {
         abortEarly: false
       });
 
-      signIn({
+      await signIn({
         username: data.username,
         password: data.password
       });
 
     } catch (err) {
-      console.log(err);
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationsErrors(err);
+
+        formRef.current?.setErrors(errors);
+      } else {
+        addToast({ title: 'Erro ao fazer login', type: 'error', description: 'Erro ao autenticar usuário, credenciais inválidas' });
+      }
     }
-  }, [signIn]);
+  }, [addToast, signIn]);
 
   return (
     <Container>
@@ -52,7 +62,7 @@ const Login = () => {
           <h1>Total Clean</h1>
           <img src={logo} alt="TotalClean"></img>
         </div>
-        <Form onSubmit={handleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <Input
             className="input"
             id="username"
