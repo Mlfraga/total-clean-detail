@@ -6,7 +6,6 @@ import Container from './styles';
 import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import SkipButton from '../../components/SkipButton';
 import Input from '../../components/Input';
 
 import api from '../../services/api';
@@ -187,7 +186,7 @@ const SetCompanyPrices = () => {
           </div>
           <div className="buttons">
             <span id='errorMessage'>{emptyErrorMessage}</span>
-            <SkipButton buttonType="button" text="Pular" />
+            <Button skipButton={true}>Pular</Button>
             <Button type="submit">Salvar</Button>
           </div>
         </form>

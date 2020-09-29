@@ -8,7 +8,7 @@ interface BreaadCrumbProps {
 const Breadcrumb: React.FC<BreaadCrumbProps> = ({ text }) => {
   return (
     <Container >
-      <div className="breadcrumb">
+      <div >
         <span>{text}</span>
       </div>
     </Container>

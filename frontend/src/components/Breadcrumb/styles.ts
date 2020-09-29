@@ -5,7 +5,7 @@ const Container = styled.div`
 
 padding-top: 85px;
 
-.breadcrumb{
+div {
 font: 18px 'Roboto', sans-serif;
 background-color: #ff6659;
 max-width: 1200px;

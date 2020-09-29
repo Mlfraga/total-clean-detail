@@ -1,21 +1,21 @@
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import Login from './pages/Login';
-import Header from './components/Header';
 import GlobaStyle from './styles/global'
 
 import AppProvider from './context/index';
-// import Routes from './routes/routes';
+
+import Routes from '../src/routes';
 
 function App() {
   return (
-    <>
+    <Router>
       <AppProvider>
-        <Login />
+        <Routes />
       </AppProvider>
 
       <GlobaStyle />
-    </>
+    </Router >
   );
 }
 

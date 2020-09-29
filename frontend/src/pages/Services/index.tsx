@@ -12,7 +12,7 @@ const Services = () => {
   return (
     <Container>
       <div className="header">
-        {/* <Header buttons={}></Header> */}
+        <Header ></Header>
       </div>
       <div className="body">
         <Breadcrumb text='Serviços' />

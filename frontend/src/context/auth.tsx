@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
+import JWT from 'jsonwebtoken';
 import api from '../services/api';
 
 interface AuthState {
@@ -7,6 +8,7 @@ interface AuthState {
   user: {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
   };
+  buttons: Button[];
 }
 
 interface SignInCredentials {
@@ -18,8 +20,15 @@ interface AuthContextData {
   user: {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
   };
+  buttons: Button[];
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void
+}
+
+interface Button {
+  name: string;
+  enable: boolean;
+  route: string;
 }
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -31,7 +40,100 @@ export const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@TotalClean:user');
 
     if (accessToken && refreshToken && user) {
-      return { accessToken, refreshToken, user: JSON.parse(user) }
+      const decodedAccessToken: any = JWT.decode(String(accessToken), { complete: true });
+      let buttons: Button[] = [];
+
+      if (decodedAccessToken.payload.user.role === 'MANAGER') {
+        buttons = [
+          {
+            name: 'Serviços',
+            enable: true,
+            route: '/services'
+          },
+          {
+            name: 'Registro de vendas',
+            enable: true,
+            route: '/sales-register'
+          },
+          {
+            name: 'Vendedores',
+            enable: true,
+            route: '/sellers'
+          },
+          {
+            name: 'Vendas registradas',
+            enable: true,
+            route: '/sales'
+          },
+          {
+            name: 'Relatórios',
+            enable: true,
+            route: '/reports'
+          },
+          {
+            name: 'Preços',
+            enable: true,
+            route: '/prices'
+          },
+        ]
+      }
+
+      if (decodedAccessToken.payload.user.role === 'ADMIN') {
+        buttons = [
+          {
+            name: 'Concessionárias',
+            enable: false,
+            route: '/companies'
+          },
+          {
+            name: 'Unidades',
+            enable: false,
+            route: '/unities'
+          },
+          {
+            name: 'Usuários',
+            enable: false,
+            route: '/users'
+          },
+          {
+            name: 'Serviços',
+            enable: false,
+            route: '/services'
+          },
+          {
+            name: 'Vendas',
+            enable: false,
+            route: '/sales'
+          },
+          {
+            name: 'Relatórios',
+            enable: false,
+            route: '/reports'
+          },
+        ]
+      }
+
+      if (decodedAccessToken.payload.user.role === 'SELLER') {
+        buttons = [
+          {
+            name: 'Serviços',
+            enable: false,
+            route: '/services'
+          },
+          {
+            name: 'Registro de vendas',
+            enable: false,
+            route: '/sales-register'
+          },
+          {
+            name: 'Vendas',
+            enable: false,
+            route: '/sales'
+          },
+        ]
+      }
+
+      return { accessToken, refreshToken, user: JSON.parse(user), buttons }
     }
 
     return {} as AuthState;
@@ -42,12 +144,103 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     const user = response.data.userByUsername;
     const { accessToken, refreshToken } = response.data;
+    let buttons: Button[] = [];
+
+    if (user.role === 'MANAGER') {
+      buttons = [
+        {
+          name: 'Serviços',
+          enable: true,
+          route: '/services'
+        },
+        {
+          name: 'Registro de vendas',
+          enable: true,
+          route: '/sales-register'
+        },
+        {
+          name: 'Vendedores',
+          enable: true,
+          route: '/sellers'
+        },
+        {
+          name: 'Vendas registradas',
+          enable: true,
+          route: '/sales'
+        },
+        {
+          name: 'Relatórios',
+          enable: true,
+          route: '/reports'
+        },
+        {
+          name: 'Preços',
+          enable: true,
+          route: '/prices'
+        },
+      ]
+    }
+
+    if (user.role === 'ADMIN') {
+      buttons = [
+        {
+          name: 'Concessionárias',
+          enable: false,
+          route: '/companies'
+        },
+        {
+          name: 'Unidades',
+          enable: false,
+          route: '/unities'
+        },
+        {
+          name: 'Usuários',
+          enable: false,
+          route: '/users'
+        },
+        {
+          name: 'Serviços',
+          enable: false,
+          route: '/services'
+        },
+        {
+          name: 'Vendas',
+          enable: false,
+          route: '/sales'
+        },
+        {
+          name: 'Relatórios',
+          enable: false,
+          route: '/reports'
+        },
+      ]
+    }
+
+    if (user.role === 'SELLER') {
+      buttons = [
+        {
+          name: 'Serviços',
+          enable: false,
+          route: '/services'
+        },
+        {
+          name: 'Registro de vendas',
+          enable: false,
+          route: '/sales-register'
+        },
+        {
+          name: 'Vendas',
+          enable: false,
+          route: '/sales'
+        },
+      ]
+    }
 
     localStorage.setItem('@TotalClean:access-token', accessToken);
     localStorage.setItem('@TotalClean:refresh-token', refreshToken);
     localStorage.setItem('@TotalClean:user', JSON.stringify(user));
 
-    setData({ accessToken, refreshToken, user })
+    setData({ accessToken, refreshToken, user, buttons })
   }, []);
 
   const signOut = useCallback(() => {
@@ -59,7 +252,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user: data.user, buttons: data.buttons, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )

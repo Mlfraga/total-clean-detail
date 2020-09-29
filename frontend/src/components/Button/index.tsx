@@ -2,11 +2,13 @@ import React, { ButtonHTMLAttributes } from 'react';
 
 import { Container } from './styles';
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  skipButton?: boolean;
+}
 
 const Button: React.FC<ButtonProps> = (props) => {
   return (
-    <Container type={props.type}>
+    <Container skipbutton={!!props.skipButton} type={props.type}>
       {props.children}
     </Container >
   )
