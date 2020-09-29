@@ -4,7 +4,6 @@ const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
-
 * {
 margin: 0;
 padding: 0;
@@ -26,6 +25,10 @@ text-rendering: optimizeLegibility;
 
 input, button {
   font: 16px 'Roboto', sans-serif;
+}
+
+button{
+  cursor: pointer;
 }
 
 ul{

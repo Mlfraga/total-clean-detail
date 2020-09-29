@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import Container from './styles';
+import { Container, Logo, Buttons } from './styles';
 import { useAuth } from '../../context/auth';
 
 import logo from '../../assets/Icon.svg'
@@ -13,25 +13,21 @@ const Header: React.FC = () => {
 
   return (
     <Container>
-      <div className="header">
-        <div className="logo">
-          <h1 >Total Clean</h1>
-          <img src={logo} alt="TotalClean"></img>
-        </div>
-        <div className="buttonsContainer">
-          <div className="buttons">
-            {buttons.map(button => (
-              <Link
-                key={button.route}
-                className={selected === button.route ? 'header-button-selected' : 'header-button'}
-                to={`/${button.route}`}
-                onClick={() => setSelected(button.route)}>
-                {button.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+      <Logo>
+        <h1 >Total Clean</h1>
+        <img src={logo} alt="TotalClean"></img>
+      </Logo>
+      <Buttons >
+        {buttons.map(button => (
+          <Link
+            key={button.route}
+            className={selected === button.route ? 'header-button-selected' : 'header-button'}
+            to={`${button.route}`}
+            onClick={() => setSelected(button.route)}>
+            {button.name}
+          </Link>
+        ))}
+      </Buttons>
     </Container>
   );
 }

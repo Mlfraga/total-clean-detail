@@ -5,13 +5,9 @@ import Container from './styles';
 import Header from '../../../components/Header';
 import Breadcrumb from '../../../components/Breadcrumb';
 
-interface ServiceProps {
-  name: string;
-  picture: string;
-}
+import signInBackgroundImg from '../../../assets/sign-in-background-3.jpg';
 
-const Service: React.FC<ServiceProps> = (props) => {
-
+const Service: React.FC = () => {
   return (
     <Container>
       <div className="header">
@@ -33,9 +29,9 @@ const Service: React.FC<ServiceProps> = (props) => {
 
             E lembrando que esse reparo é diretamente proporcional a vários fatores, como o tipo de boina, granulometria do abrasivo (massa), profissional (polidor); qualidade e tipo da pintura.
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </span>
+          </span>
           <div className='image'>
-            <img className='images' src="https://i2.wp.com/totalcleanbh.com/site/wp-content/uploads/2016/05/Vitrifica%C3%A7%C3%A3o-destaque.jpg?zoom=1.25&resize=289%2C194" alt="" />
+            <img className='images' src={signInBackgroundImg} alt="" />
           </div>
         </div>
       </div>

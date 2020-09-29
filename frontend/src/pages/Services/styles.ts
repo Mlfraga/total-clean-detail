@@ -1,56 +1,60 @@
 import styled from 'styled-components';
 
-const Container = styled.div`
+export const Container = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
 height: 100%;
-
-.body{
-max-width: 1200px;
-margin-left: auto;
-margin-right: auto;
-height: 100%;
-flex-wrap: wrap;
-}
-
-.content{
-margin-top: 25px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-flex-wrap: wrap;
-}
-
-.images{
-width:75%;
-height: 170.21px;
-border-radius: 8px;
-margin-bottom: 6px;
-}
-
-.service-box{
-display: flex;
-align-items: center;
-justify-content: center;
-flex-direction: column;
-max-width: 32%;
-width: 100%;
-margin-bottom: 30px;
-min-height: 230px;
-background-color: #383838;
-border-radius: 8px;
-background: #383838;
-border: 2px solid #626262;
-box-sizing: border-box;
-border-radius: 10px;
-
-#text{
-font: 15px 'Roboto', sans-serif;
-font-weight: bold;
-color: #ccc;
-}
-}
-
 `;
 
-export default Container;
+export const Content = styled.table`
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25px;
+  width: 100%;
+  max-width: 1230px;
+
+  tr{
+    width: 1200px;
+
+    th {
+    border: 10px solid transparent;
+    background-clip: padding-box;
+    }
+  }
+
+  div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  border-radius: 8px;
+  background: #383838;
+  border: 2px solid #626262;
+  width: 100%;
+  max-width: 383px;
+
+  border: 2px solid #626262;
+  border-radius: 10px;
+  padding: 15px 15px;
+
+  cursor: pointer;
+
+    & + div {
+      margin-left: 25px;
+    }
+
+    img {
+      border-radius: 8px;
+      max-width: 95%;
+    }
+
+    span {
+      font: 16px 'Ubuntu', sans-serif;
+      color: #ced4da;
+      padding-bottom: 8px;
+      padding-top: 15px;
+    }
+  }
+`;
+

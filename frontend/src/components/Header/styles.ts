@@ -1,24 +1,64 @@
 import styled from 'styled-components';
+import { shade } from 'polished';
 
-const Container = styled.div`
+export const Container = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
-.header{
-display: flex;
-align-items: center;
-height: 80px;
-background: #383838;
-width: 100%;
-position: fixed;
-}
+  display: flex;
+  align-items: center;
+  height: 80px;
+  background: #282828;
+  width: 100%;
+  position: fixed;
 
-.logo{
-max-width: 400px;
-display: flex;
-align-items: center;
-justify-content: center;
-padding-left: 35px;
+  .buttons{
+
+}
+`;
+
+export const Buttons = styled.div`
+  flex: 1;
+  margin-right: 50px;
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+
+  a {
+    display: flex;
+    align-items: center;
+    font: 14px 'Ubuntu', sans-serif;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    color: #ced4da;
+
+    & + a {
+      margin-right: 45px;
+    }
+
+    &:hover {
+      color: ${shade(0.2, '#ced4da')}
+    }
+  }
+
+  .header-button-selected{
+    color: #ff6659;
+
+    &:hover{
+      color: ${shade(0.2, '#ff6659')}
+    }
+  }
+`;
+
+export const Logo = styled.div`
+  max-width: 200px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 35px;
     h1{
     font: 30px 'Ubuntu', sans-serif;
     position: absolute;
@@ -30,54 +70,4 @@ padding-left: 35px;
     margin-left: 168px;
     padding-bottom: 11.4px;
     }
-}
-
-.buttonsContainer{
-min-width: 100%;
-padding-right: 350px;
-height: 100%;
-display: flex;
-flex-direction: row-reverse;
-align-items: center;
-background: #383838;
-
-}
-
-.buttons{
-height: 100%;
-display: flex;
-flex-direction: row-reverse;
-align-items: center;
-}
-
-.header-button {
-font: 'Roboto';
-display: flex;
-align-items: center;
-color: #eee;
-margin-left: 25px;
-font-size: 16px;
-text-decoration: none;
-font-weight: bold;
-transition: opacity 0.2s;
-}
-.header-button:hover {
-  opacity: 0.8;
-}
-.header-button-selected{
-font: 'Roboto';
-display: flex;
-align-items: center;
-color: #ff6659;
-margin-left: 25px;
-font-size: 16px;
-text-decoration: none;
-font-weight: bold;
-transition: opacity 0.2s;
-}
-.header-button-selected:hover {
-  opacity: 0.8;
-}
 `;
-
-export default Container;

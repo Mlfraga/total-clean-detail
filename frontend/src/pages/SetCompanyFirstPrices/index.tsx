@@ -50,7 +50,7 @@ const SetCompanyPrices = () => {
     api.get('services').then(response => {
       const newServices: Services[] = response.data;
 
-      let ServicesEmpty: ServicesEmpty[] = [];
+      let ServicesEmpty: Services[] = [];
       newServices.map(service => ServicesEmpty.push({
         id: service.id,
         name: service.name,

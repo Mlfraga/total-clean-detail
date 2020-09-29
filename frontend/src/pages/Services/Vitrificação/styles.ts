@@ -33,10 +33,12 @@ padding:0 15px;
 }
 
 .image{
+
 margin-top: 15px;
 margin-right: 15px;
 max-height: 242px;
 img{
+max-width: 500px;
 border: 1.5px solid #626262;
 border-radius: 10px;
 }
