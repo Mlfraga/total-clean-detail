@@ -5,14 +5,18 @@ import {
   Redirect
 } from 'react-router-dom';
 
+import Permission from './Permission';
+
 import { useAuth } from '../context/auth';
 
 interface RouteProps extends ReactDOMRouteProps {
   isPrivate?: boolean;
   component: React.ComponentType;
+  permissions?: string[];
 }
 
 const Route: React.FC<RouteProps> = ({
+  permissions,
   isPrivate = false,
   component: Component,
   ...rest }) => {
@@ -23,7 +27,7 @@ const Route: React.FC<RouteProps> = ({
       {...rest}
       render={({ location }) => {
         return isPrivate === !!user ? (
-          <Component />
+          <Permission permissions={permissions} component={Component} />
         ) : (
             <Redirect to={{
               pathname: isPrivate ? '/' : 'services',
