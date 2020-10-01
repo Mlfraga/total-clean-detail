@@ -7,6 +7,9 @@ interface AuthState {
   refreshToken: string;
   user: {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
+    profile: {
+      companyId: number;
+    }
   };
   buttons: Button[];
 }
@@ -19,6 +22,9 @@ interface SignInCredentials {
 interface AuthContextData {
   user: {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
+    profile: {
+      companyId: number;
+    }
   };
   buttons: Button[];
   signIn(credentials: SignInCredentials): Promise<void>;

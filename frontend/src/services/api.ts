@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('@TotalClean:access-token')
   if (token) {
     config.headers['Authorization'] = 'Bearer ' + token;
   }
@@ -28,8 +28,8 @@ api.interceptors.response.use((response) => {
       const originalRequest = error.config;
 
       if (error.response.status === 403 && originalRequest.url === '/auth/refresh') {
-        localStorage.removeItem('token')
-        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('@TotalClean:access-token')
+        localStorage.removeItem('@TotalClean:refresh-token')
         return Promise.reject(error);
       }
 
@@ -38,11 +38,11 @@ api.interceptors.response.use((response) => {
         originalRequest._retry = true;
         return api.post('/auth/refresh',
           {
-            "token": localStorage.getItem('refreshToken')
+            "token": localStorage.getItem('@TotalClean:refresh-token')
           })
           .then(res => {
-            localStorage.setItem('token', res.data.accessToken);
-            api.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+            localStorage.setItem('@TotalClean:access-token', res.data.accessToken);
+            api.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('@TotalClean:access-token');
             return api(originalRequest);
           })
       }

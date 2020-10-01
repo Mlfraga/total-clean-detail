@@ -1,4 +1,3 @@
-import { Console } from 'console';
 import React from 'react';
 import {
   Route as ReactDOMRoute,
@@ -28,7 +27,7 @@ const Permission: React.FC<RouteProps> = ({
         ) : permissions.includes(user.role) ? (
           <Component />
         ) : (
-              <Redirect to='/sla' />
+              <Redirect to='/services' />
             )
       }}
     />

@@ -1,20 +1,25 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web'
 import { useHistory } from 'react-router-dom';
-
-import Container from './styles';
+import { FiDollarSign } from 'react-icons/fi';
 
 import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
+import { useAuth } from '../../context/auth';
+import { useToast } from '../../context/toast';
+
 import api from '../../services/api';
 import { currencyMasker } from './masks'
-import JWT from 'jsonwebtoken';
+
+import { Container, Content, Buttons, PriceBox } from './styles';
 
 interface NewServices {
   serviceId: number;
-  price: Number;
+  price: any;
 }
 
 interface Services {
@@ -22,176 +27,98 @@ interface Services {
   name: string;
   price: Number;
   enabled: Boolean;
-  empty: Boolean;
-}
-
-interface ServicesEmpty {
-  id: number;
-  name: string;
-  price: Number;
-  enabled: Boolean;
-  empty: Boolean;
-}
-
-interface Test {
-  id: number;
-  empty: Boolean;
 }
 
 const SetCompanyPrices = () => {
-  const [services, setServices] = useState<Services[]>([]);
-  const [companyServices, setcompanyServices] = useState<NewServices[]>([]);
-  const [isEmptyService, setIsEmptyService] = useState<Test[]>([]);
-  const [emptyErrorMessage, setEmptyErrorMessage] = useState('');
+  const { user } = useAuth();
+  const { addToast } = useToast();
+  const history = useHistory();
+  const formRef = useRef<FormHandles>(null);
 
-  const [id, setId] = useState(0);
+  const [services, setServices] = useState<Services[]>([]);
 
   useEffect(() => {
     api.get('services').then(response => {
-      const newServices: Services[] = response.data;
+      const services: Services[] = response.data;
 
-      let ServicesEmpty: Services[] = [];
-      newServices.map(service => ServicesEmpty.push({
-        id: service.id,
-        name: service.name,
-        price: service.price,
-        enabled: service.enabled,
-        empty: false
-      }));
-
-      setServices(ServicesEmpty);
-
-      newServices.map(service => setcompanyServices(oldCompanyServices => [...oldCompanyServices, { serviceId: service.id, price: service.price }]));
-
-      newServices.map(service => setIsEmptyService(oldIsEmptyService => [...oldIsEmptyService, { id: service.id, empty: true }]));
+      setServices(services);
     })
   }, [])
 
-  function handleKeyUp(event: React.FormEvent<HTMLInputElement>) {
+  const handleKeyUp = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     event.preventDefault();
-    const value = currencyMasker(event);
+    currencyMasker(event);
+  }, [])
 
-    const index = companyServices.findIndex(companyService => companyService.serviceId === id);
+  const handleSubmit = useCallback(async (data: any) => {
+    try {
+      const ids = Object.keys(data);
 
-    let price = value.currentTarget.value.toString();
-    price = price.replace(".", "");
-    price = price.replace(",", ".");
-    companyServices[index].price = parseFloat(price);
-  }
+      const newServices = ids.map(id => (
+        {
+          serviceId: parseInt(id),
+          price: parseFloat(data[id])
+        }
+      ))
 
-  function handleOnChangeInput(event: React.ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    const { name } = event.target;
-    const id = parseInt(name);
+      const voidValues = newServices.filter(value => isNaN(value.price))
 
-    const indexService = isEmptyService.findIndex(service => service.id === id);
+      const voidInputsClassesNames = voidValues.map(value => value.serviceId)
 
-    if (!event.target.value) {
-      isEmptyService[indexService].empty = true;
-    } else {
-      isEmptyService[indexService].empty = false;
-    }
+      if (voidInputsClassesNames.length > 0) {
+        addToast({ title: `${voidInputsClassesNames.length} campos vazios`, type: 'error', description: 'Por favor preencha todos os campos.' })
 
-    setId(id);
-
-    services.map(service => service.empty = isEmptyService[getIndex(service.id)].empty)
-    setServices(services)
-  }
-
-  function getIndex(id: number): number {
-    const index = isEmptyService.findIndex(isEmptyService => isEmptyService.id === id)
-
-    return index;
-  }
-
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    services.map(service => service.empty = isEmptyService[getIndex(service.id)].empty)
-    setServices(services)
-
-    const isInputsEmpty = checkServicesInputs();
-
-    const token = localStorage.getItem('token');
-    const decoded: any = JWT.decode(String(token), { complete: true });
-    const companyId = decoded.payload.user.profile.companyId
-
-    if (isInputsEmpty === false) {
-      const data = {
-        companyId: companyId,
-        services: companyServices
+        return;
       }
 
-      const response = await api.post('companyservices', data)
+      const response = await api.post('companyservices', { companyId: user.profile.companyId, services: newServices });
 
       if (response.status === 200) {
-        history.push('serviços');
+        addToast({ title: 'Sucesso', type: 'success', description: 'Agora a sua concessionária ja pode registrar vendas.' });
+        history.push('services');
       }
-
+    } catch (err) {
+      addToast({ title: 'Não foi possivel salvar.', type: 'error', description: 'Ocorreu um erro, tente novamente.' })
     }
-
-    setEmptyErrorMessage('Por favor preencha o preço de todos os serviços.')
-
-  }
-
-  function checkServicesInputs() {
-    let flag = 0;
-
-    isEmptyService.map(service => {
-      if (service.empty === true) {
-        flag += 1;
-      }
-      flag += 0;
-    })
-
-    if (flag > 0) {
-      return true;
-    }
-    return false;
-  }
-
-  const history = useHistory();
+  }, [addToast, history, user.profile.companyId]);
 
   return (
     <Container>
-      <div className="header">
-        <Header ></Header>
-      </div>
-      <div className="body">
-        <form onSubmit={handleSubmit}>
-          <Breadcrumb text='Configure o preço de cada serviço em seu estabelecimento.' />
-          <div className="list">
-            {services.map(service => (
-              <div key={service.id} className={service.empty === true ? 'service-box-empty' : 'service-box'} >
-                <div className="name">
-                  <span id='service-name'>{service.name.toUpperCase()}</span>
-                </div>
-                <div className="price-container">
-                  <span id='price-totalclean'>Preço da Total Clean: </span>
-                  <span id='price'>R$: {service.price}</span>
-                </div>
-                <div className="input-container">
-                  <span>R$</span>
-                  <Input
-                    className="input"
-                    id={`${service.id}`}
-                    type="string"
-                    itemID={`${service.id}`}
-                    name={`${service.id}`}
-                    onKeyUp={handleKeyUp}
-                    onChange={handleOnChangeInput}
-                  />
-                </div>
+      <Header ></Header>
+      <Breadcrumb text='Configure o preço de cada serviço em seu estabelecimento.' />
+      <Content>
+        <Form ref={formRef} onSubmit={handleSubmit}>
+          {services.map(service => (
+            <PriceBox key={service.id}>
+              <div className='title-container'>
+                <span id='service-name'>{service.name.toUpperCase()}</span>
               </div>
-            ))}
-          </div>
-          <div className="buttons">
-            <span id='errorMessage'>{emptyErrorMessage}</span>
+              <br />
+
+              <span id='price-totalclean'>Preço da Total Clean: R$: {service.price}</span>
+
+              <br />
+
+              <div className='inputs' >
+                <Input
+                  className="input"
+                  id={service.id.toString()}
+                  name={service.id.toString()}
+                  placeholder="Preço"
+                  onKeyUp={handleKeyUp}
+                  style={{ width: '30px' }}
+                  icon={FiDollarSign}
+                />
+              </div>
+            </PriceBox>
+          ))}
+
+          <Buttons >
             <Button skipButton={true}>Pular</Button>
             <Button type="submit">Salvar</Button>
-          </div>
-        </form>
-
-      </div>
+          </Buttons>
+        </Form>
+      </Content>
     </Container >
   );
 }

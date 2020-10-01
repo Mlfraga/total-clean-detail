@@ -1,8 +1,9 @@
 import React, { useRef, useCallback } from 'react';
-import { FiLock, FiUser } from 'react-icons/fi'
-import { FormHandles } from '@unform/core'
+import { FiLock, FiUser } from 'react-icons/fi';
+import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web'
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
 
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -14,6 +15,7 @@ import { useToast } from '../../context/toast';
 import logo from "../../assets/Icon.svg"
 
 import { Container, Content, Background } from './styles';
+import api from '../../services/api';
 
 interface SignInFormData {
   username: string;
@@ -21,6 +23,7 @@ interface SignInFormData {
 }
 
 const Login = () => {
+  const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
@@ -44,6 +47,19 @@ const Login = () => {
         password: data.password
       });
 
+      const response = await api.get('companyservices/company');
+
+      const companyservices = response.data;
+
+      console.log(companyservices);
+
+      if (companyservices.length === 0) {
+        history.push('set-prices')
+        return;
+      }
+
+      history.push('services')
+
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
@@ -53,7 +69,8 @@ const Login = () => {
         addToast({ title: 'Erro ao fazer login', type: 'error', description: 'Erro ao autenticar usuário, credenciais inválidas' });
       }
     }
-  }, [addToast, signIn]);
+
+  }, [addToast, history, signIn]);
 
   return (
     <Container>
