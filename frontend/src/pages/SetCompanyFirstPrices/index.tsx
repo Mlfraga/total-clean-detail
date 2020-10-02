@@ -15,7 +15,7 @@ import { useToast } from '../../context/toast';
 import api from '../../services/api';
 import { currencyMasker } from './masks'
 
-import { Container, Content, Buttons, PriceBox } from './styles';
+import { Container, Content, Buttons, ListBoxes, PriceBox } from './styles';
 
 interface NewServices {
   serviceId: number;
@@ -43,7 +43,17 @@ const SetCompanyPrices = () => {
 
       setServices(services);
     })
-  }, [])
+
+    api.get('companyservices/company').then(response => {
+      const companyservices = response.data;
+
+      if (companyservices.length > 0) {
+        history.push('services')
+        return;
+      }
+    })
+
+  }, [history])
 
   const handleKeyUp = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -88,34 +98,35 @@ const SetCompanyPrices = () => {
       <Breadcrumb text='Configure o preço de cada serviço em seu estabelecimento.' />
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
-          {services.map(service => (
-            <PriceBox key={service.id}>
-              <div className='title-container'>
-                <span id='service-name'>{service.name.toUpperCase()}</span>
-              </div>
-              <br />
+          <ListBoxes>
+            {services.map(service => (
+              <PriceBox key={service.id}>
+                <div className='title-container'>
+                  <span id='service-name'>{service.name.toUpperCase()}</span>
+                </div>
+                <br />
 
-              <span id='price-totalclean'>Preço da Total Clean: R$: {service.price}</span>
+                <span id='price-totalclean'>Preço da Total Clean: R$: {service.price}</span>
 
-              <br />
+                <br />
 
-              <div className='inputs' >
-                <Input
-                  className="input"
-                  id={service.id.toString()}
-                  name={service.id.toString()}
-                  placeholder="Preço"
-                  onKeyUp={handleKeyUp}
-                  style={{ width: '30px' }}
-                  icon={FiDollarSign}
-                />
-              </div>
-            </PriceBox>
-          ))}
-
+                <div className='inputs' >
+                  <Input
+                    className="input"
+                    id={service.id.toString()}
+                    name={service.id.toString()}
+                    placeholder="Preço"
+                    onKeyUp={handleKeyUp}
+                    style={{ width: '30px' }}
+                    icon={FiDollarSign}
+                  />
+                </div>
+              </PriceBox>
+            ))}
+          </ListBoxes>
           <Buttons >
-            <Button skipButton={true}>Pular</Button>
             <Button type="submit">Salvar</Button>
+            <Button skipButton={true} >Pular</Button>
           </Buttons>
         </Form>
       </Content>

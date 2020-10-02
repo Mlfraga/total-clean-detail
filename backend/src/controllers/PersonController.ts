@@ -13,7 +13,6 @@ class PersonController {
       body: Joi.object({
         cpf: Joi.string().length(11).required(),
         name: Joi.string().required(),
-        telephone: Joi.string().min(9).max(11).required()
       })
 
     }
@@ -33,7 +32,6 @@ class PersonController {
     const person = await PersonRepository.create({
       name,
       cpf,
-      telephone
     })
 
     return response.json(person);

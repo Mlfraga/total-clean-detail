@@ -2,13 +2,13 @@ import { SaleGetPayload, SaleCreateInput, SaleUpdateInput } from '@prisma/client
 import BaseRepository from './BaseRepository';
 
 type Sale = SaleGetPayload<{
-  include: { seller: true, person: { include: { address: true } }, car: true, serviceSale: { include: { service: true } } };
+  include: { seller: true, person: true, car: true, serviceSale: { include: { service: true } } };
 }>
 
 type Status = "PENDING" | "CONFIRMED" | "CANCELED" | "FINISHED" | undefined;
 
 class SaleRepository extends BaseRepository<Sale, SaleCreateInput, SaleUpdateInput> {
-  readonly include = { seller: true, person: { include: { address: true } }, car: true, serviceSale: { include: { service: true } } }
+  readonly include = { seller: true, person: true, car: true, serviceSale: { include: { service: true } } }
   findAll(): Promise<Sale[]> {
     return this.prisma.sale.findMany({ include: this.include });
   }

@@ -2,11 +2,11 @@ import { PersonGetPayload, PersonCreateInput, PersonUpdateInput } from '@prisma/
 import BaseRepository from './BaseRepository';
 
 type Person = PersonGetPayload<{
-  include: { cars: true, address: true };
+  include: { cars: true };
 }>
 
 class PersonRepository extends BaseRepository<Person, PersonCreateInput, PersonUpdateInput> {
-  readonly include = { cars: true, address: true };
+  readonly include = { cars: true };
   findAll(): Promise<Person[]> {
     return this.prisma.person.findMany({ include: this.include });
   }

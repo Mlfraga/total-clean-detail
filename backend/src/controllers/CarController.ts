@@ -16,14 +16,16 @@ class CarController {
       body: Joi.object({
         personId: Joi.number().required(),
         car: Joi.string().required(),
-        carPlate: Joi.string().min(6).max(7).required(),
+        carColor: Joi.string().required(),
+        carModel: Joi.string(),
+        carPlate: Joi.string().min(6).max(8).required(),
       })
 
     }
   }
 
   async store(request: Request, response: Response) {
-    const { personId, car, carPlate } = request.body;
+    const { personId, car, carPlate, carColor, carModel } = request.body;
 
     const personById = await PersonRepository.findById(personId);
 
@@ -35,6 +37,8 @@ class CarController {
 
     const createdCar = await CarRepository.create({
       car,
+      carColor,
+      carModel,
       carPlate,
       person: {
         connect: {

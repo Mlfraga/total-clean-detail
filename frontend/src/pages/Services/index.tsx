@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Container, Content } from './styles';
@@ -7,9 +7,28 @@ import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import signInBackgroundImg from '../../assets/sign-in-background-3.jpg';
 
-const Services = () => {
+import api from '../../services/api';
+import { useAuth } from '../../context/auth';
 
+const Services = () => {
   const history = useHistory();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user.profile.companyId) {
+      api.get('companyservices/company').then(response => {
+        const companyservices = response.data;
+
+        if (companyservices.length === 0) {
+          history.push('set-prices')
+          return;
+        }
+      })
+    } else {
+      console.log('É ADMIN');
+    }
+  }, [history, user.profile.companyId])
+
   return (
     <Container>
       <Header />

@@ -18,13 +18,15 @@ export const Content = styled.div`
     margin-left: auto;
     margin-right: auto;
     max-width: 1200px;
-
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row-reverse;
-    justify-content: space-between;
   }
 `;
+
+export const ListBoxes = styled.div`
+    display: grid;
+    grid-template-columns: 285px 285px 285px 285px;
+    width: 100%;
+    justify-content: space-between;
+`
 
 export const PriceBox = styled.div`
   display: flex;
@@ -32,7 +34,7 @@ export const PriceBox = styled.div`
 
   max-width: 285px;
   width: 100%;
-  height: 135px;
+  height: 150px;
 
   border-radius: 8px;
   border: 2px solid #626262;
@@ -52,9 +54,10 @@ export const PriceBox = styled.div`
   }
 
   span {
-    font: 14px 'Ubuntu', sans-serif;
+    font: 15px 'Ubuntu', sans-serif;
     color: ${shade(0.2, '#F4EDE8')};
     margin-left: 16px;
+    margin-top: 10px;
   }
 
  .inputs {
@@ -69,13 +72,15 @@ export const PriceBox = styled.div`
 
 export const Buttons = styled.div`
   display: flex;
-
+  flex-direction: row-reverse;
   width: 100%;
-  max-width: 450px;
+
 
   button {
+
+    max-width: 250px;
     & + button {
-      margin-left: 16px;
+      margin-right: 16px;
     }
   }
 `;

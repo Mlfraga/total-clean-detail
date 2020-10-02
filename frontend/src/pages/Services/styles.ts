@@ -11,7 +11,7 @@ export const Content = styled.table`
   margin-right: auto;
   margin-top: 25px;
   width: 100%;
-  max-width: 1230px;
+  max-width: 1200px;
 
   tr{
     width: 1200px;

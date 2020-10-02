@@ -7,12 +7,10 @@ import AutheticationController from './controllers/AutheticationController';
 import ServiceController from './controllers/ServiceController';
 import CompanyServiceController from './controllers/CompanyServiceController'
 import PersonController from './controllers/PersonController';
-import AddressController from './controllers/AddressController';
 import CarController from './controllers/CarController';
 import SaleController from './controllers/SaleController';
 import ServiceSaleController from './controllers/ServiceSaleController';
 import ProfileController from './controllers/ProfileController';
-import { appendFile } from 'fs';
 
 import AuthenticationMiddleware from './middlewares/AutheticationMiddleware'
 import RoleMiddleware from './middlewares/RoleMiddleware'
@@ -62,8 +60,6 @@ routes.get('/servicesale', ServiceSaleController.index);
 routes.get('/servicesale/filtered', ServiceSaleController.filterSale);
 
 routes.post('/person', RoleMiddleware.isManagerOrSeller, celebrate(PersonController.validate.store), PersonController.store);
-
-routes.post('/address', RoleMiddleware.isManagerOrSeller, celebrate(AddressController.validate.store), AddressController.store);
 
 routes.post('/car', RoleMiddleware.isManagerOrSeller, celebrate(CarController.validate.store), CarController.store);
 

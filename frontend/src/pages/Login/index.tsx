@@ -15,7 +15,6 @@ import { useToast } from '../../context/toast';
 import logo from "../../assets/Icon.svg"
 
 import { Container, Content, Background } from './styles';
-import api from '../../services/api';
 
 interface SignInFormData {
   username: string;
@@ -47,29 +46,18 @@ const Login = () => {
         password: data.password
       });
 
-      const response = await api.get('companyservices/company');
-
-      const companyservices = response.data;
-
-      console.log(companyservices);
-
-      if (companyservices.length === 0) {
-        history.push('set-prices')
-        return;
-      }
-
-      history.push('services')
-
+      history.push('services');
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
 
         formRef.current?.setErrors(errors);
-      } else {
-        addToast({ title: 'Erro ao fazer login', type: 'error', description: 'Erro ao autenticar usuário, credenciais inválidas' });
+        return
       }
-    }
+      console.log(err);
+      addToast({ title: 'Erro ao fazer login', type: 'error', description: 'Erro ao autenticar usuário, credenciais inválidas' });
 
+    }
   }, [addToast, history, signIn]);
 
   return (

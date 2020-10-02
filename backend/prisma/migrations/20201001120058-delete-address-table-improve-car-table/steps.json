@@ -1,0 +1,40 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteModel",
+      "model": "Address"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Person",
+      "field": "telephone"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Person",
+      "field": "address"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Car",
+      "field": "carColor",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Car",
+      "field": "carModel",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Sale",
+      "field": "availabilityDate",
+      "type": "DateTime",
+      "arity": "Required"
+    }
+  ]
+}

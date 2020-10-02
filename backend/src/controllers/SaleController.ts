@@ -1,3 +1,4 @@
+import { create } from 'domain';
 import { Request, Response } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
 
@@ -8,7 +9,6 @@ import JWT from 'jsonwebtoken';
 import SaleRepository from '../repositories/SaleRepository';
 import PersonRepository from '../repositories/PersonRepository';
 import CarRepository from '../repositories/CarRepository';
-import AddressRepository from '../repositories/AddressRepository';
 import UnitRepository from '../repositories/UnitRepository';
 import UserRepository from '../repositories/UserRepository';
 import Mail from "../services/mail";
@@ -27,17 +27,16 @@ class SaleController {
     store: {
       body: Joi.object({
         deliveryDate: Joi.date().required(),
-        done: Joi.boolean().required(),
+        availabilityDate: Joi.date().required(),
         companyPrice: Joi.number().required(),
         costPrice: Joi.number().required(),
         source: Joi.string().required(),
+        name: Joi.string().required(),
         cpf: Joi.string().required(),
         car: Joi.string().required(),
-        carPlate: Joi.string().required(),
-        street: Joi.string().required(),
-        houseNumber: Joi.string().required(),
-        neighborhood: Joi.string().required(),
-        city: Joi.string().required(),
+        carPlate: Joi.string().required().min(7).max(8),
+        carModel: Joi.string().required(),
+        carColor: Joi.string().required(),
       })
     },
     findByStatus: {
@@ -63,7 +62,8 @@ class SaleController {
   }
 
   async store(request: Request, response: Response) {
-    const { deliveryDate, done, companyPrice, costPrice, source, cpf, car, carPlate, street, houseNumber, neighborhood, city } = request.body;
+    const { deliveryDate, availabilityDate, done, companyPrice, costPrice, source, name, cpf, car, carPlate, carColor,
+      carModel, } = request.body;
     const authHeader = request.headers['authorization'];
     const token = authHeader && authHeader?.split(' ')[1];
     const decoded: any = JWT.decode(String(token), { complete: true });
@@ -77,12 +77,63 @@ class SaleController {
         .json({ error: 'User is not allowed to make sales.' })
     }
 
+    if (source !== "NEW" && source !== "USED" && source !== "WORKSHOP") {
+      return response
+        .status(404)
+        .json({ error: 'The source is unavailable.' })
+    }
+
     const personByCpf = await PersonRepository.findByCpf(cpf);
 
     if (personByCpf.length === 0) {
-      return response
-        .status(404)
-        .json({ error: 'User not found.' })
+      const person = await PersonRepository.create({
+        name,
+        cpf,
+      })
+
+      const createdCar = await CarRepository.create({
+        car,
+        carColor,
+        carModel,
+        carPlate,
+        person: {
+          connect: {
+            id: person?.id
+          }
+        }
+      })
+
+      if (!createdCar) {
+        return response
+          .status(400)
+          .json({ error: 'Car cannot be registered.' })
+      }
+
+      const sale = await SaleRepository.create(
+        {
+          deliveryDate,
+          availabilityDate,
+          companyPrice,
+          costPrice,
+          source,
+          seller: {
+            connect: {
+              userId: sellerId
+            }
+          },
+          person: {
+            connect: {
+              id: person?.id
+            }
+          },
+          car: {
+            connect: {
+              id: createdCar.id
+            }
+          }
+        })
+
+      return response.json(sale);
     } else if (personByCpf.length > 1) {
       return response
         .status(409)
@@ -92,23 +143,55 @@ class SaleController {
     const carByPlateAndPersonId = await CarRepository.findByPlateAndPersonId(car, carPlate, personByCpf[0].id);
 
     if (carByPlateAndPersonId.length === 0) {
-      return response
-        .status(404)
-        .json({ error: 'Car not found.' })
-    }
+      const createdCar = await CarRepository.create({
+        car,
+        carColor,
+        carModel,
+        carPlate,
+        person: {
+          connect: {
+            id: personByCpf[0].id
+          }
+        }
+      })
 
-    const findByPersonIdAndAddress = await AddressRepository
-      .findByPersonIdAndAddress(personByCpf[0].id, street, houseNumber, neighborhood, city);
+      if (!createdCar) {
+        return response
+          .status(400)
+          .json({ error: 'Car cannot be registered.' })
+      }
 
-    if (findByPersonIdAndAddress.length === 0) {
-      return response
-        .status(404)
-        .json({ error: 'Address not found.' })
+      const sale = await SaleRepository.create(
+        {
+          deliveryDate,
+          availabilityDate,
+          companyPrice,
+          costPrice,
+          source,
+          seller: {
+            connect: {
+              userId: sellerId
+            }
+          },
+          person: {
+            connect: {
+              id: personByCpf[0].id
+            }
+          },
+          car: {
+            connect: {
+              id: createdCar.id
+            }
+          }
+        })
+
+      return response.json(sale);
     }
 
     const sale = await SaleRepository.create(
       {
         deliveryDate,
+        availabilityDate,
         companyPrice,
         costPrice,
         source,

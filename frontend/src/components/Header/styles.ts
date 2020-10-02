@@ -3,7 +3,6 @@ import { shade } from 'polished';
 
 export const Container = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
   display: flex;
   align-items: center;
@@ -29,6 +28,7 @@ export const Buttons = styled.div`
     display: flex;
     align-items: center;
     font: 14px 'Ubuntu', sans-serif;
+    font-weight: 400;
     text-decoration: none;
     transition: color 0.2s;
 
@@ -61,6 +61,7 @@ export const Logo = styled.div`
   padding-left: 35px;
     h1{
     font: 30px 'Ubuntu', sans-serif;
+    font-weight: bold;
     position: absolute;
     color: #ff6659;
     }
