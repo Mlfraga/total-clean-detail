@@ -53,7 +53,9 @@ routes.get('/sale', SaleController.index);
 routes.get('/sale/status', RoleMiddleware.isAdmin, SaleController.findByStatus);
 routes.get('/sale/unit/:unitId', celebrate(SaleController.validate.findByUnit), SaleController.findByUnit);
 routes.get('/sale/seller/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findBySeller), SaleController.findBySeller);
-routes.patch('/sale/status/:id', RoleMiddleware.isAdmin, SaleController.updateStatus)
+routes.patch('/sale/status/:id', RoleMiddleware.isAdmin, SaleController.updateStatus);
+routes.post('/sale/getsalebudget', RoleMiddleware.isManagerOrSeller, SaleController.getSaleBudget);
+routes.post('/sale/getcompanysalebudget', RoleMiddleware.isManagerOrSeller, SaleController.getCompanySaleBudget);
 
 routes.post('/servicesale', RoleMiddleware.isManagerOrSeller, celebrate(ServiceSaleController.validate.store), ServiceSaleController.store);
 routes.get('/servicesale', ServiceSaleController.index);

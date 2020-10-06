@@ -1,5 +1,5 @@
 import { create } from 'domain';
-import { Request, Response } from 'express';
+import { Request, Response, request } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
 
 import { ptBR } from 'date-fns/locale'
@@ -11,6 +11,8 @@ import PersonRepository from '../repositories/PersonRepository';
 import CarRepository from '../repositories/CarRepository';
 import UnitRepository from '../repositories/UnitRepository';
 import UserRepository from '../repositories/UserRepository';
+import ServiceRepository from '../repositories/ServiceRepository';
+import CompanyServiceRepository from '../repositories/CompanyServiceRepository';
 import Mail from "../services/mail";
 
 import { Status } from '@prisma/client';
@@ -260,7 +262,6 @@ class SaleController {
     return response.json(sales);
 
   }
-
   async updateStatus(request: Request, response: Response) {
     const { id } = request.params;
     const { status } = request.body;
@@ -316,6 +317,48 @@ class SaleController {
       .status(200)
       .json(updatedSale);
 
+  }
+
+  async getSaleBudget(request: Request, response: Response){
+    const {services} = request.body;
+
+    let costPrice: number = 0;
+
+    services.filter(async (id: number ) => {
+      const serviceById = await ServiceRepository.findById(id);
+      console.log(serviceById);
+
+      if (!serviceById) {
+        return response
+          .status(404)
+          .json({ error: 'No service found with this ID.' })
+      }
+      costPrice += serviceById.price;
+    });
+
+    setTimeout(()=>{return response.json({costPrice})}, 100);
+  }
+
+  async getCompanySaleBudget(request: Request, response: Response){
+    const {services, companyId} = request.body;
+
+    let companyPrice: number = 0;
+
+    services.filter(async (serviceId: number ) => {
+      const serviceByIdAndServiceId = await CompanyServiceRepository.findByCompanyIdAndServiceId(Number(companyId), Number(serviceId));
+      console.log(serviceByIdAndServiceId);
+      if (!serviceByIdAndServiceId) {
+        return response
+        .status(404)
+        .json({ error: 'No service found with this ID.' })
+      }
+
+      serviceByIdAndServiceId.filter(service => {
+        companyPrice += service.price;
+      })
+    });
+
+    setTimeout(()=>{return response.json({companyPrice})}, 100);
   }
 
 }
