@@ -1,6 +1,38 @@
 import styled from 'styled-components';
 import { shade } from 'polished';
 
+export const RegisterSuccessPage = styled.div`
+  width: 100%;
+  height: 100vh;
+  background: #252525;
+
+  .content {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      margin-bottom: 80px;
+    }
+    h1{
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      width: 250px;
+      display: flex;
+
+      button {
+        & + button {
+          margin-left: 16px;
+        }
+      }
+    }
+  }
+`;
+
 export const Container = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');

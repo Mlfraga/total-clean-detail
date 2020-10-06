@@ -2,6 +2,9 @@ import React, { useRef, useCallback, ChangeEvent, useEffect, useState } from 're
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web'
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
+
+import { FiCheckCircle } from 'react-icons/fi';
 
 import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
@@ -16,7 +19,7 @@ import getValidationsErrors from '../../utils/getValidationError';
 
 import api from '../../services/api';
 
-import { Container, Content, Inputs, Separator, InputContainer, Services, ServiceBox } from './styles';
+import { Container, Content, Inputs, Separator, InputContainer, Services, ServiceBox, RegisterSuccessPage } from './styles';
 
 interface Services {
   id: number;
@@ -39,10 +42,12 @@ const SalesRegister = () => {
   const { addToast } = useToast();
 
   const formRef = useRef<FormHandles>(null);
+  const history = useHistory();
 
   const [selectError, setSelectError] = useState(false);
   const [availabilityDateFieldError, setAvailabilityDateFieldError] = useState(false);
   const [deliveryDateFieldError, setDeliveryDateFieldError] = useState(false);
+  const [successPage, setSuccessPage] = useState<{isAvailable: boolean, saleId?: number} | null>(null);
 
   const [services, setServices] = useState<Services[]>([]);
   const [selectedServices, setSelectedServices] = useState<Number[]>([]);
@@ -55,7 +60,6 @@ const SalesRegister = () => {
     { value: 'USED', label: 'Semi-novo' },
     { value: 'WORKSHOP', label: 'Oficina' }
   ]
-
   useEffect(() => {
     api.get('services').then(response => {
       const services: Services[] = response.data;
@@ -91,7 +95,7 @@ const SalesRegister = () => {
     setSelectError(false);
   }, []);
 
-  const handleSubmit = useCallback(async (data: FormData) => {
+  const handleSubmit = useCallback(async (data: FormData, {reset}) => {
     const responseCompanyBudget = await api.post('/sale/getcompanysalebudget', { companyId: user.profile.companyId, services: selectedServices } )
 
     const companyPrice = responseCompanyBudget.data.companyPrice;
@@ -165,6 +169,11 @@ const SalesRegister = () => {
 
           if(responseCreatedServiceSale.status === 200){
             addToast({title: "Sucesso", type: "success", description: `Pedido n° ${responseCreatedSale.data.id} registrado com sucesso.`})
+            setSuccessPage({isAvailable: true, saleId: responseCreatedSale.data.id});
+            setSelectedServices([]);
+            setDeliveryDate('');
+            setAvailabilityDate('');
+            reset();
           }else{
             addToast({title: "Erro", type: "error", description: `Não foi possível registrar esse pedido, tente novamente.`})
           }
@@ -186,11 +195,15 @@ const SalesRegister = () => {
 
   },[addToast, availabilityDate, deliveryDate, selectedServices, sourceCar, user.profile.companyId]);
 
+  const handleCreateAnotherSale = useCallback(()=>{
+    setSuccessPage(null);
+  }, [])
   return (
-    <Container>
+  <>
+    <Container hidden={!successPage ? false : true }>
       <Header />
       <Breadcrumb text='Registro de vendas' />
-      <Content>
+      <Content >
         <Form ref={formRef} onSubmit={handleSubmit}>
 
           <Separator>
@@ -340,6 +353,7 @@ const SalesRegister = () => {
                   id={availabilityDateFieldError ?  "date-times-availability-errored" : "date-times-availability"}
                   type="datetime-local"
                   className="availability-date-time"
+                  value={availabilityDate}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -355,6 +369,7 @@ const SalesRegister = () => {
                   id={deliveryDateFieldError ?  "date-times-delivery-errored" : "date-times-delivery"}
                   type="datetime-local"
                   className="delivery-date-time"
+                  value={deliveryDate}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -381,6 +396,20 @@ const SalesRegister = () => {
         </Form>
       </Content>
     </Container >
+
+    {successPage &&
+    <RegisterSuccessPage hidden={successPage ? false : true }>
+      <div className="content" >
+        <FiCheckCircle size={300} color='#2FB86E'/>
+        <h1>Pedido {successPage?.saleId} solicitado com sucesso.</h1>
+
+        <div className="buttons">
+          <Button skipButton={true} type='button' onClick={handleCreateAnotherSale}>Voltar</Button>
+        </div>
+      </div>
+    </RegisterSuccessPage>
+    }
+  </>
   );
 }
 

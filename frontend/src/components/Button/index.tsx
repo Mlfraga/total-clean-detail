@@ -8,7 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<ButtonProps> = (props) => {
   return (
-    <Container skipbutton={!!props.skipButton} type={props.type}>
+    <Container onClick={props.onClick} skipbutton={!!props.skipButton} type={props.type}>
       {props.children}
     </Container >
   )
