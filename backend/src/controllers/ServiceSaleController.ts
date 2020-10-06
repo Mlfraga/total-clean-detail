@@ -50,7 +50,13 @@ class ServiceSaleController {
     let company: string | undefined = undefined;
     let unit: string | undefined = undefined;
     let seller: string | null = null;
-    let formattedDate: string | null = null;
+    let sellerContact: string | null = null;
+    let requestFormattedDate: string | null = null;
+    let deliveryFormattedDate: string | null = null;
+    let availabilityFormattedDate: string | null = null;
+    let sourceCar: string | null = null;
+    let costValue: number | null = null;
+    let companyValue: number | null = null;
 
     if (!saleById) {
       return response
@@ -92,13 +98,34 @@ class ServiceSaleController {
 
       seller = data?.sale.seller.name;
 
-      formattedDate = format(
+      sellerContact = data?.sale.seller.telephone;
+
+      deliveryFormattedDate = format(
         data?.sale.deliveryDate,
-        "'Dia' dd 'de' MMMM', às ' HH:mm'h'",
+        "'dia' dd 'de' MMMM', às ' HH:mm'h'",
         { locale: ptBR }
       );
 
+      availabilityFormattedDate = format(
+        data?.sale.availabilityDate,
+        "'dia' dd 'de' MMMM', às ' HH:mm'h'",
+        { locale: ptBR }
+      );
+
+      requestFormattedDate = format(
+        data?.sale.requestDate,
+        "'dia' dd 'de' MMMM', às ' HH:mm'h'",
+        { locale: ptBR }
+      );
+
+      sourceCar = data.sale.source;
+
+      costValue = data.sale.costPrice;
+
+      companyValue = data.sale.companyPrice;
+
       serviceSale.push(data);
+
 
       return data
     });
@@ -107,8 +134,34 @@ class ServiceSaleController {
 
     let services = servicesNames.join(', ');
 
-    const subject = `${seller} solicitou uma nova prestação de serviço`;
-    const text = `O vendedor ${seller} da concessionária ${company} unidade ${unit} solicitou uma nova prestação de serviço para ser entregue ao cliente ${saleById.person.name} no ${formattedDate}. Serviços a serem realizados: ${services} `;
+    const subject = `SOLICITAÇÃO PEDIDO ${saleId}.`;
+    const text = `SOLICITAÇÃO DO PEDIDO ${saleId}
+
+- DATA E HORA DA SOLICITAÇÃO: ${requestFormattedDate},
+
+- VENDEDOR: ${seller},
+
+- CONTATO VENDEDOR: ${sellerContact},
+
+- CONCESSIONÁRIA: ${company},
+
+- UNIDADE: ${unit},
+
+- DATA E HORA DE DISPONIBILIDADE: ${availabilityFormattedDate},
+
+- DATA E HORA DE ENTREGA: ${deliveryFormattedDate},
+
+- SERVIÇOS:
+${services}
+
+- VALOR A RECEBER: ${costValue},
+
+- VALOR COBRADO PELA CONCESSIONÁRIA: ${companyValue},
+
+- ORIGEM: ${sourceCar},
+
+- CLIENTE: ${saleById.person.name},
+`;
 
     let result = Mail.sendMailToAdmin(text, subject);
 
