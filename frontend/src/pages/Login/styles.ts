@@ -9,6 +9,7 @@ export const Container = styled.div`
   align-items: stretch;
 `
 export const Content = styled.div`
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,6 +28,7 @@ export const Content = styled.div`
 
     h1{
     font: 45px 'Ubuntu', sans-serif;
+    font-weight: 700;
     position: absolute;
     }
 

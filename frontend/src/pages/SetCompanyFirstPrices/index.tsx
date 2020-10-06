@@ -52,7 +52,6 @@ const SetCompanyPrices = () => {
         return;
       }
     })
-
   }, [history])
 
   const handleKeyUp = useCallback((event: React.FormEvent<HTMLInputElement>) => {

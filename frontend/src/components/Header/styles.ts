@@ -10,10 +10,6 @@ export const Container = styled.div`
   background: #282828;
   width: 100%;
   position: fixed;
-
-  .buttons{
-
-}
 `;
 
 export const Buttons = styled.div`

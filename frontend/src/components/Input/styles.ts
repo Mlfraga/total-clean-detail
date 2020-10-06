@@ -17,7 +17,7 @@ export const Container = styled.div<ContainerProps>`
     height: 57px;
     width: 100%;
 
-    border: 2px solid ${shade(0.5, '#383838')};
+    border: 2px solid #585858;
     color: #F4EDE8;
 
     display: flex;
