@@ -8,6 +8,8 @@ import Services from '../pages/Services';
 import Service from '../pages/Services/Vitrificação';
 import SetCompanyFirstPrices from '../pages/SetCompanyFirstPrices';
 import SalesRegister from '../pages/SalesRegister';
+import Sellers from '../pages/Sellers';
+import SellersRegister from '../pages/SellersRegisater';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -16,6 +18,8 @@ const Routes: React.FC = () => (
     <Route path='/service/vitrificacao' component={Service} isPrivate />
     <Route path='/set-prices' component={SetCompanyFirstPrices} isPrivate permissions={['MANAGER']} />
     <Route path='/sales-register' component={SalesRegister} isPrivate permissions={['MANAGER', 'SELLER']} />
+    <Route path='/sellers' component={Sellers} isPrivate permissions={['MANAGER']} />
+    <Route path='/sellers-register' component={SellersRegister} isPrivate permissions={['MANAGER']} />
   </Switch>
 );
 

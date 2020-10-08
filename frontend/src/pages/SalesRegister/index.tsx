@@ -1,8 +1,7 @@
 import React, { useRef, useCallback, ChangeEvent, useEffect, useState } from 'react';
 import { FormHandles } from '@unform/core';
-import { Form } from '@unform/web'
+import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { useHistory } from 'react-router-dom';
 
 import { FiCheckCircle } from 'react-icons/fi';
 
@@ -42,7 +41,6 @@ const SalesRegister = () => {
   const { addToast } = useToast();
 
   const formRef = useRef<FormHandles>(null);
-  const history = useHistory();
 
   const [selectError, setSelectError] = useState(false);
   const [availabilityDateFieldError, setAvailabilityDateFieldError] = useState(false);

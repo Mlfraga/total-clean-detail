@@ -170,9 +170,7 @@ export const Content = styled.div`
   }
 
   button {
-    position: absolute;
-    right: 0;
-    margin-right: 354px;
+    float: right;
     width: 150px;
     margin-top: 25px;
   }
