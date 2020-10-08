@@ -127,10 +127,8 @@ class AutheticationController {
             unit: {
               connect: { id: unitId }
             }
-
           }
-        }
-
+       }
       })
 
       return response.json(user);

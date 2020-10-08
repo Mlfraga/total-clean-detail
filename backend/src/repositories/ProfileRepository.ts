@@ -6,7 +6,7 @@ type Profile = ProfileGetPayload<{
 }>
 
 class UserRepository extends BaseRepository<Profile, ProfileCreateInput, ProfileUpdateInput> {
-  readonly include = { user: true };
+  readonly include = { user: true, company: true, unit: true };
   findAll(): Promise<Profile[]> {
     return this.prisma.profile.findMany({ include: this.include });
   }
