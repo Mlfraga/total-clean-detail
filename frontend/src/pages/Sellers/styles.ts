@@ -19,7 +19,7 @@ export const Content = styled.div`
 
     margin-top: 25px;
     margin-top: 25px;
-    background: #303030;
+    background: #282828;
     height: 60px;
     border-radius: 8px;
   }

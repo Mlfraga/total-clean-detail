@@ -196,6 +196,7 @@ const SalesRegister = () => {
   const handleCreateAnotherSale = useCallback(()=>{
     setSuccessPage(null);
   }, [])
+
   return (
   <>
     <Container hidden={!successPage ? false : true }>

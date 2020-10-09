@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import backgroundPattern from '../../assets/Pattern-Developing-Page.svg';
 
 export const Container = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
@@ -12,16 +11,60 @@ export const Content = styled.div`
   width: 100%;
   max-width: 1200px;
 
+
   .boxTitle {
     display: grid;
-    grid-template-columns: 16% 16% 14% 10% 8% 18% 12% 4%;
+    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
     align-items: center;
     justify-content: center;
+    padding-left: 10px;
 
     margin-top: 25px;
     background: #282828;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 15px;
+
+    span {
+      font: 14px 'Ubuntu', sans-serif;
+      font-weight: bold;
+    }
+  }
+  div.updateSaleContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    float: right;
+
+    button{
+      width: 250px;
+      height: 40px;
+      margin-top: 36px;
+    }
+
+    .SelectContainer {
+      width: 250px;
+      div.labels{
+        background: transparent;
+        border: 0;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+
+      span {
+        font: 18px 'Ubuntu', sans-serif;
+        margin-left: 4px;
+        font-weight: 400;
+        color: #eee;
+
+        & + span {
+          color: #FF6F60;
+        }
+      }
+    }
+  }
+
   }
 `;
 
@@ -66,17 +109,16 @@ export const List = styled.div`
 `;
 
 export const Box = styled.div`
-
   & + div {
     margin-top: 16px;
   }
 
-
  div.header{
+    padding-left: 10px;
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 16% 16% 14% 10% 8% 18% 12% 4%;
+    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
     align-items: center;
     justify-content: center;
 
@@ -94,10 +136,38 @@ export const Box = styled.div`
           border-radius: 50%;
           width: 12px;
           height:12px;
-          background: #94EC94;
         }
       }
   }
+
+  div.header-selected {
+    padding-left: 10px;
+    display: grid;
+    max-width: 1200px;
+    width: 100%;
+    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #FF6F60;
+    background: #303030;
+    height: 60px;
+    border-radius: 15px 15px 0 0;
+
+      span {
+        display: flex;
+        align-items: center;
+        font: 15px 'Ubuntu', sans-serif;
+        font-weight: 400;
+        div{
+          margin-right: 6px;
+          border-radius: 50%;
+          width: 12px;
+          height:12px;
+        }
+      }
+  }
+
     .dropDown {
       background: #353535;
       border-radius: 0 0 15px 15px;
