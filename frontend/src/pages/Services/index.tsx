@@ -35,50 +35,33 @@ const Services = () => {
 
       <Breadcrumb text='Serviços' />
       <Content>
-        <tbody>
-          <tr>
-            <th>
-              <div onClick={() => history.push('/service/vitrificacao')}>
-                <img className='images' src={signInBackgroundImg} alt="img" />
-                <span id='text'>Vitrificação de Pintura</span>
-              </div>
-            </th>
-            <th>
-              <div onClick={() => history.push('/service/vitrificacao')}>
-                <img className='images' src={signInBackgroundImg} alt="img" />
-                <span id='text'>Vitrificação de Pintura</span>
-              </div>
-            </th>
-            <th>
-              <div onClick={() => history.push('/service/vitrificacao')}>
-                <img className='images' src={signInBackgroundImg} alt="img" />
-                <span id='text'>Vitrificação de Pintura</span>
-              </div>
-            </th>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <th>
-              <div onClick={() => history.push('/service/vitrificacao')}>
-                <img className='images' src={signInBackgroundImg} alt="img" />
-                <span id='text'>Vitrificação de Pintura</span>
-              </div>
-            </th>
-            <th>
-              <div onClick={() => history.push('/service/vitrificacao')}>
-                <img className='images' src={signInBackgroundImg} alt="img" />
-                <span id='text'>Vitrificação de Pintura</span>
-              </div>
-            </th>
-            <th>
-              <div onClick={() => history.push('/service/vitrificacao')}>
-                <img className='images' src={signInBackgroundImg} alt="img" />
-                <span id='text'>Vitrificação de Pintura</span>
-              </div>
-            </th>
-          </tr>
-        </tbody>
+        <div onClick={() => history.push('/service/vitrificacao')}>
+          <img className='images' src={signInBackgroundImg} alt="img" />
+          <span id='text'>Vitrificação de Pintura</span>
+        </div>
+
+        <div onClick={() => history.push('/service/vitrificacao')}>
+          <img className='images' src={signInBackgroundImg} alt="img" />
+          <span id='text'>Vitrificação de Pintura</span>
+        </div>
+        <div onClick={() => history.push('/service/vitrificacao')}>
+          <img className='images' src={signInBackgroundImg} alt="img" />
+          <span id='text'>Vitrificação de Pintura</span>
+        </div>
+
+        <div onClick={() => history.push('/service/vitrificacao')}>
+          <img className='images' src={signInBackgroundImg} alt="img" />
+          <span id='text'>Vitrificação de Pintura</span>
+        </div>
+        <div onClick={() => history.push('/service/vitrificacao')}>
+          <img className='images' src={signInBackgroundImg} alt="img" />
+          <span id='text'>Vitrificação de Pintura</span>
+        </div>
+
+        <div onClick={() => history.push('/service/vitrificacao')}>
+          <img className='images' src={signInBackgroundImg} alt="img" />
+          <span id='text'>Vitrificação de Pintura</span>
+        </div>
       </Content>
 
     </Container >

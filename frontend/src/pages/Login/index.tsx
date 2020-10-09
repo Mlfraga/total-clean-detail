@@ -54,7 +54,6 @@ const Login = () => {
         formRef.current?.setErrors(errors);
         return
       }
-      console.log(err);
       addToast({ title: 'Erro ao fazer login', type: 'error', description: 'Erro ao autenticar usuário, credenciais inválidas' });
     }
   }, [addToast, history, signIn]);

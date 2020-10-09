@@ -9,6 +9,7 @@ interface AuthState {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
     profile: {
       companyId: number;
+      unitId: number;
     }
   };
   buttons: Button[];
@@ -24,6 +25,7 @@ interface AuthContextData {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
     profile: {
       companyId: number;
+      unitId: number;
     }
   };
   buttons: Button[];

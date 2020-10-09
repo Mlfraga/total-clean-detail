@@ -10,6 +10,8 @@ import SetCompanyFirstPrices from '../pages/SetCompanyFirstPrices';
 import SalesRegister from '../pages/SalesRegister';
 import Sellers from '../pages/Sellers';
 import SellersRegister from '../pages/SellersRegisater';
+import Sales from '../pages/Sales';
+import AlertDevelopingPage from '../pages/AlertDevelopingPage';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -20,6 +22,9 @@ const Routes: React.FC = () => (
     <Route path='/sales-register' component={SalesRegister} isPrivate permissions={['MANAGER', 'SELLER']} />
     <Route path='/sellers' component={Sellers} isPrivate permissions={['MANAGER']} />
     <Route path='/sellers-register' component={SellersRegister} isPrivate permissions={['MANAGER']} />
+    <Route path='/sales' component={Sales} isPrivate permissions={['MANAGER', 'SELLER']} />
+    <Route path='/reports' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
+    <Route path='/prices' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
   </Switch>
 );
 

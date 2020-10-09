@@ -1,7 +1,8 @@
 import React, { useRef, useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
+import * as Yup from 'yup';
+import getValidationsErrors from '../../utils/getValidationError';
 
 import { Container, Separator, Content, Inputs, InputContainer } from './styles';
 
@@ -11,9 +12,22 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Select from 'react-select';
 
+import { useAuth } from '../../context/auth';
+import { useToast } from '../../context/toast';
+
 import api from '../../services/api';
 
+interface SubmitFormData {
+  name: string;
+  email: string;
+  password: string;
+  telephone: string;
+  username: string;
+}
+
 const RegsiterSellers = () => {
+  const {user} = useAuth();
+  const {addToast} = useToast();
   const formRef = useRef<FormHandles>(null);
 
   const [selectError, setSelectError] = useState(false);
@@ -24,10 +38,67 @@ const RegsiterSellers = () => {
     { value: 'MANAGER', label: 'Gerente' }
   ]
 
-  const handleChangeRole = useCallback((newValue)=>{
+  const handleChangeRole = useCallback((newValue) => {
     setRole(newValue.value);
     setSelectError(false);
   }, []);
+
+  const handleSubmit = useCallback(async(data: SubmitFormData, {reset}) => {
+    try{
+      formRef.current?.setErrors({});
+
+      const schema = Yup.object().shape({
+        username: Yup.string().required('Usuário obrigatório'),
+        password: Yup.string().required('Senha obrigatória'),
+        email: Yup.string().required('E-mail obrigatório'),
+        name: Yup.string().required('Nome obrigatório'),
+        telephone: Yup.string().required('Telefone obrigatório'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false
+      });
+
+      if(!role) {
+        setSelectError(true);
+        addToast({title: "Campo cargo de usuário vazio.", type: "error"});
+        throw new Error('Role are required.')
+      }
+
+      const requestData = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        role,
+        name: data.name,
+        telephone: data.telephone,
+        enabled: true,
+        companyId: user.profile.companyId,
+        unitId: user.profile.unitId,
+      }
+
+    const response = await api.post('auth/signup', requestData);
+
+    if(response.status === 200){
+      addToast({title: "Sucesso", type: "success", description: `O usuário ${response.data.profile.name} já pode usar o sistema.`});
+      reset();
+    }else{
+      addToast({title: "Erro", type: "error", description: `Ocorreu um erro, tente novamente.`});
+    }
+    }catch(err){
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationsErrors(err);
+
+        formRef.current?.setErrors(errors);
+
+        if(!role){
+          setSelectError(true);
+          addToast({title: "Campo cargo do usuário vazio", type: "error"})
+        }
+        return
+      }
+    }
+  },[addToast, role, user.profile.companyId, user.profile.unitId])
 
   return (
     <Container>
@@ -36,7 +107,7 @@ const RegsiterSellers = () => {
       <Breadcrumb text='Registro de vendedores' />
 
       <Content>
-      <Form ref={formRef} onSubmit={()=>{}}>
+      <Form ref={formRef} onSubmit={handleSubmit}>
 
         <Separator>
           <span>Dados do vendedor</span>
@@ -89,9 +160,9 @@ const RegsiterSellers = () => {
             </div>
             <Input
               className="input"
-              id="email"
-              type="email"
-              name="email"
+              id="username"
+              type="username"
+              name="username"
             />
           </InputContainer>
         </Inputs>

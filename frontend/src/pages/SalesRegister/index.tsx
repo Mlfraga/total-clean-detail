@@ -58,6 +58,7 @@ const SalesRegister = () => {
     { value: 'USED', label: 'Semi-novo' },
     { value: 'WORKSHOP', label: 'Oficina' }
   ]
+
   useEffect(() => {
     api.get('services').then(response => {
       const services: Services[] = response.data;
@@ -181,7 +182,6 @@ const SalesRegister = () => {
         const errors = getValidationsErrors(err);
 
         formRef.current?.setErrors(errors);
-
 
         if(!sourceCar){
           setSelectError(true);
