@@ -94,7 +94,8 @@ class AuthenticationMiddleware {
 
     if (!accessTokens.includes(token)) {
       return response
-        .sendStatus(404)
+        .status(404)
+        .json({ error: "SECRET_KEY_INVALID." })
     }
 
     if (!process.env.ACCESS_TOKEN_SECRET) {
@@ -107,7 +108,7 @@ class AuthenticationMiddleware {
       if (err) {
         return response
           .status(403)
-          .json(err)
+          .json({ error: "SECRET_KEY_INVALID." })
       }
 
       request.user = user as User;

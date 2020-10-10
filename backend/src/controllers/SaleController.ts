@@ -22,6 +22,7 @@ interface Validate {
   findByStatus: SchemaOptions;
   findByUnit: SchemaOptions;
   findBySeller: SchemaOptions;
+  findByCompany: SchemaOptions;
 }
 
 class SaleController {
@@ -55,7 +56,12 @@ class SaleController {
       body: Joi.object({
         sellerId: Joi.number().required(),
       })
-    }
+    },
+    findByCompany: {
+      body: Joi.object({
+        companyId: Joi.number().required(),
+      })
+    },
   }
 
   async index(request: Request, response: Response) {
@@ -260,8 +266,20 @@ class SaleController {
     const sales = await SaleRepository.findBySeller(parseInt(sellerId));
 
     return response.json(sales);
-
   }
+
+  async findByCompanyAndFinishedStatus(request: Request, response: Response) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
+
+    const companyId = decoded.payload.user.profile.companyId;
+
+    const sales = await SaleRepository.findByCompanyAndFinishedStatus(parseInt(companyId));
+
+    return response.json(sales);
+  }
+
   async updateStatus(request: Request, response: Response) {
     const { id } = request.params;
     const { status } = request.body;
