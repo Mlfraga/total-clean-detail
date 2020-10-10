@@ -67,7 +67,7 @@ const Sales = () => {
   const [selectError, setSelectError] = useState(false);
 
   const [sales, setSales] = useState<Sale[]>([]);
-  const [servicesOpened, setServicesOpened] = useState<Number[]>([]);
+  const [OpenedServices, setOpenedServices] = useState<Number[]>([]);
   const [selectedSale, setSelectedSale] = React.useState<Number | null>(null);
   const [statusSale, setStatusSale] = useState('');
 
@@ -169,16 +169,16 @@ const Sales = () => {
   },[ user.role]);
 
   const handleOpenServices = useCallback((id:number)=>{
-    setServicesOpened([...servicesOpened, id])
+    setOpenedServices([...OpenedServices, id])
     setSelectedSale(null);
-  },[servicesOpened])
+  },[OpenedServices])
 
   const handleCloseServices = useCallback((id:number)=>{
-    const newServicesOpened = servicesOpened.filter(serviceId => serviceId !== id);
+    const newOpenedServices = OpenedServices.filter(serviceId => serviceId !== id);
 
-    setServicesOpened(newServicesOpened);
+    setOpenedServices(newOpenedServices);
     setSelectedSale(null);
-  },[servicesOpened])
+  },[OpenedServices])
 
   const handleSelectSale = useCallback((id: number) => {
     if(selectedSale === id ){
@@ -264,7 +264,7 @@ const Sales = () => {
             <Box key={sale.id} onClick={user.role === 'ADMIN' ? () => handleSelectSale(sale.id) : () => {}}>
               <div
                 className={selectedSale === sale.id ? "header-selected" : "header"}
-                style={servicesOpened.includes(sale.id)? {borderRadius: '15px 15px 0 0', borderBottom: 0}: {borderRadius: '15px'}}
+                style={OpenedServices.includes(sale.id)? {borderRadius: '15px 15px 0 0', borderBottom: 0}: {borderRadius: '15px'}}
               >
                 <span>{sale.seller}</span>
                 <span>{sale.customer}</span>
@@ -281,7 +281,7 @@ const Sales = () => {
                   </span>
                 </div>
 
-                {servicesOpened.includes(sale.id)
+                {OpenedServices.includes(sale.id)
                   ? <FaArrowAltCircleUp onClick={() => handleCloseServices(sale.id)} style={{cursor: 'pointer'}} size={26}/>
                   : <FaArrowAltCircleDown onClick={() => handleOpenServices(sale.id)} style={{cursor: 'pointer'}} size={26} />
                 }
@@ -289,7 +289,7 @@ const Sales = () => {
 
               <div
               className="dropDown"
-              hidden={servicesOpened.includes(sale.id ) ? false : true}
+              hidden={OpenedServices.includes(sale.id ) ? false : true}
               style={selectedSale === sale.id ? {border: '2px solid #FF6F60', borderTop: 0} : {border: 0}}
               >
                 <Separator className="separator">

@@ -11,7 +11,6 @@ export const Content = styled.div`
   width: 100%;
   max-width: 1200px;
 
-
   .boxTitle {
     display: grid;
     grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
@@ -29,42 +28,11 @@ export const Content = styled.div`
       font-weight: bold;
     }
   }
-  div.updateSaleContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 600px;
+
+  .button {
+    margin-top: 30px;
     float: right;
-
-    button{
-      width: 250px;
-      height: 40px;
-      margin-top: 36px;
-    }
-
-    .SelectContainer {
-      width: 250px;
-      div.labels{
-        background: transparent;
-        border: 0;
-        display: flex;
-        justify-content: space-between;
-        margin-top: 5px;
-
-      span {
-        font: 18px 'Ubuntu', sans-serif;
-        margin-left: 4px;
-        font-weight: 400;
-        color: #eee;
-
-        & + span {
-          color: #FF6F60;
-        }
-      }
-    }
-  }
-
+    width: 300px;
   }
 `;
 
@@ -118,38 +86,10 @@ export const Box = styled.div`
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 15% 15% 65% 5%;
     align-items: center;
     justify-content: center;
 
-    background: #303030;
-    height: 60px;
-    border-radius: 15px 15px 0 0;
-
-      span {
-        display: flex;
-        align-items: center;
-        font: 15px 'Ubuntu', sans-serif;
-        font-weight: 200;
-        div{
-          margin-right: 6px;
-          border-radius: 50%;
-          width: 12px;
-          height:12px;
-        }
-      }
-  }
-
-  div.header-selected {
-    padding-left: 10px;
-    display: grid;
-    max-width: 1200px;
-    width: 100%;
-    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
-    align-items: center;
-    justify-content: center;
-
-    border: 2px solid #FF6F60;
     background: #303030;
     height: 60px;
     border-radius: 15px 15px 0 0;
@@ -168,24 +108,6 @@ export const Box = styled.div`
       }
   }
 
-  div.status {
-    div.FINISHED {
-      background: #94EC94;
-    }
-
-    div.CANCELED {
-      background: #FF6F60;
-    }
-
-    div.PENDING {
-      background: #ffffa8;
-    }
-
-    div.CONFIRMED {
-      background: #5eb8ff;
-    }
-  }
-
   .dropDown {
     background: #353535;
     border-radius: 0 0 15px 15px;
@@ -198,7 +120,7 @@ export const Box = styled.div`
       }
     }
 
-    div.service{
+    div.title{
       margin-top: 16px;
       background: #424242;
       min-height: 35px;
@@ -208,11 +130,18 @@ export const Box = styled.div`
       display: grid;
       grid-template-columns: 275px 275px;
       align-items: center;
+
       & + div {
         margin-top: 8px;
       }
+
+      span {
+        font: 16px 'Ubuntu', sans-serif;
+        font-weight: bold;
+      }
     }
-    div.total{
+
+    div.unit{
       margin-top: 16px;
       background: #424242;
       min-height: 35px;

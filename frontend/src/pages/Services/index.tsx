@@ -24,8 +24,6 @@ const Services = () => {
           return;
         }
       })
-    } else {
-      console.log('É ADMIN');
     }
   }, [history, user.profile.companyId])
 

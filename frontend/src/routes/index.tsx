@@ -11,6 +11,7 @@ import SalesRegister from '../pages/SalesRegister';
 import Sellers from '../pages/Sellers';
 import SellersRegister from '../pages/SellersRegisater';
 import Sales from '../pages/Sales';
+import Companies from '../pages/Companies';
 import AlertDevelopingPage from '../pages/AlertDevelopingPage';
 
 const Routes: React.FC = () => (
@@ -25,6 +26,7 @@ const Routes: React.FC = () => (
     <Route path='/sales' component={Sales} isPrivate permissions={['MANAGER', 'SELLER', 'ADMIN']} />
     <Route path='/reports' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
     <Route path='/prices' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
+    <Route path='/companies' component={Companies} isPrivate permissions={['ADMIN']} />
   </Switch>
 );
 
