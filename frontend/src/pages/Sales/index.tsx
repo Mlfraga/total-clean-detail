@@ -6,6 +6,8 @@ import {useAuth} from '../../context/auth';
 import {useToast} from '../../context/toast';
 import api from '../../services/api';
 
+import getSaleStatusTranslated from '../../utils/getSaleStatusTranslated'
+
 import { Container, Content, Separator, List, Box } from './styles';
 import {FaArrowAltCircleDown, FaArrowAltCircleUp} from 'react-icons/fa'
 
@@ -243,7 +245,6 @@ const Sales = () => {
     <Container>
       <Header/>
       <Breadcrumb text="Vendas realizadas"/>
-
       <Content>
         <Separator>
           <span>Vendas</span>
@@ -258,28 +259,28 @@ const Sales = () => {
             <span>Data de entrega</span>
             <span>Situação</span>
           </div>
-
         <List>
           {sales.map(sale =>(
             <Box key={sale.id} onClick={user.role === 'ADMIN' ? () => handleSelectSale(sale.id) : () => {}}>
-              <div className={selectedSale === sale.id ? "header-selected" : "header"}
-               style={servicesOpened.includes(sale.id)? {borderRadius: '15px 15px 0 0', borderBottom: 0}: {borderRadius: '15px'}}>
+              <div
+                className={selectedSale === sale.id ? "header-selected" : "header"}
+                style={servicesOpened.includes(sale.id)? {borderRadius: '15px 15px 0 0', borderBottom: 0}: {borderRadius: '15px'}}
+              >
                 <span>{sale.seller}</span>
                 <span>{sale.customer}</span>
                 <span>{sale.car}</span>
                 <span>{sale.carPlate}</span>
                 <span>{sale.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</span>
-                <span>{format(new Date(sale.deliveryDate),
-                 "dd'/'MM'/'yyyy '-' HH:mm'h'",
-                { locale: ptBR })}</span>
-                <div className="statusCircle">
+                <span>
+                  {format(new Date(sale.deliveryDate), "dd'/'MM'/'yyyy '-' HH:mm'h'", { locale: ptBR })}
+                </span>
+                <div className="status">
                   <span>
-                    <div style={sale.status === 'FINISHED' ? {background:'#94EC94'} : sale.status === 'CANCELED' ? {background:'#FF6F60'} : sale.status === 'PENDING' ? {background: '#ffffa8'} : sale.status === 'CONFIRMED' ? {background: '#5eb8ff'} : {background:'#424242'}  }
-                    />
-
-                    {sale.status === 'FINISHED' ? 'Finalizado' : sale.status === 'CANCELED' ? 'Cancelado' : sale.status === 'PENDING' ? 'Pendente' : sale.status === 'CONFIRMED' ? 'Confirmado' : 'Undefined'  }
+                    <div className={sale.status}/>
+                    {getSaleStatusTranslated(sale.status)}
                   </span>
                 </div>
+
                 {servicesOpened.includes(sale.id)
                   ? <FaArrowAltCircleUp onClick={() => handleCloseServices(sale.id)} style={{cursor: 'pointer'}} size={26}/>
                   : <FaArrowAltCircleDown onClick={() => handleOpenServices(sale.id)} style={{cursor: 'pointer'}} size={26} />

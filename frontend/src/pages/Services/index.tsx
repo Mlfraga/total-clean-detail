@@ -39,7 +39,6 @@ const Services = () => {
           <img className='images' src={signInBackgroundImg} alt="img" />
           <span id='text'>Vitrificação de Pintura</span>
         </div>
-
         <div onClick={() => history.push('/service/vitrificacao')}>
           <img className='images' src={signInBackgroundImg} alt="img" />
           <span id='text'>Vitrificação de Pintura</span>
@@ -57,7 +56,6 @@ const Services = () => {
           <img className='images' src={signInBackgroundImg} alt="img" />
           <span id='text'>Vitrificação de Pintura</span>
         </div>
-
         <div onClick={() => history.push('/service/vitrificacao')}>
           <img className='images' src={signInBackgroundImg} alt="img" />
           <span id='text'>Vitrificação de Pintura</span>

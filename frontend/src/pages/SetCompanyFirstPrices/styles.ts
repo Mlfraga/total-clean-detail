@@ -75,7 +75,6 @@ export const Buttons = styled.div`
   flex-direction: row-reverse;
   width: 100%;
 
-
   button {
 
     max-width: 250px;

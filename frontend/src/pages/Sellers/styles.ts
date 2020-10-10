@@ -65,7 +65,7 @@ export const List = styled.div`
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #303030;
+    background: #525252;
     border-radius: 20px;
   }
 
