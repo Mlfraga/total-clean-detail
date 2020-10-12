@@ -1,9 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
-import {FaArrowAltCircleDown, FaArrowAltCircleUp} from 'react-icons/fa'
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
+import { RiAddFill } from 'react-icons/ri'
 
 import { Container, Content, Separator, List, Box } from './styles';
 
@@ -19,7 +20,7 @@ interface CompaniesResponseData {
   units: Array<{id: number, name: string, telephone: string}>
 }
 
-const Compaies = () => {
+const Companies = () => {
   const [companies, setCompanies] = useState<CompaniesResponseData[]>([]);
   const [openedCompanies, setOpenedCompanies] = useState<Number[]>([]);
 
@@ -91,11 +92,17 @@ const Compaies = () => {
                     <span>{unit.name}</span>
                     <span>{unit.telephone}</span>
                   </div>
+
                 ))}
+                <Link
+                className="createNewCompanyLink"
+                to='unities-register'
+                >
+                  <RiAddFill size={18}/> Adicionar nova unidade
+                </Link>
               </div>
            </Box>
           ))}
-
         </List>
 
         <div className="button">
@@ -106,4 +113,4 @@ const Compaies = () => {
   );
 }
 
-export default Compaies;
+export default Companies;

@@ -189,6 +189,7 @@ const SalesRegister = () => {
         }
         return
       }
+      addToast({title: "Erro", description: 'Não foi possível registrar essa venda, tente novamente.', type: "error"})
     }
 
   },[addToast, availabilityDate, deliveryDate, selectedServices, sourceCar, user.profile.companyId]);

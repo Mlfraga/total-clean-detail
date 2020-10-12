@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { shade } from 'polished';
 
 export const Container = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
@@ -112,6 +113,23 @@ export const Box = styled.div`
     background: #353535;
     border-radius: 0 0 15px 15px;
     padding: 10px 16px 20px 16px;
+
+    .createNewCompanyLink {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+
+      font: 14px 'Ubuntu', sans-serif;
+      font-weight: 400;
+
+      color: #ff6659;
+      transition: color 0.2s;
+
+      margin-top: 16px;
+      &:hover {
+      color: ${shade(0.2, '#ff6659')}
+      }
+    }
 
     div.separator{
       margin-top: 5px;
