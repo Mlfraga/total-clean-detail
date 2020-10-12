@@ -61,7 +61,7 @@ model Company {
   cnpj           String           @unique
   units          Unit[]
   Profile        Profile[]
-  sompanyService CompanyService[]
+  companyService CompanyService[]
 }
 
 model Unit {
