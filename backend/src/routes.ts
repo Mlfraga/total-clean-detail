@@ -30,6 +30,7 @@ routes.post('/auth/signup', celebrate(AutheticationController.validate.signUp), 
 
 routes.post('/companies', RoleMiddleware.isAdmin, celebrate(CompanyController.validate.store), CompanyController.store);
 routes.get('/companies', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.index);
+routes.get('/companies/:companyId', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.findById);
 
 routes.get('/units/:companyId', RoleMiddleware.isAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany);
 routes.post('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.store);

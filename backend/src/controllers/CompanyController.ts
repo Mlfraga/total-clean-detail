@@ -25,6 +25,20 @@ class CompanyController {
     return response.json(companies);
   }
 
+  async findById(request: Request, response: Response) {
+    const {companyId} = request.params;
+
+    const company = await CompanyRepository.findById(parseInt(companyId));
+
+    if(!company) {
+      return response
+      .status(404)
+      .json({ error: 'Company not found.' })
+    }
+
+    return response.json(company);
+  }
+
   async store(request: Request, response: Response) {
     const { name, telephone, cnpj } = request.body;
 
