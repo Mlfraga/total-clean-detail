@@ -94,11 +94,6 @@ export const AuthProvider: React.FC = ({ children }) => {
             route: '/companies'
           },
           {
-            name: 'Unidades',
-            enable: false,
-            route: '/unities'
-          },
-          {
             name: 'Usuários',
             enable: false,
             route: '/users'
@@ -195,11 +190,6 @@ export const AuthProvider: React.FC = ({ children }) => {
           name: 'Concessionárias',
           enable: false,
           route: '/companies'
-        },
-        {
-          name: 'Unidades',
-          enable: false,
-          route: '/unities'
         },
         {
           name: 'Usuários',

@@ -13,6 +13,8 @@ import SellersRegister from '../pages/SellersRegisater';
 import Sales from '../pages/Sales';
 import Companies from '../pages/Companies';
 import CompaniesRegister from '../pages/CompaniesRegister';
+import UnitiesRegister from '../pages/UnitiesRegister';
+
 import AlertDevelopingPage from '../pages/AlertDevelopingPage';
 
 const Routes: React.FC = () => (
@@ -29,6 +31,7 @@ const Routes: React.FC = () => (
     <Route path='/prices' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
     <Route path='/companies' component={Companies} isPrivate permissions={['ADMIN']} />
     <Route path='/companies-register' component={CompaniesRegister} isPrivate permissions={['ADMIN']} />
+    <Route path='/unities-register' component={UnitiesRegister} isPrivate permissions={['ADMIN']} />
   </Switch>
 );
 

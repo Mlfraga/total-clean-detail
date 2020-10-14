@@ -96,7 +96,7 @@ const Companies = () => {
                 ))}
                 <Link
                 className="createNewCompanyLink"
-                to='unities-register'
+                to={`unities-register/?company=${company.id}`}
                 >
                   <RiAddFill size={18}/> Adicionar nova unidade
                 </Link>

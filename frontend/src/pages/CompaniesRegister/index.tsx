@@ -32,8 +32,8 @@ const CompaniesRegister = () => {
 
       const schema = Yup.object().shape({
         companyName: Yup.string().required('Nome da concessionária obrigatório'),
-        companyTelephone: Yup.string().required('Telefone da concessionária obrigatório'),
-        companyCnpj: Yup.string().required('Cnpj da concessionária obrigatório'),
+        companyTelephone: Yup.string().required('Telefone da concessionária obrigatório').min(9, 'O telefone deve ter no mínimo 9 dígitos').max(11, 'O telefone deve ter no máximo 11 dígitos'),
+        companyCnpj: Yup.string().required('Cnpj da concessionária obrigatório').length(14, 'O CNPJ deve ter 14 dígitos.'),
       });
 
       await schema.validate(data, {
@@ -66,17 +66,17 @@ const CompaniesRegister = () => {
         return
       }
 
-      addToast({title: "CNPJ ou nome ja utilizado.", description: 'Não foi possível realizar o cadastro, tente novamente.', type: "error"})
+      addToast({title: "Não foi possível realizar o caadastro.", description: 'Essa concessionária já foi criada ou ocorreu um erro, tente novamente.', type: "error"})
     }
   },[addToast]);
 
   return (
     <Container>
       <Header/>
-      <Breadcrumb text="Concessionárias cadastradas"/>
+      <Breadcrumb text="Adicionar novas concessionárias"/>
       <Content>
         <Separator>
-          <span>Cadastro de concessionária</span>
+          <span>Cadastro de concessionárias</span>
           <div />
         </Separator >
 
