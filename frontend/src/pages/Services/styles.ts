@@ -15,8 +15,9 @@ export const Content = styled.div`
 
   display: grid;
   justify-content: space-between;
-  grid-template-columns: 385px 385px 385px;
-div {
+  grid-template-columns: 32.3% 32.3% 32.3%;
+
+  div {
   display: flex;
   align-items: center;
   justify-content: center;
