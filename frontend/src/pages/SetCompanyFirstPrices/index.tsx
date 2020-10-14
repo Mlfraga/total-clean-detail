@@ -13,7 +13,7 @@ import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
 
 import api from '../../services/api';
-import { currencyMasker } from './masks'
+import { currencyMasker } from '../../utils/masks'
 
 import { Container, Content, Buttons, ListBoxes, PriceBox } from './styles';
 

@@ -59,7 +59,7 @@ const AdminServices = () => {
 
         </List>
         <div className="button">
-          <Button onClick={()=>{history.push('sellers-register')}}>Registrar novo serviço</Button>
+          <Button onClick={()=>{history.push('services-register')}}>Registrar novo serviço</Button>
         </div>
       </Content>
 

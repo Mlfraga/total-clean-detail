@@ -6,6 +6,7 @@ import Route from './Route';
 import Login from '../pages/Login';
 import Services from '../pages/Services';
 import ServicesAdmin from '../pages/ServicesAdmin';
+import ServicesRegister from '../pages/ServicesRegister';
 import Service from '../pages/Services/Vitrificação';
 import SetCompanyFirstPrices from '../pages/SetCompanyFirstPrices';
 import SalesRegister from '../pages/SalesRegister';
@@ -24,6 +25,7 @@ const Routes: React.FC = () => (
     <Route path='/services' component={Services} isPrivate />
     <Route path='/service/vitrificacao' component={Service} isPrivate />
     <Route path='/administration-services' component={ServicesAdmin} isPrivate permissions={['ADMIN']} />
+    <Route path='/services-register' component={ServicesRegister} isPrivate permissions={['ADMIN']} />
     <Route path='/set-prices' component={SetCompanyFirstPrices} isPrivate permissions={['MANAGER']} />
     <Route path='/sales-register' component={SalesRegister} isPrivate permissions={['MANAGER', 'SELLER']} />
     <Route path='/sellers' component={Sellers} isPrivate permissions={['MANAGER']} />
