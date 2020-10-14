@@ -15,7 +15,7 @@ class UnitController {
     store: {
       body: Joi.object().keys({
         name: Joi.string().required(),
-        telephone: Joi.string().required(),
+        telephone: Joi.string().min(9).max(11).required(),
         companyId: Joi.number().required(),
       }),
     },
