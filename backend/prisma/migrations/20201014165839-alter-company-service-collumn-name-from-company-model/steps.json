@@ -1,0 +1,17 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Company",
+      "field": "companyService",
+      "type": "CompanyService",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Company",
+      "field": "sompanyService"
+    }
+  ]
+}

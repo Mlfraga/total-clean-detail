@@ -27,6 +27,11 @@ class UnitController {
 
   }
 
+  async index (request: Request, response: Response) {
+    const units = await UnitRepository.findAll();
+    return response.json(units);
+  }
+
   async findByCompany(request: Request, response: Response) {
     const { companyId } = request.params;
 

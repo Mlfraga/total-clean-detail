@@ -33,6 +33,7 @@ routes.get('/companies', RoleMiddleware.isAdmin, HeaderMiddleware.Header, Compan
 routes.get('/companies/:companyId', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.findById);
 
 routes.get('/units/:companyId', RoleMiddleware.isAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany);
+routes.get('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.index);
 routes.post('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.store);
 
 routes.get('/users', RoleMiddleware.isAdmin, ProfileController.index);
