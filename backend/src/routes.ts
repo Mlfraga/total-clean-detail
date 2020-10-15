@@ -32,12 +32,14 @@ routes.post('/companies', RoleMiddleware.isAdmin, celebrate(CompanyController.va
 routes.get('/companies', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.index);
 routes.get('/companies/:companyId', RoleMiddleware.isAdmin, HeaderMiddleware.Header, CompanyController.findById);
 
-routes.get('/units/:companyId', RoleMiddleware.isAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany);
+routes.get('/units/:companyId', RoleMiddleware.isManagerOrAdmin, celebrate(UnitController.validate.findByCompany), UnitController.findByCompany);
 routes.get('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.index);
 routes.post('/units', RoleMiddleware.isAdmin, celebrate(UnitController.validate.store), UnitController.store);
 
 routes.get('/users', RoleMiddleware.isAdmin, ProfileController.index);
-routes.get('/users/unit/', RoleMiddleware.isManager, ProfileController.findByUnitId); routes.get('/user/filtered', RoleMiddleware.isManagerOrAdmin, ProfileController.findByName);
+routes.get('/users/unit/', RoleMiddleware.isManager, ProfileController.findByUnitId);
+routes.get('/users/company/', RoleMiddleware.isManager, ProfileController.findByCompanyId);
+routes.get('/user/filtered', RoleMiddleware.isManagerOrAdmin, ProfileController.findByName);
 
 routes.get('/services', ServiceController.index);
 routes.post('/services', RoleMiddleware.isAdmin, celebrate(ServiceController.validate.store), ServiceController.store);

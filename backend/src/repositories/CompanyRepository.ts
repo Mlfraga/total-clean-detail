@@ -2,11 +2,11 @@ import { CompanyGetPayload, CompanyCreateInput, CompanyUpdateInput } from '@pris
 import BaseRepository from './BaseRepository'
 
 type Company = CompanyGetPayload<{
-  include: { units: true };
+  include: { units: true, Profile: {include: {user: true}} };
 }>
 
 class CompanyRepository extends BaseRepository<Company, CompanyCreateInput, CompanyUpdateInput> {
-  readonly include = { units: true}
+  readonly include = { units: true, Profile: {include: {user: true}}}
   findAll(): Promise<Company[]> {
     return this.prisma.company.findMany({ include: this.include});
   }
@@ -34,7 +34,6 @@ class CompanyRepository extends BaseRepository<Company, CompanyCreateInput, Comp
   findByCnpj(cnpj: string): Promise<Company[]> {
     return this.prisma.company.findMany({ where: { cnpj }, include: this.include });
   }
-
 
 }
 

@@ -91,8 +91,7 @@ class AutheticationController {
         .json({ error: 'Already has an user with this email.' })
     }
 
-    if (companyId && unitId) {
-
+    if (role === 'SELLER') {
       const companyById = await CompanyRepository.findById(companyId);
 
       if (!companyById) {
@@ -128,11 +127,44 @@ class AutheticationController {
               connect: { id: unitId }
             }
           }
-       }
+        }
       })
 
       return response.json(user);
-    } else {
+    }
+
+    if(role === 'MANAGER'){
+      const companyById = await CompanyRepository.findById(companyId);
+
+      if (!companyById) {
+        return response
+          .status(404)
+          .json({ error: 'Invalid companyId.' })
+      }
+
+      const passwordCrypt = await bcrypt.hash(password, 10)
+
+      const user = await UserRepository.create({
+        username: username,
+        email: email,
+        password: passwordCrypt,
+        role: role,
+        profile: {
+          create: {
+            name: name,
+            telephone: telephone,
+            enabled: enabled,
+            company: {
+              connect: { id: companyId }
+            },
+          }
+        }
+      })
+
+      return response.json(user);
+    }
+
+    if(role === 'ADMIN'){
       const passwordCrypt = await bcrypt.hash(password, 10)
 
       const user = await UserRepository.create({
@@ -151,7 +183,6 @@ class AutheticationController {
 
       return response.json(user);
     }
-
   }
 
   async update(request: Request, response: Response) {

@@ -30,9 +30,6 @@ class ProfileController {
   }
 
   async findByUnitId(request: Request, response: Response) {
-    console.log(request.headers['authorization']);
-
-
     const authHeader = request.headers['authorization'];
     const token = authHeader && authHeader?.split(' ')[1];
     const decoded: any = JWT.decode(String(token), { complete: true });
@@ -41,6 +38,19 @@ class ProfileController {
     const unitId = decoded.payload.user.profile.unitId;
 
     const profiles = await ProfileRepository.findByUnitId(Number(unitId));
+
+    return response.json(profiles);
+  }
+
+  async findByCompanyId(request: Request, response: Response) {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader?.split(' ')[1];
+    const decoded: any = JWT.decode(String(token), { complete: true });
+
+
+    const companyId = decoded.payload.user.profile.companyId;
+
+    const profiles = await ProfileRepository.findByCompanyId(Number(companyId));
 
     return response.json(profiles);
   }

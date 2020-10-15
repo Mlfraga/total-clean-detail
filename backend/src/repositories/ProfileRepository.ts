@@ -35,6 +35,10 @@ class UserRepository extends BaseRepository<Profile, ProfileCreateInput, Profile
     return this.prisma.profile.findMany({ where: { unitId: id }, include: this.include })
   }
 
+  findByCompanyId(id: number): Promise<Profile[]> {
+    return this.prisma.profile.findMany({ where: { companyId: id }, include: this.include })
+  }
+
 }
 
 export default new UserRepository();
