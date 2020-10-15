@@ -11,12 +11,13 @@ import Service from '../pages/Services/Vitrificação';
 import SetCompanyFirstPrices from '../pages/SetCompanyFirstPrices';
 import SalesRegister from '../pages/SalesRegister';
 import Sellers from '../pages/Sellers';
-import SellersRegister from '../pages/SellersRegisater';
+import SellersRegister from '../pages/SellersRegister';
 import Sales from '../pages/Sales';
 import Companies from '../pages/Companies';
 import CompaniesRegister from '../pages/CompaniesRegister';
 import UnitiesRegister from '../pages/UnitiesRegister';
-import Users from '../pages/UsersByUnits';
+import Users from '../pages/UsersByCompanies';
+import UsersRegister from '../pages/UsersRegister';
 
 import AlertDevelopingPage from '../pages/AlertDevelopingPage';
 
@@ -32,12 +33,13 @@ const Routes: React.FC = () => (
     <Route path='/sellers' component={Sellers} isPrivate permissions={['MANAGER']} />
     <Route path='/sellers-register' component={SellersRegister} isPrivate permissions={['MANAGER']} />
     <Route path='/sales' component={Sales} isPrivate permissions={['MANAGER', 'SELLER', 'ADMIN']} />
-    <Route path='/reports' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
+    <Route path='/reports' component={AlertDevelopingPage} isPrivate permissions={['MANAGER', 'ADMIN']} />
     <Route path='/prices' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
     <Route path='/companies' component={Companies} isPrivate permissions={['ADMIN']} />
     <Route path='/companies-register' component={CompaniesRegister} isPrivate permissions={['ADMIN']} />
     <Route path='/unities-register' component={UnitiesRegister} isPrivate permissions={['ADMIN']} />
     <Route path='/users' component={Users} isPrivate permissions={['ADMIN']} />
+    <Route path='/users-register' component={UsersRegister} isPrivate permissions={['ADMIN']} />
   </Switch>
 );
 

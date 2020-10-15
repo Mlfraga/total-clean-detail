@@ -123,7 +123,7 @@ export const Box = styled.div`
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 22% 22% 20% 30% 4%;
+    grid-template-columns: 22% 22% 50% 4%;
     align-items: center;
     justify-content: center;
 

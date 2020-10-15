@@ -13,13 +13,8 @@ import { Container, Content, Separator, List, Box } from './styles';
 
 interface FormatRow {
   id: number;
-  companyId: number;
   name: string;
   telephone: string;
-  company: {
-    id: number,
-    name: string;
-  }
   Profile: [
     {
       id: number,
@@ -34,71 +29,69 @@ interface FormatRow {
 }
 
 const UsersByUnits = () => {
-  const [unities, setUnities] = useState<FormatRow[]>([]);
-  const [openedUnities, setOpenedUnities] = useState<Number[]>([]);
+  const [companies, setCompanies] = useState<FormatRow[]>([]);
+  const [openedCompanies, setOpenedCommpanies] = useState<Number[]>([]);
 
   useEffect(()=>{
-    api.get('units').then(response => {
-      const unities: FormatRow[] = response.data;
+    api.get('companies').then(response => {
+      const companies: FormatRow[] = response.data;
 
-      setUnities(unities);
+      setCompanies(companies);
     });
   },[])
 
   const handleOpenUnities = useCallback((id: number)=>{
-    setOpenedUnities([...openedUnities, id])
-  },[openedUnities])
+    setOpenedCommpanies([...openedCompanies, id])
+  },[openedCompanies])
 
   const handleCloseUnities = useCallback((id: number)=>{
-    const newOpenedUnities = openedUnities.filter(unitId => unitId !== id);
+    const newOpenedUnities = openedCompanies.filter(unitId => unitId !== id);
 
-    setOpenedUnities(newOpenedUnities);
-  },[openedUnities])
+    setOpenedCommpanies(newOpenedUnities);
+  },[openedCompanies])
 
   return (
     <Container>
       <Header />
 
-      <Breadcrumb text='Usuários por unidade' />
+      <Breadcrumb text='Usuários por concessionária' />
       <Content>
         <Separator>
-          <span>Unidades</span>
+          <span>Cooncessionárias</span>
           <div />
         </Separator >
           <div className="boxTitle">
-            <h3>Unidade</h3>
             <h3>Concessionária</h3>
             <h3>Telephone</h3>
           </div>
 
         <List>
-          {unities.map(unit => (
-          <Box>
+          {companies.map(company => (
+          <Box key={company.id}>
             <div
               className="header"
-              style={openedUnities.includes(unit.id) ? {borderRadius: '15px 15px 0 0' } : {borderRadius: 15}}
+              style={openedCompanies.includes(company.id) ? {borderRadius: '15px 15px 0 0' } : {borderRadius: 15}}
             >
-              <span>{unit.name}</span>
-              <span>{unit.company.name}</span>
-              <span>{unit.telephone}</span>
+              <span>{company.name}</span>
+              <span>{company.telephone}</span>
               <Link
                 className="createNewCompanyLink"
-                to={`users-register/?company=${unit.company.id}&unit=${unit.id}`}
+                to={`users-register/?company=${company.id}`}
               >
-                  <RiAddFill size={18}/> Adicionar novo usuário a essa unidade
+                  <RiAddFill size={18}/> Adicionar novo usuário a essa concessionária
               </Link>
-              {openedUnities.includes(unit.id)
-                ? <FaArrowAltCircleUp onClick={() => handleCloseUnities(unit.id)} style={{cursor: 'pointer'}} size={26}/>
-                : <FaArrowAltCircleDown onClick={() => handleOpenUnities(unit.id)} style={{cursor: 'pointer'}} size={26} />
+              {openedCompanies.includes(company.id)
+                ? <FaArrowAltCircleUp onClick={() => handleCloseUnities(company.id)} style={{cursor: 'pointer'}} size={26}/>
+                : <FaArrowAltCircleDown onClick={() => handleOpenUnities(company.id)} style={{cursor: 'pointer'}} size={26} />
               }
             </div>
 
             <div
               className="dropDown"
-              hidden={openedUnities.includes(unit.id ) ? false : true}
+              hidden={openedCompanies.includes(company.id ) ? false : true}
             >
                 <Separator className="separator">
-                  <span>Usuários dessa unidade</span>
+                  <span>Usuários dessa concessionária</span>
                   <div />
                 </Separator >
 
@@ -108,7 +101,7 @@ const UsersByUnits = () => {
                   <span>Cargo</span>
                 </div>
 
-                {unit.Profile.map(person => (
+                {company.Profile.map(person => (
                   <div className="person" key={person.id}>
                     <span>{person.name}</span>
                     <span>{person.telephone}</span>

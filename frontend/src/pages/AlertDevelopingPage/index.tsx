@@ -6,7 +6,7 @@ import { Container } from './styles';
 
 import Button from '../../components/Button';
 
-const RegsiterSellers = () => {
+const AlertDevelopingPage = () => {
   const history = useHistory();
   return (
     <Container>
@@ -20,4 +20,4 @@ const RegsiterSellers = () => {
   );
 }
 
-export default RegsiterSellers;
+export default AlertDevelopingPage;

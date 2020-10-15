@@ -43,7 +43,7 @@ const CompaniesRegister = () => {
       const isCnpjValid = CpfCnpjUtils.isCnpjValid(data.companyCnpj);
 
       if(isCnpjValid !== true){
-        formRef.current?.setErrors({  companyCnpj: 'Cnpj inválido.'})
+        formRef.current?.setErrors({ companyCnpj: 'Cnpj inválido.' })
         return;
       };
 
