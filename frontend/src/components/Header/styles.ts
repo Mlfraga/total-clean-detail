@@ -20,6 +20,10 @@ export const Buttons = styled.div`
   flex-direction: row-reverse;
   align-items: center;
 
+  svg {
+    margin-right: 6px;
+  }
+
   a {
     display: flex;
     align-items: center;

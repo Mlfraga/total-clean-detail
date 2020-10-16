@@ -32,9 +32,9 @@ const Sellers = () => {
   const history = useHistory();
 
   useEffect(()=>{
-    api.get('users/unit').then(response => {
+    api.get('users/company').then(response => {
       const sellers: FormatRow[] = response.data;
-
+      console.log(sellers);
       setRows(sellers);
     });
   },[])
@@ -65,8 +65,8 @@ const Sellers = () => {
             <span>{row.telephone}</span>
             <span>{row.user.email}</span>
             <span>{row.company.name}</span>
-            <span>{row.unit.name}</span>
-            <span>{row.user.role === 'MANAGER' ? 'Gerente' : 'Vendedor'}</span>
+            <span>{row.unit?.name}</span>
+            <span>{row.user?.role === 'MANAGER' ? 'Gerente' : 'Vendedor'}</span>
           </div>
           ))}
 

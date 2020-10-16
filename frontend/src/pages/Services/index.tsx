@@ -16,16 +16,18 @@ const Services = () => {
 
   useEffect(() => {
     if (user.profile.companyId) {
-      api.get('companyservices/company').then(response => {
-        const companyservices = response.data;
+      if(user.role === 'MANAGER'){
+        api.get('companyservices/company').then(response => {
+          const companyservices = response.data;
 
-        if (companyservices.length === 0) {
-          history.push('set-prices')
-          return;
-        }
-      })
+          if (companyservices.length === 0) {
+            history.push('set-prices')
+            return;
+          }
+        })
+      }
     }
-  }, [history, user.profile.companyId])
+  }, [history, user.profile.companyId, user.role])
 
   return (
     <Container>

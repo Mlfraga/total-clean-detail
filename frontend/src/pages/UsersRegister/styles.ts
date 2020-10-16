@@ -19,6 +19,7 @@ export const Content = styled.div`
   button {
     width: 300px;
     float: right;
+    margin-top: 400px;
   }
 `;
 

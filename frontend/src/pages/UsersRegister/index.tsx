@@ -122,6 +122,7 @@ const UsersRegister = () => {
 
       if(data.password !== data.confirmPassword){
         formRef.current?.setErrors({password: 'As senhas não batem.', confirmPassword: 'As senhas não batem.'})
+        return
       }
 
       if(!role){
@@ -192,9 +193,9 @@ const UsersRegister = () => {
 
         formRef.current?.setErrors(errors);
         return
-      }
-
-      addToast({title: "Não foi possível realizar o caadastro.", description: 'Esse usuário já foi criado ou ocorreu um erro, tente novamente.', type: "error"})
+      }else{
+      addToast({title: "Não foi possível realizar o cadastro.", description: 'Esse usuário já foi criado ou ocorreu um erro, tente novamente.', type: "error"});
+    }
     }
   },[addToast, company, role, unit]);
 
@@ -389,7 +390,7 @@ const UsersRegister = () => {
 
         </Inputs>
 
-          <Button type='submit'>Cadastrar</Button>
+          <Button type='submit'>Salvar</Button>
         </Form>
       </Content>
     </Container >
