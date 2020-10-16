@@ -22,19 +22,21 @@ export const Content = styled.div`
 `;
 
 export const ListBoxes = styled.div`
-    display: grid;
-    grid-template-columns: 285px 285px 285px 285px;
-    width: 100%;
-    justify-content: space-between;
+  display: grid;
+  grid-template-columns: 285px 285px 285px 285px;
+  width: 100%;
+  justify-content: space-between;
 `
 
 export const PriceBox = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 
   max-width: 285px;
   width: 100%;
-  height: 150px;
+  height: 200px;
+  padding: 16px;
 
   border-radius: 8px;
   border: 2px solid #626262;
@@ -43,9 +45,9 @@ export const PriceBox = styled.div`
   margin-bottom: 25px;
 
   .title-container {
+    height: 54px;
     width: 100%;
     text-align: center;
-    margin-top: 16px;
 
     span {
       font: 16px 'Ubuntu', sans-serif;

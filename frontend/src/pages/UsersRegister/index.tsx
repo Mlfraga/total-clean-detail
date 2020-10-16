@@ -202,7 +202,7 @@ const UsersRegister = () => {
   return (
     <Container>
       <Header/>
-      <Breadcrumb text="Registro de novos usuários"/>
+      <Breadcrumb text={`Registro de novos usuários a concessionŕia ${company.name}`}/>
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit} >
         <Separator>

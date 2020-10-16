@@ -104,11 +104,8 @@ const SetCompanyPrices = () => {
                   <span id='service-name'>{service.name.toUpperCase()}</span>
                 </div>
                 <br />
-
                 <span id='price-totalclean'>Preço da Total Clean: R$: {service.price}</span>
-
                 <br />
-
                 <div className='inputs' >
                   <Input
                     className="input"

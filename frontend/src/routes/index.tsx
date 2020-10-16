@@ -20,6 +20,7 @@ import Users from '../pages/UsersByCompanies';
 import UsersRegister from '../pages/UsersRegister';
 
 import AlertDevelopingPage from '../pages/AlertDevelopingPage';
+import NotFound from '../pages/NotFound';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -40,6 +41,8 @@ const Routes: React.FC = () => (
     <Route path='/unities-register' component={UnitiesRegister} isPrivate permissions={['ADMIN']} />
     <Route path='/users' component={Users} isPrivate permissions={['ADMIN']} />
     <Route path='/users-register' component={UsersRegister} isPrivate permissions={['ADMIN']} />
+
+    <Route path="*" component={NotFound} exact />
   </Switch>
 );
 

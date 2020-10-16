@@ -267,8 +267,8 @@ export const InputContainer = styled.div`
 
 export const ServiceBox = styled.div `
   margin-top: 16px;
-  width: 150px;
-  height: 50px;
+  width: 165px;
+  height: 65px;
   background: #424242;
   border: 2px solid #555555;
 
@@ -276,6 +276,7 @@ export const ServiceBox = styled.div `
   align-items: center;
   justify-content: center;
   border-radius: 12px;
+  cursor: pointer;
 
   transition: background-color 0.2s;
   :hover {
@@ -296,7 +297,7 @@ export const Services = styled.div `
   overflow: auto;
   display: grid;
   justify-content: space-between;
-  grid-template-columns: 150px 150px 150px 150px 150px 150px 150px;
+  grid-template-columns: 135px 135px 135px 135px 135px 135px 135px;
   grid-template-rows: 70px 70px 70px 70px 70px 70px 70px;
 
   .selected {
