@@ -21,13 +21,13 @@ const AdminServices = () => {
 
   const history = useHistory();
 
-  useEffect(()=>{
+  useEffect(() => {
     api.get('services').then(response => {
       const services: FormatRow[] = response.data;
 
       setRows(services);
     });
-  },[])
+  }, [])
 
   return (
     <Container>
@@ -39,27 +39,27 @@ const AdminServices = () => {
           <span>Serviços</span>
           <div />
         </Separator >
-          <div className="boxTitle">
-            <h3>Nome</h3>
-            <h3>Preço</h3>
-            <h3>Situação</h3>
-          </div>
+        <div className="boxTitle">
+          <h3>Nome</h3>
+          <h3>Preço</h3>
+          <h3>Situação</h3>
+        </div>
 
         <List>
           {rows.map(row => (
             <div className="box">
-            <span>{row.name}</span>
-            <span>{row.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</span>
-            <span>
-              <div className={!row.enabled ? 'unabled' : 'enabled'}/>
-              {!row.enabled ? 'Inativo' : 'Ativo'}
-            </span>
-          </div>
+              <span>{row.name}</span>
+              <span>{row.price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
+              <span>
+                <div className={!row.enabled ? 'unabled' : 'enabled'} />
+                {!row.enabled ? 'Inativo' : 'Ativo'}
+              </span>
+            </div>
           ))}
 
         </List>
         <div className="button">
-          <Button onClick={()=>{history.push('services-register')}}>Registrar novo serviço</Button>
+          <Button onClick={() => { history.push('services-register') }}>Registrar novo serviço</Button>
         </div>
       </Content>
 

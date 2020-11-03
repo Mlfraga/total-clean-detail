@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
@@ -37,9 +37,9 @@ const UnitiesRegister = () => {
   useEffect(() => {
     const query = history.location.search;
 
-    const parsedQuery = queryString.parse(query, {parseNumbers: true});
+    const parsedQuery = queryString.parse(query, { parseNumbers: true });
 
-    if(!parsedQuery.company || typeof parsedQuery.company !== 'number'){
+    if (!parsedQuery.company || typeof parsedQuery.company !== 'number') {
       history.push('/services');
       return
     }
@@ -47,15 +47,15 @@ const UnitiesRegister = () => {
     api.get(`companies/${parsedQuery.company}`).then(response => {
       const company = response.data;
 
-      setCompany({id: company.id, name: company.name});
+      setCompany({ id: company.id, name: company.name });
     }).catch(() => {
       history.push('/services');
       return
-      });
+    });
   }, [history])
 
-  const handleSubmit = useCallback(async (data: FormData, {reset}) => {
-    try{
+  const handleSubmit = useCallback(async (data: FormData, { reset }) => {
+    try {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
@@ -75,26 +75,26 @@ const UnitiesRegister = () => {
 
       const response = await api.post('units', requestDataSubmit);
 
-      if(response.status === 200){
-        addToast({title: "Sucesso", description: `Unidade adicionada a concessionária ${company?.name}, com sucesso`, type: 'success'});
+      if (response.status === 200) {
+        addToast({ title: "Sucesso", description: `Unidade adicionada a concessionária ${company?.name}, com sucesso`, type: 'success' });
 
         reset();
       }
-    }catch(err){
+    } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
 
         formRef.current?.setErrors(errors);
         return
       }
-      addToast({title: "Não foi possível realizar o caadastro.", description: 'Essa unidade já foi criada ou ocorreu um erro, tente novamente.', type: "error"})
+      addToast({ title: "Não foi possível realizar o caadastro.", description: 'Essa unidade já foi criada ou ocorreu um erro, tente novamente.', type: "error" })
     }
   }, [addToast, company])
 
   return (
     <Container>
-      <Header/>
-      <Breadcrumb text={`Adicionar unidades a concessionária ${company?.name}`}/>
+      <Header />
+      <Breadcrumb text={`Adicionar unidades a concessionária ${company?.name}`} />
       <Content>
         <Separator>
           <span>Cadastro de unidades</span>

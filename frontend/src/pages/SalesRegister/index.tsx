@@ -45,7 +45,7 @@ const SalesRegister = () => {
   const [selectError, setSelectError] = useState(false);
   const [availabilityDateFieldError, setAvailabilityDateFieldError] = useState(false);
   const [deliveryDateFieldError, setDeliveryDateFieldError] = useState(false);
-  const [successPage, setSuccessPage] = useState<{isAvailable: boolean, saleId?: number} | null>(null);
+  const [successPage, setSuccessPage] = useState<{ isAvailable: boolean, saleId?: number } | null>(null);
 
   const [services, setServices] = useState<Services[]>([]);
   const [selectedServices, setSelectedServices] = useState<Number[]>([]);
@@ -54,7 +54,7 @@ const SalesRegister = () => {
   const [sourceCar, setSourceCar] = useState('');
 
   const selectOptions = [
-    { value: 'NEW', label: 'Novo' },
+    { value: 'NEW', label: '0 KM' },
     { value: 'USED', label: 'Semi-novo' },
     { value: 'WORKSHOP', label: 'Oficina' }
   ]
@@ -71,260 +71,261 @@ const SalesRegister = () => {
     const alreadySelected = selectedServices.findIndex(item => item === id);
 
     if (alreadySelected >= 0) {
-        const filteredItems = selectedServices.filter(item => item !== id);
+      const filteredItems = selectedServices.filter(item => item !== id);
 
-        setSelectedServices(filteredItems);
+      setSelectedServices(filteredItems);
     } else {
-        setSelectedServices([...selectedServices, id]);
+      setSelectedServices([...selectedServices, id]);
     }
   }, [selectedServices])
 
-  const handleAvailabilityChange = useCallback((event: ChangeEvent<HTMLInputElement>)=>{
+  const handleAvailabilityChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setAvailabilityDate(event.target.value);
     setAvailabilityDateFieldError(false);
   }, []);
 
-  const handleDeliveryChange = useCallback((event: ChangeEvent<HTMLInputElement>)=>{
+  const handleDeliveryChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setDeliveryDate(event.target.value);
     setDeliveryDateFieldError(false);
   }, []);
 
-  const handleChangeSourceCar = useCallback((newValue)=>{
+  const handleChangeSourceCar = useCallback((newValue) => {
     setSourceCar(newValue.value);
     setSelectError(false);
   }, []);
 
-  const handleSubmit = useCallback(async (data: FormData, {reset}) => {
-    const responseCompanyBudget = await api.post('/sale/getcompanysalebudget', { companyId: user.profile.companyId, services: selectedServices } )
+  const handleSubmit = useCallback(async (data: FormData, { reset }) => {
+    const responseCompanyBudget = await api.post('/sale/getcompanysalebudget', { companyId: user.profile.companyId, services: selectedServices })
 
     const companyPrice = responseCompanyBudget.data.companyPrice;
 
-    const responseCostBudget = await api.post('/sale/getsalebudget', { services: selectedServices } );
+    const responseCostBudget = await api.post('/sale/getsalebudget', { services: selectedServices });
 
     const costPrice = responseCostBudget.data.costPrice;
 
-    try{
-        formRef.current?.setErrors({});
+    try {
+      formRef.current?.setErrors({});
 
-        const schema = Yup.object().shape({
-          car: Yup.string().required('Carro obrigatório'),
-          carColor: Yup.string().required('Cor do carro obrigatório'),
-          carModel: Yup.string().required('Modelo do carro obrigatório'),
-          carPlate: Yup.string().required('Placa do carro obrigatório').min(7, "Mínimo de 7 caracteres").max(8, "Máximo de 8 caracteres"),
-          cpf: Yup.string().required('Cpf obrigatório').max(11, 'No máximo 11 dígitos'),
-          name: Yup.string().required('Nome obrigatório'),
-        });
+      const schema = Yup.object().shape({
+        car: Yup.string().required('Carro obrigatório'),
+        carColor: Yup.string().required('Cor do carro obrigatório'),
+        carModel: Yup.string().required('Modelo do carro obrigatório'),
+        carPlate: Yup.string().required('Placa do carro obrigatório').min(7, "Mínimo de 7 caracteres").max(8, "Máximo de 8 caracteres"),
+        cpf: Yup.string().required('Cpf obrigatório').max(11, 'No máximo 11 dígitos'),
+        name: Yup.string().required('Nome obrigatório'),
+      });
 
-        await schema.validate(data, {
-          abortEarly: false
-        });
+      await schema.validate(data, {
+        abortEarly: false
+      });
 
-        if (!sourceCar || !availabilityDate || !deliveryDate) {
-          if(!sourceCar){
-            setSelectError(true);
-            addToast({title: "Campo origem de carro vazio.", type: "error"});
-          }
-
-          if(!availabilityDate){
-            setAvailabilityDateFieldError(true);
-            addToast({title: "Campo data de disponibilidade vazio.", type: "error"});
-          }
-
-          if(!deliveryDate){
-            setDeliveryDateFieldError(true);
-            addToast({title: "Campo data de entrega vazio.", type: "error"});
-          }
-          throw new Error('Delivery date, Availability date or Availability date is void.')
+      if (!sourceCar || !availabilityDate || !deliveryDate) {
+        if (!sourceCar) {
+          setSelectError(true);
+          addToast({ title: "Campo origem de carro vazio.", type: "error" });
         }
 
-        if(selectedServices.length <= 0){
-          addToast({title: "Nenhum serviço selecionado.", type: "error"});
-          throw new Error('Services are required.')
+        if (!availabilityDate) {
+          setAvailabilityDateFieldError(true);
+          addToast({ title: "Campo data de disponibilidade vazio.", type: "error" });
         }
 
-        const createSaleData = {
-         deliveryDate,
-         availabilityDate,
-         companyPrice,
-         costPrice,
-         source: sourceCar,
-         name: data.name,
-         cpf: data.cpf,
-         car: data.car,
-         carModel: data.carModel,
-         carPlate: data.carPlate,
-         carColor: data.carColor,
+        if (!deliveryDate) {
+          setDeliveryDateFieldError(true);
+          addToast({ title: "Campo data de entrega vazio.", type: "error" });
         }
-
-        const responseCreatedSale = await api.post('sale', createSaleData);
-
-        if(responseCreatedSale.status === 200){
-          const createServiceSaleData = {
-            saleId: responseCreatedSale.data.id,
-            serviceIds: selectedServices
-          }
-
-          const responseCreatedServiceSale = await api.post('servicesale', createServiceSaleData);
-
-          if(responseCreatedServiceSale.status === 200){
-            addToast({title: "Sucesso", type: "success", description: `Pedido n° ${responseCreatedSale.data.id} registrado com sucesso.`})
-            setSuccessPage({isAvailable: true, saleId: responseCreatedSale.data.id});
-            setSelectedServices([]);
-            setDeliveryDate('');
-            setAvailabilityDate('');
-            reset();
-          }else{
-            addToast({title: "Erro", type: "error", description: `Não foi possível registrar esse pedido, tente novamente.`})
-          }
+        throw new Error('Delivery date, Availability date or Availability date is void.')
       }
-    }catch(err){
+
+      if (selectedServices.length <= 0) {
+        addToast({ title: "Nenhum serviço selecionado.", type: "error" });
+        throw new Error('Services are required.')
+      }
+
+      const createSaleData = {
+        deliveryDate,
+        availabilityDate,
+        companyPrice,
+        costPrice,
+        source: sourceCar,
+        name: data.name,
+        cpf: data.cpf,
+        car: data.car,
+        carModel: data.carModel,
+        carPlate: data.carPlate,
+        carColor: data.carColor,
+      }
+
+      const responseCreatedSale = await api.post('sale', createSaleData);
+
+      if (responseCreatedSale.status === 200) {
+        const createServiceSaleData = {
+          saleId: responseCreatedSale.data.id,
+          serviceIds: selectedServices
+        }
+
+        const responseCreatedServiceSale = await api.post('servicesale', createServiceSaleData);
+
+        if (responseCreatedServiceSale.status === 200) {
+          addToast({ title: "Sucesso", type: "success", description: `Pedido n° ${responseCreatedSale.data.id} registrado com sucesso.` })
+          setSuccessPage({ isAvailable: true, saleId: responseCreatedSale.data.id });
+          setSelectedServices([]);
+          setDeliveryDate('');
+          setAvailabilityDate('');
+          reset();
+        } else {
+          addToast({ title: "Erro", type: "error", description: `Não foi possível registrar esse pedido, tente novamente.` })
+        }
+      }
+    } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
 
         formRef.current?.setErrors(errors);
 
-        if(!sourceCar){
+        if (!sourceCar) {
           setSelectError(true);
-          addToast({title: "Campo origem de carro vazio", type: "error"})
+          addToast({ title: "Campo origem de carro vazio", type: "error" })
         }
         return
       }
-      addToast({title: "Erro", description: 'Não foi possível registrar essa venda, tente novamente.', type: "error"})
+      addToast({ title: "Erro", description: 'Não foi possível registrar essa venda, tente novamente.', type: "error" })
     }
 
-  },[addToast, availabilityDate, deliveryDate, selectedServices, sourceCar, user.profile.companyId]);
+  }, [addToast, availabilityDate, deliveryDate, selectedServices, sourceCar, user.profile.companyId]);
 
-  const handleCreateAnotherSale = useCallback(()=>{
+  const handleCreateAnotherSale = useCallback(() => {
     setSuccessPage(null);
   }, [])
 
   return (
-  <>
-    <Container hidden={!successPage ? false : true }>
-      <Header />
-      <Breadcrumb text='Registro de vendas' />
-      <Content >
-        <Form ref={formRef} onSubmit={handleSubmit}>
+    <>
+      <Container hidden={!successPage ? false : true}>
+        <Header />
+        <Breadcrumb text='Registro de vendas' />
+        <Content >
+          <Form ref={formRef} onSubmit={handleSubmit}>
 
-          <Separator>
-            <span>Dados do cliente</span>
-            <div />
-          </Separator >
+            <Separator>
+              <span>Dados do cliente</span>
+              <div />
+            </Separator >
 
-          <Inputs style={{ marginTop: '20px' }}>
-            <InputContainer style={{ width: '280px' }} >
-              <div className="labels">
-                <span>Nome:</span>
-                <span>*</span>
-              </div>
-              <Input
-                className="input"
-                id="name"
-                type="name"
-                name="name"
-                style={{ width: '30px' }}
-              />
-            </InputContainer>
+            <Inputs style={{ marginTop: '20px' }}>
+              <InputContainer style={{ width: '280px' }} >
+                <div className="labels">
+                  <span>Nome:</span>
+                  <span>*</span>
+                </div>
+                <Input
+                  className="input"
+                  id="name"
+                  type="name"
+                  name="name"
+                  style={{ width: '30px' }}
+                />
+              </InputContainer>
 
-            <InputContainer style={{ width: '280px' }} >
-              <div className="labels">
-                <span>Cpf:</span>
-                <span>*</span>
-              </div>
-              <Input
-                className="input"
-                id="cpf"
-                type="cpf"
-                name="cpf"
-                style={{ width: '30px' }}
-              />
-            </InputContainer>
+              <InputContainer style={{ width: '280px' }} >
+                <div className="labels">
+                  <span>Cpf:</span>
+                  <span>*</span>
+                </div>
+                <Input
+                  className="input"
+                  id="cpf"
+                  type="cpf"
+                  name="cpf"
+                  style={{ width: '30px' }}
+                />
+              </InputContainer>
 
-            <InputContainer style={{ width: '200px' }} >
-              <div className="labels">
-                <span>Carro:</span>
-                <span>*</span>
-              </div>
-              <Input
-                className="input"
-                id="car"
-                type="car"
-                name="car"
-                style={{ width: '30px' }}
-              />
-            </InputContainer>
+              <InputContainer style={{ width: '200px' }} >
+                <div className="labels">
+                  <span>Carro:</span>
+                  <span>*</span>
+                </div>
+                <Input
+                  className="input"
+                  id="car"
+                  type="car"
+                  name="car"
+                  style={{ width: '30px' }}
+                />
+              </InputContainer>
 
-            <InputContainer style={{ width: '200px' }} >
-              <div className="labels">
-                <span>Modelo:</span>
-              </div>
-              <Input
-                className="input"
-                id="carModel"
-                type="carModel"
-                name="carModel"
-                style={{ width: '30px' }}
-              />
-            </InputContainer>
+              <InputContainer style={{ width: '200px' }} >
+                <div className="labels">
+                  <span>Modelo:</span>
+                </div>
+                <Input
+                  className="input"
+                  id="carModel"
+                  type="carModel"
+                  name="carModel"
+                  style={{ width: '30px' }}
+                />
+              </InputContainer>
 
-            <InputContainer style={{ width: '180px' }} >
-              <div className="labels">
-                <span>Placa:</span>
-                <span>*</span>
-              </div>
-              <Input
-                className="input"
-                id="carPlate"
-                type="carPlate"
-                name="carPlate"
-                style={{ width: '30px' }}
-              />
-            </InputContainer>
-          </Inputs>
+              <InputContainer style={{ width: '180px' }} >
+                <div className="labels">
+                  <span>Placa:</span>
+                  <span>*</span>
+                </div>
+                <Input
+                  className="input"
+                  id="carPlate"
+                  type="carPlate"
+                  name="carPlate"
+                  style={{ width: '30px' }}
+                />
+              </InputContainer>
+            </Inputs>
 
-          <Inputs style={{ marginTop: '16px' }}>
-            <InputContainer style={{ width: '180px' }} >
-              <div className="labels">
-                <span>Cor do carro:</span>
-                <span>*</span>
-              </div>
-              <Input
-                className="input"
-                id="carColor"
-                type="carColor"
-                name="carColor"
-                style={{ width: '30px' }}
-              />
-            </InputContainer>
+            <Inputs style={{ marginTop: '16px' }}>
+              <InputContainer style={{ width: '180px' }} >
+                <div className="labels">
+                  <span>Cor do carro:</span>
+                  <span>*</span>
+                </div>
+                <Input
+                  className="input"
+                  id="carColor"
+                  type="carColor"
+                  name="carColor"
+                  style={{ width: '30px' }}
+                />
+              </InputContainer>
               <div className="SelectContainer">
                 <div className="labels">
                   <span>Origem do carro:</span>
                   <span>*</span>
                 </div>
-                  <Select
-                  styles={{ control: base => ({
-                    ...base,
-                    marginTop: 14,
-                    borderRadius: 6,
-                    borderWidth: 2,
-                    borderColor: selectError ? '#c53030' : '#585858',
-                    backgroundColor: '#424242',
-                    width: 300,
-                    height: 20,
-                    boxShadow: 'none',
-                    fontSize: 16
-                  }),
-                  menu: base => ({
-                    ...base,
-                    backgroundColor: '#282828',
-                    color: '#F4EDE8'
+                <Select
+                  styles={{
+                    control: base => ({
+                      ...base,
+                      marginTop: 14,
+                      borderRadius: 6,
+                      borderWidth: 2,
+                      borderColor: selectError ? '#c53030' : '#585858',
+                      backgroundColor: '#424242',
+                      width: 300,
+                      height: 20,
+                      boxShadow: 'none',
+                      fontSize: 16
+                    }),
+                    menu: base => ({
+                      ...base,
+                      backgroundColor: '#282828',
+                      color: '#F4EDE8'
 
-                  }),
-                  singleValue: base => ({
-                    ...base,
-                    color: '#F4EDE8'
-                  }),
-                }}
+                    }),
+                    singleValue: base => ({
+                      ...base,
+                      color: '#F4EDE8'
+                    }),
+                  }}
                   options={selectOptions}
                   onChange={handleChangeSourceCar}
                   label="Single select"
@@ -334,23 +335,23 @@ const SalesRegister = () => {
                   id="carColor"
                   type="carColor"
                   name="carColor"
-                  />
+                />
               </div>
-          </Inputs>
+            </Inputs>
 
-          <Separator>
-            <span>Datas </span>
-            <div />
-          </Separator >
-          <div className="DateTimeContainer">
-            <div className="availability">
-              <div className="labels">
-                <span>Data e hora de disponibilidade:</span>
-                <span>*</span>
-              </div>
+            <Separator>
+              <span>Datas </span>
+              <div />
+            </Separator >
+            <div className="DateTimeContainer">
+              <div className="availability">
+                <div className="labels">
+                  <span>Data e hora de disponibilidade:</span>
+                  <span>*</span>
+                </div>
                 <TextField
                   onChange={handleAvailabilityChange}
-                  id={availabilityDateFieldError ?  "date-times-availability-errored" : "date-times-availability"}
+                  id={availabilityDateFieldError ? "date-times-availability-errored" : "date-times-availability"}
                   type="datetime-local"
                   className="availability-date-time"
                   value={availabilityDate}
@@ -358,15 +359,15 @@ const SalesRegister = () => {
                     shrink: true,
                   }}
                 />
-            </div>
-            <div className="delivery">
-              <div className="labels">
-                <span>Data e hora de entrega:</span>
-                <span>*</span>
               </div>
+              <div className="delivery">
+                <div className="labels">
+                  <span>Data e hora de entrega:</span>
+                  <span>*</span>
+                </div>
                 <TextField
                   onChange={handleDeliveryChange}
-                  id={deliveryDateFieldError ?  "date-times-delivery-errored" : "date-times-delivery"}
+                  id={deliveryDateFieldError ? "date-times-delivery-errored" : "date-times-delivery"}
                   type="datetime-local"
                   className="delivery-date-time"
                   value={deliveryDate}
@@ -374,42 +375,42 @@ const SalesRegister = () => {
                     shrink: true,
                   }}
                 />
+              </div>
+            </div >
+
+            <Separator>
+              <span>Serviços </span>
+              <div />
+            </Separator>
+            <Services>
+              {services.map(service => (
+                <ServiceBox
+                  onClick={() => handleSelectService(service.id)}
+                  className={selectedServices.includes(service.id) ? 'selected' : ''}
+                  key={service.id}
+                >
+                  <span>{service.name}</span>
+                </ServiceBox>
+              ))}
+            </Services>
+            <Button type="submit">Salvar</Button>
+          </Form>
+        </Content>
+      </Container >
+
+      {successPage &&
+        <RegisterSuccessPage hidden={successPage ? false : true}>
+          <div className="content" >
+            <FiCheckCircle size={300} color='#2FB86E' />
+            <h1>Pedido {successPage?.saleId} solicitado com sucesso.</h1>
+
+            <div className="buttons">
+              <Button skipButton={true} type='button' onClick={handleCreateAnotherSale}>Voltar</Button>
             </div>
-         </div >
-
-          <Separator>
-            <span>Serviços </span>
-            <div />
-          </Separator>
-          <Services>
-           {services.map(service=>(
-            <ServiceBox
-            onClick={() => handleSelectService(service.id)}
-            className={selectedServices.includes(service.id) ? 'selected' : ''}
-            key={service.id}
-            >
-              <span>{service.name}</span>
-            </ServiceBox>
-           ))}
-          </Services>
-          <Button type="submit">Salvar</Button>
-        </Form>
-      </Content>
-    </Container >
-
-    {successPage &&
-    <RegisterSuccessPage hidden={successPage ? false : true }>
-      <div className="content" >
-        <FiCheckCircle size={300} color='#2FB86E'/>
-        <h1>Pedido {successPage?.saleId} solicitado com sucesso.</h1>
-
-        <div className="buttons">
-          <Button skipButton={true} type='button' onClick={handleCreateAnotherSale}>Voltar</Button>
-        </div>
-      </div>
-    </RegisterSuccessPage>
-    }
-  </>
+          </div>
+        </RegisterSuccessPage>
+      }
+    </>
   );
 }
 

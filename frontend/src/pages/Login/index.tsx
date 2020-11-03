@@ -47,6 +47,7 @@ const Login = () => {
       });
 
       history.push('services');
+      addToast({ title: 'Login realizado', type: 'success' });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);

@@ -22,7 +22,7 @@ export const Content = styled.div`
     margin-top: 25px;
     background: #282828;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 15px;
   }
 
   .button {

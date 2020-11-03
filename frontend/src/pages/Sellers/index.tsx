@@ -18,7 +18,7 @@ interface FormatRow {
     email: string;
     role: 'MANAGER' | 'SELLER';
   }
-  company:{
+  company: {
     name: string;
   }
   unit: {
@@ -31,13 +31,13 @@ const Sellers = () => {
 
   const history = useHistory();
 
-  useEffect(()=>{
+  useEffect(() => {
     api.get('users/company').then(response => {
       const sellers: FormatRow[] = response.data;
       console.log(sellers);
       setRows(sellers);
     });
-  },[])
+  }, [])
 
   return (
     <Container>
@@ -49,30 +49,30 @@ const Sellers = () => {
           <span>Vendedores</span>
           <div />
         </Separator >
-          <div className="boxTitle">
-            <h3>Nome</h3>
-            <h3>Telefone</h3>
-            <h3>E-mail</h3>
-            <h3>Concessionária</h3>
-            <h3>Unidade</h3>
-            <h3>Cargo</h3>
-          </div>
+        <div className="boxTitle">
+          <h3>Nome</h3>
+          <h3>Telefone</h3>
+          <h3>E-mail</h3>
+          <h3>Concessionária</h3>
+          <h3>Unidade</h3>
+          <h3>Cargo</h3>
+        </div>
 
         <List>
           {rows.map(row => (
             <div className="box">
-            <span>{row.name}</span>
-            <span>{row.telephone}</span>
-            <span>{row.user.email}</span>
-            <span>{row.company.name}</span>
-            <span>{row.unit?.name}</span>
-            <span>{row.user?.role === 'MANAGER' ? 'Gerente' : 'Vendedor'}</span>
-          </div>
+              <span>{row.name}</span>
+              <span>{row.telephone}</span>
+              <span>{row.user.email}</span>
+              <span>{row.company.name}</span>
+              <span>{row.unit?.name}</span>
+              <span>{row.user?.role === 'MANAGER' ? 'Gerente' : 'Vendedor'}</span>
+            </div>
           ))}
 
         </List>
         <div className="button">
-          <Button onClick={()=>{history.push('sellers-register')}}>Registrar novo vendedor</Button>
+          <Button onClick={() => { history.push('sellers-register') }}>Registrar novo vendedor</Button>
         </div>
       </Content>
 

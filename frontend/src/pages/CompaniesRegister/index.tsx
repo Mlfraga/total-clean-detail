@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
@@ -26,8 +26,8 @@ const CompaniesRegister = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
 
-  const handleSubmit = useCallback(async (data: FormData, {reset})=>{
-    try{
+  const handleSubmit = useCallback(async (data: FormData, { reset }) => {
+    try {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
@@ -42,8 +42,8 @@ const CompaniesRegister = () => {
 
       const isCnpjValid = CpfCnpjUtils.isCnpjValid(data.companyCnpj);
 
-      if(isCnpjValid !== true){
-        formRef.current?.setErrors({ companyCnpj: 'Cnpj inválido.' })
+      if (isCnpjValid !== true) {
+        formRef.current?.setErrors({ companyCnpj: 'Cnpj inválido.' });
         return;
       };
 
@@ -53,12 +53,12 @@ const CompaniesRegister = () => {
         cnpj: data.companyCnpj
       });
 
-      if(response.status === 200 ){
-        addToast({title: "Cadastro realizado com sucesso.", type: 'success', description: "Agora você já pode registrar unidades, vendedores e gerentes a essa concessionária."});
+      if (response.status === 200) {
+        addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: "Agora você já pode registrar unidades, vendedores e gerentes a essa concessionária." });
 
         reset();
       }
-    }catch(err){
+    } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
 
@@ -66,14 +66,14 @@ const CompaniesRegister = () => {
         return
       }
 
-      addToast({title: "Não foi possível realizar o caadastro.", description: 'Essa concessionária já foi criada ou ocorreu um erro, tente novamente.', type: "error"})
+      addToast({ title: "Não foi possível realizar o caadastro.", description: 'Essa concessionária já foi criada ou ocorreu um erro, tente novamente.', type: "error" })
     }
-  },[addToast]);
+  }, [addToast]);
 
   return (
     <Container>
-      <Header/>
-      <Breadcrumb text="Adicionar novas concessionárias"/>
+      <Header />
+      <Breadcrumb text="Adicionar novas concessionárias" />
       <Content>
         <Separator>
           <span>Cadastro de concessionárias</span>

@@ -17,11 +17,6 @@ import { currencyMasker } from '../../utils/masks'
 
 import { Container, Content, Buttons, ListBoxes, PriceBox } from './styles';
 
-interface NewServices {
-  serviceId: number;
-  price: any;
-}
-
 interface Services {
   id: number;
   name: string;
@@ -104,7 +99,7 @@ const SetCompanyPrices = () => {
                   <span id='service-name'>{service.name.toUpperCase()}</span>
                 </div>
                 <br />
-                <span id='price-totalclean'>Preço da Total Clean: R$: {service.price}</span>
+                <span id='price-totalclean'>Preço da Total Clean: {service.price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
                 <br />
                 <div className='inputs' >
                   <Input

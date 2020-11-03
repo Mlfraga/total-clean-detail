@@ -21,7 +21,7 @@ export const Content = styled.div`
     margin-top: 25px;
     background: #282828;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 15px;
   }
 
   .button {
@@ -77,7 +77,7 @@ export const List = styled.div`
 
     background: #303030;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 15px;
 
     & + div {
       margin-top: 16px;

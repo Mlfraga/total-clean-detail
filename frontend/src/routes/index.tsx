@@ -18,6 +18,7 @@ import CompaniesRegister from '../pages/CompaniesRegister';
 import UnitiesRegister from '../pages/UnitiesRegister';
 import Users from '../pages/UsersByCompanies';
 import UsersRegister from '../pages/UsersRegister';
+import UpdateCompanyPrices from '../pages/UpdateCompanyPrices';
 
 import AlertDevelopingPage from '../pages/AlertDevelopingPage';
 import NotFound from '../pages/NotFound';
@@ -35,7 +36,7 @@ const Routes: React.FC = () => (
     <Route path='/sellers-register' component={SellersRegister} isPrivate permissions={['MANAGER']} />
     <Route path='/sales' component={Sales} isPrivate permissions={['MANAGER', 'SELLER', 'ADMIN']} />
     <Route path='/reports' component={AlertDevelopingPage} isPrivate permissions={['MANAGER', 'ADMIN']} />
-    <Route path='/prices' component={AlertDevelopingPage} isPrivate permissions={['MANAGER']} />
+    <Route path='/prices' component={UpdateCompanyPrices} isPrivate permissions={['MANAGER']} />
     <Route path='/companies' component={Companies} isPrivate permissions={['ADMIN']} />
     <Route path='/companies-register' component={CompaniesRegister} isPrivate permissions={['ADMIN']} />
     <Route path='/unities-register' component={UnitiesRegister} isPrivate permissions={['ADMIN']} />

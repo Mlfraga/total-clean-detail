@@ -16,7 +16,7 @@ const Services = () => {
 
   useEffect(() => {
     if (user.profile.companyId) {
-      if(user.role === 'MANAGER'){
+      if (user.role === 'MANAGER') {
         api.get('companyservices/company').then(response => {
           const companyservices = response.data;
 

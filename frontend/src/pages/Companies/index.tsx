@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 
 import api from '../../services/api';
@@ -17,7 +17,7 @@ interface CompaniesResponseData {
   name: string,
   telephone: string,
   cnpj: string,
-  units: Array<{id: number, name: string, telephone: string}>
+  units: Array<{ id: number, name: string, telephone: string }>
 }
 
 const Companies = () => {
@@ -26,56 +26,56 @@ const Companies = () => {
 
   const history = useHistory();
 
-  useEffect(()=>{
-  api.get('companies').then(response => {
-    const companies: CompaniesResponseData[] = response.data;
-    setCompanies(companies);
-  })
-  },[])
+  useEffect(() => {
+    api.get('companies').then(response => {
+      const companies: CompaniesResponseData[] = response.data;
+      setCompanies(companies);
+    })
+  }, [])
 
-  const handleOpenCompanies = useCallback((id: number)=>{
+  const handleOpenCompanies = useCallback((id: number) => {
     setOpenedCompanies([...openedCompanies, id])
-  },[openedCompanies])
+  }, [openedCompanies])
 
-  const handleCloseCompanies = useCallback((id: number)=>{
+  const handleCloseCompanies = useCallback((id: number) => {
     const newOpenedCompanies = openedCompanies.filter(companyId => companyId !== id);
 
     setOpenedCompanies(newOpenedCompanies);
-  },[openedCompanies])
+  }, [openedCompanies])
 
   return (
     <Container>
-      <Header/>
-      <Breadcrumb text="Concessionárias cadastradas"/>
+      <Header />
+      <Breadcrumb text="Concessionárias cadastradas" />
       <Content>
         <Separator>
           <span>Concessionárias</span>
           <div />
         </Separator >
-          <div className="boxTitle">
-            <span>Nome</span>
-            <span>Contato</span>
-            <span>CNPJ</span>
-          </div>
+        <div className="boxTitle">
+          <span>Nome</span>
+          <span>Contato</span>
+          <span>CNPJ</span>
+        </div>
         <List>
           {companies.map(company => (
             <Box key={company.id} >
               <div
                 className="header"
-                style={openedCompanies.includes(company.id) ? {borderRadius: '15px 15px 0 0' } : {borderRadius: 15}}
+                style={openedCompanies.includes(company.id) ? { borderRadius: '15px 15px 0 0' } : { borderRadius: 15 }}
               >
                 <span>{company.name}</span>
                 <span>{company.telephone}</span>
                 <span>{company.cnpj}</span>
                 {openedCompanies.includes(company.id)
-                  ? <FaArrowAltCircleUp onClick={() => handleCloseCompanies(company.id)} style={{cursor: 'pointer'}} size={26}/>
-                  : <FaArrowAltCircleDown onClick={() => handleOpenCompanies(company.id)} style={{cursor: 'pointer'}} size={26} />
+                  ? <FaArrowAltCircleUp onClick={() => handleCloseCompanies(company.id)} style={{ cursor: 'pointer' }} size={26} />
+                  : <FaArrowAltCircleDown onClick={() => handleOpenCompanies(company.id)} style={{ cursor: 'pointer' }} size={26} />
                 }
               </div>
 
               <div
-              className="dropDown"
-                hidden={openedCompanies.includes(company.id ) ? false : true}
+                className="dropDown"
+                hidden={openedCompanies.includes(company.id) ? false : true}
               >
                 <Separator className="separator">
                   <span>Unidades</span>
@@ -95,21 +95,21 @@ const Companies = () => {
 
                 ))}
                 <Link
-                className="createNewCompanyLink"
-                to={`unities-register/?company=${company.id}`}
+                  className="createNewCompanyLink"
+                  to={`unities-register/?company=${company.id}`}
                 >
-                  <RiAddFill size={18}/> Adicionar nova unidade
+                  <RiAddFill size={18} /> Adicionar nova unidade
                 </Link>
               </div>
-           </Box>
+            </Box>
           ))}
         </List>
 
         <div className="button">
-          <Button onClick={()=>{history.push('companies-register')}}>Registrar nova concessionária</Button>
+          <Button onClick={() => { history.push('companies-register') }}>Registrar nova concessionária</Button>
         </div>
-       </Content>
-      </Container >
+      </Content>
+    </Container >
   );
 }
 

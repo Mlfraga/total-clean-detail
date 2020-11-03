@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useRef} from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
@@ -57,11 +57,11 @@ const UsersRegister = () => {
   const { addToast } = useToast();
 
   const [company, setCompany] = useState<Company>({} as Company);
-  const [role, setRole] = useState<{value: string, label: string} | null >(null);
+  const [role, setRole] = useState<{ value: string, label: string } | null>(null);
   const [roleSelectErrored, setRoleSelectErrored] = useState<boolean>(false);
   const [unitSelectErrored, setUnitSelectErrored] = useState<boolean>(false);
-  const [unit, setUnit] = useState<{value: string, label: string} | null >(null);
-  const [unitSelectOptions, setUnitSelectOptions] = useState<Array<{value: number, label: string}>>([]);
+  const [unit, setUnit] = useState<{ value: string, label: string } | null>(null);
+  const [unitSelectOptions, setUnitSelectOptions] = useState<Array<{ value: number, label: string }>>([]);
 
   const roleSelectOptions = [
     { value: 'SELLER', label: 'Vendedor' },
@@ -71,9 +71,9 @@ const UsersRegister = () => {
   useEffect(() => {
     const query = history.location.search;
 
-    const parsedQuery = queryString.parse(query, {parseNumbers: true});
+    const parsedQuery = queryString.parse(query, { parseNumbers: true });
 
-    if(!parsedQuery.company || typeof parsedQuery.company !== 'number'){
+    if (!parsedQuery.company || typeof parsedQuery.company !== 'number') {
       history.push('/services');
       return
     }
@@ -81,16 +81,16 @@ const UsersRegister = () => {
     api.get(`companies/${parsedQuery.company}`).then(response => {
       const company: Company = response.data;
 
-      const unitiesOptions: Array<{value: number, label: string}> = company.units.map((unit) => {
-        return {value: unit.id, label: unit.name}
+      const unitiesOptions: Array<{ value: number, label: string }> = company.units.map((unit) => {
+        return { value: unit.id, label: unit.name }
       });
 
       setUnitSelectOptions(unitiesOptions);
-      setCompany({id: company.id, name: company.name, units: company.units});
+      setCompany({ id: company.id, name: company.name, units: company.units });
     }).catch(() => {
       history.push('/services');
       return
-      });
+    });
   }, [history])
 
   const handleChangeRoleSelect = useCallback((newValue) => {
@@ -103,8 +103,8 @@ const UsersRegister = () => {
     setUnitSelectErrored(false);
   }, []);
 
-  const handleSubmit = useCallback(async (data: FormData, {reset})=>{
-    try{
+  const handleSubmit = useCallback(async (data: FormData, { reset }) => {
+    try {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
@@ -120,18 +120,18 @@ const UsersRegister = () => {
         abortEarly: false
       });
 
-      if(data.password !== data.confirmPassword){
-        formRef.current?.setErrors({password: 'As senhas não batem.', confirmPassword: 'As senhas não batem.'})
+      if (data.password !== data.confirmPassword) {
+        formRef.current?.setErrors({ password: 'As senhas não batem.', confirmPassword: 'As senhas não batem.' })
         return
       }
 
-      if(!role){
+      if (!role) {
         setRoleSelectErrored(true);
         return;
       }
 
-      if(role.value === 'SELLER'){
-        if(!unit){
+      if (role.value === 'SELLER') {
+        if (!unit) {
           setUnitSelectErrored(true);
           return;
         }
@@ -150,8 +150,8 @@ const UsersRegister = () => {
 
         const response = await api.post('auth/signup', formDataToCreateSeller);
 
-        if(response.status === 200 ){
-          addToast({title: "Cadastro realizado com sucesso.", type: 'success', description: `Agora o usuário ${data.username} já pode utilizar o sistema.`});
+        if (response.status === 200) {
+          addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: `Agora o usuário ${data.username} já pode utilizar o sistema.` });
 
           reset();
         }
@@ -171,19 +171,19 @@ const UsersRegister = () => {
 
       const response = await api.post('auth/signup', formDataToCreateManager);
 
-      if(response.status === 200 ){
-        addToast({title: "Cadastro realizado com sucesso.", type: 'success', description: `Agora o usuário ${data.username} já pode utilizar o sistema.`});
+      if (response.status === 200) {
+        addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: `Agora o usuário ${data.username} já pode utilizar o sistema.` });
 
         reset();
       }
 
-    }catch(err){
-      if(!role){
+    } catch (err) {
+      if (!role) {
         setRoleSelectErrored(true);
       }
 
-      if(role?.value === 'SELLER'){
-        if(!unit){
+      if (role?.value === 'SELLER') {
+        if (!unit) {
           setUnitSelectErrored(true);
         }
       }
@@ -193,202 +193,204 @@ const UsersRegister = () => {
 
         formRef.current?.setErrors(errors);
         return
-      }else{
-      addToast({title: "Não foi possível realizar o cadastro.", description: 'Esse usuário já foi criado ou ocorreu um erro, tente novamente.', type: "error"});
+      } else {
+        addToast({ title: "Não foi possível realizar o cadastro.", description: 'Esse usuário já foi criado ou ocorreu um erro, tente novamente.', type: "error" });
+      }
     }
-    }
-  },[addToast, company, role, unit]);
+  }, [addToast, company, role, unit]);
 
   return (
     <Container>
-      <Header/>
-      <Breadcrumb text={`Registro de novos usuários a concessionŕia ${company.name}`}/>
+      <Header />
+      <Breadcrumb text={`Registro de novos usuários a concessionŕia ${company.name}`} />
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit} >
-        <Separator>
+          <Separator>
             <span>Dados do usário</span>
             <div />
-        </Separator >
+          </Separator >
 
-        <Inputs >
+          <Inputs >
 
-          <InputContainer style={{ width: '250px' }} >
-            <div className="labels">
-              <span>Nome:</span>
-              <span>*</span>
-            </div>
-            <Input
-              className="input"
-              id="name"
-              type="name"
-              name="name"
-              style={{ width: '30px' }}
-            />
-          </InputContainer>
-
-          <InputContainer style={{ width: '250px' }} >
-            <div className="labels">
-              <span>Telephone:</span>
-              <span>*</span>
-            </div>
-            <Input
-              className="input"
-              id="telephone"
-              type="telephone"
-              name="telephone"
-              style={{ width: '30px' }}
-            />
-          </InputContainer>
-
-          <div className="SelectContainer" style={{width: '265'}}>
-            <div className="labels">
-              <span>Cargo:</span>
-              <span>*</span>
-            </div>
-              <Select
-              styles={{ control: base => ({
-                ...base,
-                marginTop: 14,
-                borderRadius: 6,
-                borderWidth: 2,
-                borderColor: roleSelectErrored ? '#c53030' : '#585858',
-                backgroundColor: '#424242',
-                width: 265,
-                height: 20,
-                boxShadow: 'none',
-                fontSize: 16
-              }),
-              menu: base => ({
-                ...base,
-                backgroundColor: '#282828',
-                color: '#F4EDE8'
-
-              }),
-              singleValue: base => ({
-                ...base,
-                color: '#F4EDE8'
-              }),
-            }}
-              options={roleSelectOptions}
-              onChange={handleChangeRoleSelect}
-              label="Single select"
-              className="select"
-              clearable={false}
-              placeholder="Selecione o cargo do usuário"
-              id="unit"
-              type="unit"
-              name="unit"
+            <InputContainer style={{ width: '250px' }} >
+              <div className="labels">
+                <span>Nome:</span>
+                <span>*</span>
+              </div>
+              <Input
+                className="input"
+                id="name"
+                type="name"
+                name="name"
+                style={{ width: '30px' }}
               />
-          </div>
+            </InputContainer>
 
-          <div
-          hidden={role?.value === "SELLER" ? false : true }
-          className="SelectContainer">
-            <div className="labels">
-              <span>Unidade do vendedor:</span>
-              <span>*</span>
-            </div>
-              <Select
-              styles={{ control: base => ({
-                ...base,
-                marginTop: 14,
-                borderRadius: 6,
-                borderWidth: 2,
-                borderColor: unitSelectErrored ? '#c53030' : '#585858',
-                backgroundColor: '#424242',
-                width: 297,
-                boxShadow: 'none',
-                fontSize: 16
-              }),
-              menu: base => ({
-                ...base,
-                backgroundColor: '#282828',
-                color: '#F4EDE8'
-
-              }),
-              singleValue: base => ({
-                ...base,
-                color: '#F4EDE8'
-              }),
-            }}
-              options={unitSelectOptions}
-              onChange={handleChangeUnitSelect}
-              label="Single select"
-              className="select"
-              clearable={false}
-              placeholder="Selecione a unidade do vendedor"
-              id="role"
-              type="role"
-              name="role"
+            <InputContainer style={{ width: '250px' }} >
+              <div className="labels">
+                <span>Telephone:</span>
+                <span>*</span>
+              </div>
+              <Input
+                className="input"
+                id="telephone"
+                type="telephone"
+                name="telephone"
+                style={{ width: '30px' }}
               />
-          </div>
+            </InputContainer>
 
-        </Inputs>
+            <div className="SelectContainer" style={{ width: '265' }}>
+              <div className="labels">
+                <span>Cargo:</span>
+                <span>*</span>
+              </div>
+              <Select
+                styles={{
+                  control: base => ({
+                    ...base,
+                    marginTop: 14,
+                    borderRadius: 6,
+                    borderWidth: 2,
+                    borderColor: roleSelectErrored ? '#c53030' : '#585858',
+                    backgroundColor: '#424242',
+                    width: 265,
+                    height: 20,
+                    boxShadow: 'none',
+                    fontSize: 16
+                  }),
+                  menu: base => ({
+                    ...base,
+                    backgroundColor: '#282828',
+                    color: '#F4EDE8'
 
-        <Separator>
-          <span>Dados do conta</span>
-          <div />
-        </Separator >
+                  }),
+                  singleValue: base => ({
+                    ...base,
+                    color: '#F4EDE8'
+                  }),
+                }}
+                options={roleSelectOptions}
+                onChange={handleChangeRoleSelect}
+                label="Single select"
+                className="select"
+                clearable={false}
+                placeholder="Selecione o cargo do usuário"
+                id="unit"
+                type="unit"
+                name="unit"
+              />
+            </div>
+
+            <div
+              hidden={role?.value === "SELLER" ? false : true}
+              className="SelectContainer">
+              <div className="labels">
+                <span>Unidade do vendedor:</span>
+                <span>*</span>
+              </div>
+              <Select
+                styles={{
+                  control: base => ({
+                    ...base,
+                    marginTop: 14,
+                    borderRadius: 6,
+                    borderWidth: 2,
+                    borderColor: unitSelectErrored ? '#c53030' : '#585858',
+                    backgroundColor: '#424242',
+                    width: 297,
+                    boxShadow: 'none',
+                    fontSize: 16
+                  }),
+                  menu: base => ({
+                    ...base,
+                    backgroundColor: '#282828',
+                    color: '#F4EDE8'
+
+                  }),
+                  singleValue: base => ({
+                    ...base,
+                    color: '#F4EDE8'
+                  }),
+                }}
+                options={unitSelectOptions}
+                onChange={handleChangeUnitSelect}
+                label="Single select"
+                className="select"
+                clearable={false}
+                placeholder="Selecione a unidade do vendedor"
+                id="role"
+                type="role"
+                name="role"
+              />
+            </div>
+
+          </Inputs>
+
+          <Separator>
+            <span>Dados do conta</span>
+            <div />
+          </Separator >
 
           <Inputs >
 
             <InputContainer style={{ width: '275px' }} >
-                <div className="labels">
-                  <span>Nome de login:</span>
-                  <span>*</span>
-                </div>
-                <Input
-                  className="input"
-                  id="username"
-                  type="username"
-                  name="username"
-                  style={{ width: '30px' }}
-                />
-              </InputContainer>
+              <div className="labels">
+                <span>Nome de login:</span>
+                <span>*</span>
+              </div>
+              <Input
+                className="input"
+                id="username"
+                type="username"
+                name="username"
+                style={{ width: '30px' }}
+              />
+            </InputContainer>
 
-              <InputContainer style={{ width: '300px' }} >
-                <div className="labels">
-                  <span>E-mail:</span>
-                  <span>*</span>
-                </div>
-                <Input
-                  className="input"
-                  id="email"
-                  type="email"
-                  name="email"
-                  style={{ width: '30px' }}
-                />
-              </InputContainer>
+            <InputContainer style={{ width: '300px' }} >
+              <div className="labels">
+                <span>E-mail:</span>
+                <span>*</span>
+              </div>
+              <Input
+                className="input"
+                id="email"
+                type="email"
+                name="email"
+                style={{ width: '30px' }}
+              />
+            </InputContainer>
 
-              <InputContainer style={{ width: '250px' }} >
-                <div className="labels">
-                  <span>Senha:</span>
-                  <span>*</span>
-                </div>
-                <Input
-                  className="input"
-                  id="password"
-                  type="password"
-                  name="password"
-                  style={{ width: '30px' }}
-                />
-              </InputContainer>
+            <InputContainer style={{ width: '250px' }} >
+              <div className="labels">
+                <span>Senha:</span>
+                <span>*</span>
+              </div>
+              <Input
+                className="input"
+                id="password"
+                type="password"
+                name="password"
+                style={{ width: '30px' }}
+              />
+            </InputContainer>
 
-              <InputContainer style={{ width: '250px' }} >
-                <div className="labels">
-                  <span>Comfirmar senha:</span>
-                  <span>*</span>
-                </div>
-                <Input
-                  className="input"
-                  id="confirmPassword"
-                  type="password"
-                  name="confirmPassword"
-                  style={{ width: '30px' }}
-                />
-              </InputContainer>
+            <InputContainer style={{ width: '250px' }} >
+              <div className="labels">
+                <span>Confirmar senha:</span>
+                <span>*</span>
+              </div>
+              <Input
+                className="input"
+                id="confirmPassword"
+                type="password"
+                name="confirmPassword"
+                style={{ width: '30px' }}
+              />
+            </InputContainer>
 
-        </Inputs>
+          </Inputs>
 
           <Button type='submit'>Salvar</Button>
         </Form>

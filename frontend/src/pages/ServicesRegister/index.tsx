@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
@@ -31,8 +31,8 @@ const ServicesRegister = () => {
     currencyMasker(event);
   }, [])
 
-  const handleSubmit = useCallback(async(data, {reset}) => {
-    try{
+  const handleSubmit = useCallback(async (data, { reset }) => {
+    try {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
@@ -51,26 +51,26 @@ const ServicesRegister = () => {
 
       const response = await api.post('services', formData);
 
-      if(response.status === 200){
-        addToast({title: "Cadastro realizado com sucesso.", type: 'success', description: "O serviço foi cadastrado com sucesso."});
+      if (response.status === 200) {
+        addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: "O serviço foi cadastrado com sucesso." });
 
         reset();
       }
-    }catch(err){
+    } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
 
         formRef.current?.setErrors(errors);
         return
       }
-      addToast({title: "Não foi possível realizar o caadastro.", description: 'Esse serviço já foi criado ou ocorreu um erro, tente novamente.', type: "error"})
+      addToast({ title: "Não foi possível realizar o caadastro.", description: 'Esse serviço já foi criado ou ocorreu um erro, tente novamente.', type: "error" })
     }
   }, [addToast])
 
   return (
     <Container>
-      <Header/>
-      <Breadcrumb text={`Adicionar serviços`}/>
+      <Header />
+      <Breadcrumb text={`Adicionar serviços`} />
       <Content>
         <Separator>
           <span>Cadastro de serviços</span>

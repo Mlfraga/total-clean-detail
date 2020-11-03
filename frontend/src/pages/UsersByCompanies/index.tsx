@@ -32,23 +32,23 @@ const UsersByUnits = () => {
   const [companies, setCompanies] = useState<FormatRow[]>([]);
   const [openedCompanies, setOpenedCommpanies] = useState<Number[]>([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     api.get('companies').then(response => {
       const companies: FormatRow[] = response.data;
 
       setCompanies(companies);
     });
-  },[])
+  }, [])
 
-  const handleOpenUnities = useCallback((id: number)=>{
+  const handleOpenUnities = useCallback((id: number) => {
     setOpenedCommpanies([...openedCompanies, id])
-  },[openedCompanies])
+  }, [openedCompanies])
 
-  const handleCloseUnities = useCallback((id: number)=>{
+  const handleCloseUnities = useCallback((id: number) => {
     const newOpenedUnities = openedCompanies.filter(unitId => unitId !== id);
 
     setOpenedCommpanies(newOpenedUnities);
-  },[openedCompanies])
+  }, [openedCompanies])
 
   return (
     <Container>
@@ -60,36 +60,36 @@ const UsersByUnits = () => {
           <span>Cooncessionárias</span>
           <div />
         </Separator >
-          <div className="boxTitle">
-            <h3>Concessionária</h3>
-            <h3>Telephone</h3>
-          </div>
+        <div className="boxTitle">
+          <h3>Concessionária</h3>
+          <h3>Telephone</h3>
+        </div>
 
         <List>
           {companies.map(company => (
-          <Box key={company.id}>
-            <div
-              className="header"
-              style={openedCompanies.includes(company.id) ? {borderRadius: '15px 15px 0 0' } : {borderRadius: 15}}
-            >
-              <span>{company.name}</span>
-              <span>{company.telephone}</span>
-              <Link
-                className="createNewCompanyLink"
-                to={`users-register/?company=${company.id}`}
+            <Box key={company.id}>
+              <div
+                className="header"
+                style={openedCompanies.includes(company.id) ? { borderRadius: '15px 15px 0 0' } : { borderRadius: 15 }}
               >
-                  <RiAddFill size={18}/> Adicionar novo usuário a essa concessionária
+                <span>{company.name}</span>
+                <span>{company.telephone}</span>
+                <Link
+                  className="createNewCompanyLink"
+                  to={`users-register/?company=${company.id}`}
+                >
+                  <RiAddFill size={18} /> Adicionar novo usuário a essa concessionária
               </Link>
-              {openedCompanies.includes(company.id)
-                ? <FaArrowAltCircleUp onClick={() => handleCloseUnities(company.id)} style={{cursor: 'pointer'}} size={26}/>
-                : <FaArrowAltCircleDown onClick={() => handleOpenUnities(company.id)} style={{cursor: 'pointer'}} size={26} />
-              }
-            </div>
+                {openedCompanies.includes(company.id)
+                  ? <FaArrowAltCircleUp onClick={() => handleCloseUnities(company.id)} style={{ cursor: 'pointer' }} size={26} />
+                  : <FaArrowAltCircleDown onClick={() => handleOpenUnities(company.id)} style={{ cursor: 'pointer' }} size={26} />
+                }
+              </div>
 
-            <div
-              className="dropDown"
-              hidden={openedCompanies.includes(company.id ) ? false : true}
-            >
+              <div
+                className="dropDown"
+                hidden={openedCompanies.includes(company.id) ? false : true}
+              >
                 <Separator className="separator">
                   <span>Usuários dessa concessionária</span>
                   <div />
@@ -109,7 +109,7 @@ const UsersByUnits = () => {
                   </div>
                 ))}
               </div>
-          </Box>
+            </Box>
           ))}
 
         </List>
