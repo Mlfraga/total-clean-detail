@@ -1,8 +1,8 @@
-import styled from 'styled-components';
 import { shade } from 'polished';
+import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
   display: flex;
   align-items: center;
@@ -39,15 +39,15 @@ export const Buttons = styled.div`
     }
 
     &:hover {
-      color: ${shade(0.2, '#ced4da')}
+      color: ${shade(0.2, '#ced4da')};
     }
   }
 
-  .header-button-selected{
+  .header-button-selected {
     color: #ff6659;
 
-    &:hover{
-      color: ${shade(0.2, '#ff6659')}
+    &:hover {
+      color: ${shade(0.2, '#ff6659')};
     }
   }
 `;
@@ -59,16 +59,16 @@ export const Logo = styled.div`
   align-items: center;
   justify-content: center;
   padding-left: 35px;
-    h1{
+  h1 {
     font: 30px 'Ubuntu', sans-serif;
     font-weight: bold;
     position: absolute;
     color: #ff6659;
-    }
-    img{
+  }
+  img {
     height: 46px;
     width: 46px;
     margin-left: 168px;
     padding-bottom: 11.4px;
-    }
+  }
 `;

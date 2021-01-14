@@ -1,6 +1,7 @@
 import React, { useEffect, InputHTMLAttributes, useRef } from 'react';
 import { IconBaseProps } from 'react-icons/';
 import { FiAlertCircle } from 'react-icons/fi';
+
 import { useField } from '@unform/core';
 
 import { Container, Error } from './styles';
@@ -20,20 +21,21 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
       name: fieldName,
       ref: inputRef.current,
       path: 'value',
-    })
-  }, [fieldName, registerField])
+    });
+  }, [fieldName, registerField]);
 
   return (
     <Container isErrored={!!error}>
       {Icon && <Icon size={20} />}
       <input ref={inputRef} {...rest}></input>
 
-      {error &&
+      {error && (
         <Error title={error}>
           <FiAlertCircle color="#c53030" size={20} />
-        </Error>}
-    </Container >
-  )
-}
+        </Error>
+      )}
+    </Container>
+  );
+};
 
 export default Input;

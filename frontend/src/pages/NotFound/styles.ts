@@ -1,8 +1,9 @@
 import styled from 'styled-components';
+
 import backgroundPattern from '../../assets/Pattern-Developing-Page.svg';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -10,7 +11,7 @@ export const Container = styled.div`
   justify-content: center;
   background: url(${backgroundPattern});
 
-  .box{
+  .box {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,7 +32,7 @@ export const Container = styled.div`
       font-size: 20px;
     }
 
-    button{
+    button {
       margin-top: 30px;
     }
   }

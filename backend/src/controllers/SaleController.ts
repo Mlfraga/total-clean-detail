@@ -1,9 +1,8 @@
-import { create } from 'domain';
-import { Request, Response, request } from 'express';
+import { Request, Response } from 'express';
 import { SchemaOptions, Joi } from 'celebrate';
 
 import { ptBR } from 'date-fns/locale'
-import { parseISO, format, formatRelative, formatDistance, } from 'date-fns';
+import {  format, getDate, startOfDay, endOfDay} from 'date-fns';
 import JWT from 'jsonwebtoken';
 
 import SaleRepository from '../repositories/SaleRepository';
@@ -13,12 +12,13 @@ import UnitRepository from '../repositories/UnitRepository';
 import UserRepository from '../repositories/UserRepository';
 import ServiceRepository from '../repositories/ServiceRepository';
 import CompanyServiceRepository from '../repositories/CompanyServiceRepository';
-import Mail from "../services/mail";
 
 import { Status } from '@prisma/client';
+import AppError from '../errors/AppError';
 
 interface Validate {
   store: SchemaOptions;
+  index: SchemaOptions;
   findByStatus: SchemaOptions;
   findByUnit: SchemaOptions;
   findBySeller: SchemaOptions;
@@ -40,6 +40,12 @@ class SaleController {
         carPlate: Joi.string().required().min(7).max(8),
         carModel: Joi.string().required(),
         carColor: Joi.string().required(),
+      })
+    },
+    index: {
+      query: Joi.object({
+        date: Joi.date().allow(null),
+        status: Joi.string().allow(null),
       })
     },
     findByStatus: {
@@ -65,7 +71,48 @@ class SaleController {
   }
 
   async index(request: Request, response: Response) {
-    const sales = await SaleRepository.findAll();
+    const {date, status} = request.query;
+
+    let sales;
+
+    if(date && status){
+      const initialDay = startOfDay(new Date(date.toString()));
+      const finalDay = endOfDay(new Date(date.toString()));
+
+      if (status !== "PENDING" && status !== "CONFIRMED" && status !== "CANCELED" && status !== "FINISHED") {
+        return response
+          .status(400)
+          .json({ error: "Status not found." })
+      }
+
+      sales = await SaleRepository.findByDateAndStatus(initialDay, finalDay, status as Status);
+
+      return response.json(sales);
+    }
+
+    if(date){
+      const initialDay = startOfDay(new Date(date.toString()));
+      const finalDay = endOfDay(new Date(date.toString()));
+
+      sales = await SaleRepository.findByDate(initialDay, finalDay);
+
+      return response.json(sales);
+    }
+
+    if(status){
+      if (status !== "PENDING" && status !== "CONFIRMED" && status !== "CANCELED" && status !== "FINISHED") {
+        return response
+          .status(400)
+          .json({ error: "Status not found." })
+      }
+
+      sales = await SaleRepository.findByStatus(status as Status);
+
+      return response.json(sales)
+    }
+
+    sales = await SaleRepository.findAll();
+
     return response.json(sales);
   }
 
@@ -223,24 +270,8 @@ class SaleController {
     return response.json(sale);
   }
 
-  async findByStatus(request: Request, response: Response) {
-    const { status } = request.query;
-
-    if (status !== "PENDING" && status !== "CONFIRMED" && status !== "CANCELED" && status !== "FINISHED") {
-      return response
-        .status(400)
-        .json({ error: "Status not found." })
-    }
-
-    const sales = await SaleRepository.findByStatus(status as Status);
-
-    return response.json(sales)
-  }
-
-  async findByUnit(request: Request, response: Response) {
+   async findByUnit(request: Request, response: Response) {
     const { unitId } = request.params;
-
-    console.log(unitId);
 
     const unit = await UnitRepository.findById(parseInt(unitId));
 
@@ -281,8 +312,7 @@ class SaleController {
   }
 
   async updateStatus(request: Request, response: Response) {
-    const { id } = request.params;
-    const { status } = request.body;
+    const { status, sales } = request.body;
 
     if (status !== "PENDING" && status !== "CONFIRMED" && status !== "CANCELED" && status !== "FINISHED") {
       return response
@@ -290,50 +320,50 @@ class SaleController {
         .json({ error: "Status not found." })
     }
 
-    const authHeader = request.headers['authorization'];
-    const token = authHeader && authHeader?.split(' ')[1];
-    const decoded: any = JWT.decode(String(token), { complete: true });
+    sales.forEach(async(element: Number) => {
+      const data = await SaleRepository.changeStatus(Number(element), status);
 
-    const updatedSale = await SaleRepository.changeStatus(Number(id), status);
-    const subject = `Alteração no status do pedido ${id}`;
-    let text;
+      const subject = `Alteração no status do pedido ${element}`;
+      let text;
 
-    const sale = await SaleRepository.findById(Number(id));
+      const sale = await SaleRepository.findById(Number(element));
 
-    if (!sale) {
-      return null;
-    }
+      if (!sale) {
+        return null;
+      }
 
-    let formattedDate: string | null = null;
+      let formattedDate: string | null = null;
 
-    formattedDate = format(
-      sale?.deliveryDate,
-      "'Dia' dd 'de' MMMM', às ' HH:mm'h'",
-      { locale: ptBR }
-    );
+      formattedDate = format(
+        sale?.deliveryDate,
+        "'Dia' dd 'de' MMMM', às ' HH:mm'h'",
+        { locale: ptBR }
+      );
 
-    let statusText;
-    if (status === 'CONFIRMED') {
-      statusText = 'confirmado'
-    }
-    if (status === 'CANCELED') {
-      statusText = 'cancelado'
-    }
-    if (status === 'FINISHED') {
-      statusText = 'finalizado'
-    }
+      let statusText;
+      if (status === 'CONFIRMED') {
+        statusText = 'confirmado'
+      }
+      if (status === 'CANCELED') {
+        statusText = 'cancelado'
+      }
+      if (status === 'FINISHED') {
+        statusText = 'finalizado'
+      }
 
-    text = `O pedido do cliente ${sale?.person.name}, slocitado pelo vendedor ${sale?.seller.name} no ${formattedDate} teve seu status alterado para ${statusText}. `
+      text = `O pedido do cliente ${sale?.person.name}, slocitado pelo vendedor ${sale?.seller.name} no ${formattedDate} teve seu status alterado para ${statusText}. `
 
-    const sellerUser = await UserRepository.findById(sale.seller.id);
-    const sellerEmail = sellerUser?.email;
-    let result = Mail.sendMail(text, subject, String(sellerEmail));
+      const sellerUser = await UserRepository.findById(sale.seller.id);
+      const sellerEmail = sellerUser?.email;
 
-    console.log(sellerUser?.email);
+      // let result = Mail.sendMail(text, subject, String(sellerEmail));
+
+      return data;
+    });
 
     return response
       .status(200)
-      .json(updatedSale);
+      .json('updatedSales');
 
   }
 
@@ -364,7 +394,7 @@ class SaleController {
 
     services.filter(async (serviceId: number ) => {
       const serviceByIdAndServiceId = await CompanyServiceRepository.findByCompanyIdAndServiceId(Number(companyId), Number(serviceId));
-      console.log(serviceByIdAndServiceId);
+
       if (!serviceByIdAndServiceId) {
         return response
         .status(404)

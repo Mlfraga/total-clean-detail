@@ -1,19 +1,17 @@
 import React, { useRef, useCallback } from 'react';
 import { FiLock, FiUser } from 'react-icons/fi';
-import { FormHandles } from '@unform/core';
-import { Form } from '@unform/web'
-import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+import * as Yup from 'yup';
+
+import logo from '../../assets/Icon.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-
-import getValidationsErrors from '../../utils/getValidationError';
-
 import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
-import logo from "../../assets/Icon.svg"
-
+import getValidationsErrors from '../../utils/getValidationError';
 import { Container, Content, Background } from './styles';
 
 interface SignInFormData {
@@ -28,36 +26,44 @@ const Login = () => {
   const { signIn } = useAuth();
   const { addToast } = useToast();
 
-  const handleSubmit = useCallback(async (data: SignInFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSubmit = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        username: Yup.string().required('Usuário obrigatório'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
+        const schema = Yup.object().shape({
+          username: Yup.string().required('Usuário obrigatório'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await signIn({
-        username: data.username,
-        password: data.password
-      });
+        await signIn({
+          username: data.username,
+          password: data.password,
+        });
 
-      history.push('services');
-      addToast({ title: 'Login realizado', type: 'success' });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationsErrors(err);
+        history.push('/services');
 
-        formRef.current?.setErrors(errors);
-        return
+        addToast({ title: 'Login realizado', type: 'success' });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationsErrors(err);
+
+          formRef.current?.setErrors(errors);
+          return;
+        }
+        addToast({
+          title: 'Erro ao fazer login',
+          type: 'error',
+          description: 'Erro ao autenticar usuário, credenciais inválidas',
+        });
       }
-      addToast({ title: 'Erro ao fazer login', type: 'error', description: 'Erro ao autenticar usuário, credenciais inválidas' });
-    }
-  }, [addToast, history, signIn]);
+    },
+    [addToast, history, signIn],
+  );
 
   return (
     <Container>
@@ -87,9 +93,9 @@ const Login = () => {
           <Button type="submit">Entrar</Button>
         </Form>
       </Content>
-      < Background />
-    </Container >
+      <Background />
+    </Container>
   );
-}
+};
 
 export default Login;

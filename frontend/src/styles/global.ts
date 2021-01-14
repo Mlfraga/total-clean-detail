@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
@@ -34,5 +34,5 @@ button{
 ul{
 list-style: none;
 }
-`
+`;
 export default GlobalStyle;

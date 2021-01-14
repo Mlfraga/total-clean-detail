@@ -1,7 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
+
+import { FiSearch } from 'react-icons/fi';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale'
 
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
 import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
@@ -9,12 +14,12 @@ import api from '../../services/api';
 import getSaleStatusTranslated from '../../utils/getSaleStatusTranslated'
 
 import { Container, Content, Separator, List, Box } from './styles';
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
+import { Button as ChakraButton, Tooltip } from '@chakra-ui/core';
 
-import Select from 'react-select';
-
+import Select from '../../components/Select';
 import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
+import DatePicker from '../../components/DatePicker';
 import Button from '../../components/Button';
 
 interface Sale {
@@ -27,72 +32,75 @@ interface Sale {
   deliveryDate: string;
   status: string;
   services: Array<{
-    id: number,
-    name: string,
-    price: number,
-  }>,
+    id: number;
+    name: string;
+    price: number;
+  }>;
 }
 
 interface SaleRequestResponseData {
-  id: number,
-  deliveryDate: string,
-  status: string,
-  companyPrice: number,
-  costPrice: number,
+  id: number;
+  deliveryDate: string;
+  status: string;
+  companyPrice: number;
+  costPrice: number;
 
   seller: {
-    name: string,
-  },
+    name: string;
+  };
   person: {
-    name: string
-  },
+    name: string;
+  };
   car: {
-    car: string,
-    carPlate: string,
-  },
+    car: string;
+    carPlate: string;
+  };
   serviceSale: Array<{
-    id: number,
+    id: number;
     service: {
-      id: number,
-      name: string,
-      price: number
-    }
-  }>,
+      id: number;
+      name: string;
+      price: number;
+    };
+  }>;
+}
+
+interface IFormDataFilter {
+  date: Date;
+  status: string;
 }
 
 const Sales = () => {
   const { user } = useAuth();
   const { addToast } = useToast();
-
-  const [selectError, setSelectError] = useState(false);
+  const formRef = useRef<FormHandles>(null);
+  const searchFormRef = useRef<FormHandles>(null);
 
   const [sales, setSales] = useState<Sale[]>([]);
-  const [OpenedServices, setOpenedServices] = useState<Number[]>([]);
-  const [selectedSale, setSelectedSale] = React.useState<Number | null>(null);
-  const [statusSale, setStatusSale] = useState('');
-
-  const selectOptions = [
-    { value: 'PENDING', label: 'Pendente' },
-    { value: 'CONFIRMED', label: 'Confirmado' },
-    { value: 'CANCELED', label: 'Cancelado' },
-    { value: 'FINISHED', label: 'Finalizado' },
-  ]
+  const [openedServices, setOpenedServices] = useState<number[]>([]);
+  const [selectedSales, setSelectedSales] = React.useState<number[]>([]);
 
   useEffect(() => {
-    if (user.role === 'MANAGER') {
+    if (user?.role === 'MANAGER') {
       api.get('sale/company').then(response => {
-        const data = response.data;
+        const { data } = response;
 
         const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          let services: Array<{ id: number, name: string, price: number }> = [];
+          const services: Array<{ id: number; name: string; price: number }> = [];
 
           data.serviceSale.forEach(service => {
-            api.get(`companyservices/sale?serviceId=${service.service.id}`).then(response => {
-              const companyService = response.data;
-              services.push({ id: companyService[0].service.id, name: companyService[0].service.name, price: companyService[0].price })
-            })
+            api
+              .get(`companyservices/sale?serviceId=${service.service.id}`)
+              .then(response => {
+                const companyService = response.data;
+                services.push({
+                  id: companyService[0].service.id,
+                  name: companyService[0].service.name,
+                  price: companyService[0].price,
+                });
+              });
             return services;
-          })
+          });
 
           return {
             id: data.id,
@@ -103,26 +111,32 @@ const Sales = () => {
             price: data.companyPrice,
             deliveryDate: data.deliveryDate,
             status: data.status,
-            services
-          }
+            services,
+          };
         });
-        setSales(salesData)
-      })
+        setSales(salesData);
+      });
     }
 
-    if (user.role === 'SELLER') {
+    if (user?.role === 'SELLER') {
       api.get('sale/seller').then(response => {
-        const data = response.data;
+        const { data } = response;
 
         const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          let services: Array<{ id: number, name: string, price: number }> = [];
+          const services: Array<{ id: number; name: string; price: number }> = [];
 
           data.serviceSale.forEach(service => {
-            api.get(`companyservices/sale?serviceId=${service.service.id}`).then(response => {
-              const companyService = response.data;
-              services.push({ id: companyService[0].service.id, name: companyService[0].service.name, price: companyService[0].price })
-            })
-          })
+            api
+              .get(`companyservices/sale?serviceId=${service.service.id}`)
+              .then(response => {
+                const companyService = response.data;
+                services.push({
+                  id: companyService[0].service.id,
+                  name: companyService[0].service.name,
+                  price: companyService[0].price,
+                });
+              });
+          });
 
           return {
             id: data.id,
@@ -133,23 +147,27 @@ const Sales = () => {
             price: data.companyPrice,
             deliveryDate: data.deliveryDate,
             status: data.status,
-            services
-          }
+            services,
+          };
         });
-        setSales(salesData)
-      })
+        setSales(salesData);
+      });
     }
 
-    if (user.role === 'ADMIN') {
+    if (user?.role === 'ADMIN') {
       api.get('sale').then(response => {
-        const data = response.data;
+        const { data } = response;
 
         const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          let services: Array<{ id: number, name: string, price: number }> = [];
+          const services: Array<{ id: number; name: string; price: number }> = [];
 
           data.serviceSale.forEach(service => {
-            services.push({ id: service.service.id, name: service.service.name, price: service.service.price })
-          })
+            services.push({
+              id: service.service.id,
+              name: service.service.name,
+              price: service.service.price,
+            });
+          });
 
           return {
             id: data.id,
@@ -160,70 +178,144 @@ const Sales = () => {
             price: data.costPrice,
             deliveryDate: data.deliveryDate,
             status: data.status,
-            services
-          }
-        })
+            services,
+          };
+        });
+
         setSales(salesData);
       });
     }
-  }, [user.role]);
+  }, [user, user?.role]);
 
-  const handleOpenServices = useCallback((id: number) => {
-    setOpenedServices([...OpenedServices, id])
-    setSelectedSale(null);
-  }, [OpenedServices])
+  const handleOpenServices = useCallback(
+    (id: number) => {
+      setOpenedServices([...openedServices, id]);
+    },
+    [openedServices],
+  );
 
-  const handleCloseServices = useCallback((id: number) => {
-    const newOpenedServices = OpenedServices.filter(serviceId => serviceId !== id);
+  const handleCloseServices = useCallback(
+    (id: number) => {
+      const newopenedServices = openedServices.filter(
+        serviceId => serviceId !== id,
+      );
 
-    setOpenedServices(newOpenedServices);
-    setSelectedSale(null);
-  }, [OpenedServices])
+      setOpenedServices(newopenedServices);
+    },
+    [openedServices],
+  );
 
-  const handleSelectSale = useCallback((id: number) => {
-    if (selectedSale === id) {
-      setSelectedSale(null);
-    } else {
-      setSelectedSale(id);
-    }
-  }, [selectedSale])
+  const handleSelectSale = useCallback(
+    (id: number) => {
+      if (selectedSales?.includes(id)) {
+        if (selectedSales.length === 1) {
+          setSelectedSales([]);
 
-  const handleChangeStatusSale = useCallback((newValue) => {
-    setStatusSale(newValue.value);
-    setSelectError(false);
-  }, []);
+          return;
+        }
 
-  const handleUpdateSale = useCallback(async () => {
-    if (!selectedSale) {
-      addToast(
-        {
+        const newSelectedSaless = selectedSales.filter(sale => sale !== id);
+
+        setSelectedSales(newSelectedSaless);
+
+        return;
+      }
+
+      if (selectedSales) {
+        setSelectedSales([...selectedSales, id]);
+        return;
+      }
+
+      setSelectedSales([id]);
+    },
+    [selectedSales],
+  );
+
+  const handleUpdateSale = useCallback(
+    async data => {
+      if (selectedSales.length < 1) {
+        addToast({
           title: 'Não é possível alterar a situação da venda.',
-          description: 'Por favor selevione alguma venda.',
-          type: 'error'
+          description: 'Por favor selecione alguma venda.',
+          type: 'error',
         });
-      return;
-    }
-    if (!statusSale) {
-      setSelectError(true);
-      addToast({ title: "Campo de situação da venda vazio.", type: "error" });
-      return;
-    }
 
-    const response = await api.patch(`sale/status/${selectedSale}`, { status: statusSale });
+        return;
+      }
 
-    if (response.status === 200) {
-      setSelectedSale(null);
-      addToast({ title: "Sucesso", description: "Situação da venda alterada com sucesso", type: 'success' });
+      if (!data.statusSale) {
+        addToast({ title: 'Campo de situação da venda vazio.', type: 'error' });
+        return;
+      }
 
-      const response = await api.get('sale')
-      const data = response.data;
+      const response = await api.patch(`sale/status/`, {
+        status: data.statusSale,
+        sales: selectedSales,
+      });
 
-      const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-        let services: Array<{ id: number, name: string, price: number }> = [];
+      if (response.status === 200) {
+        setSelectedSales([]);
+        addToast({
+          title: 'Sucesso',
+          description: 'Situação da venda alterada com sucesso',
+          type: 'success',
+        });
+
+        const response = await api.get('sale');
+        const { data } = response;
+
+        const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
+          const services: Array<{ id: number, name: string, price: number }> = [];
+
+          data.serviceSale.forEach(service => {
+            services.push({
+              id: service.service.id,
+              name: service.service.name,
+              price: service.service.price,
+            });
+          });
+
+          return {
+            id: data.id,
+            seller: data.seller.name,
+            customer: data.person.name,
+            car: data.car.car,
+            carPlate: data.car.carPlate,
+            price: data.costPrice,
+            deliveryDate: data.deliveryDate,
+            status: data.status,
+            services,
+          };
+        });
+
+        setSales(salesData);
+      }
+    },
+    [addToast, selectedSales],
+  );
+
+  const handleSearchSale = useCallback(async ({ date, status }: IFormDataFilter) => {
+    let query
+
+    if (!date && !status) {
+      searchFormRef.current?.setErrors({ status: "Por favor selecione algum filtro.", date: "Por favor selecione algum filtro." });
+
+      addToast({ title: 'Por favor preencha algum campo para realizar a pesquisa.', type: 'error' });
+
+      const salesWithoutFilter = await api.get('sale')
+
+      const salesWithoutFilterData = salesWithoutFilter.data;
+
+      const salesData: Sale[] = salesWithoutFilterData.map((data: SaleRequestResponseData) => {
+        const services: Array<{ id: number; name: string; price: number }> = [];
 
         data.serviceSale.forEach(service => {
-          services.push({ id: service.service.id, name: service.service.name, price: service.service.price })
-        })
+          services.push({
+            id: service.service.id,
+            name: service.service.name,
+            price: service.service.price,
+          });
+        });
 
         return {
           id: data.id,
@@ -234,23 +326,184 @@ const Sales = () => {
           price: data.costPrice,
           deliveryDate: data.deliveryDate,
           status: data.status,
-          services
-        }
-      })
+          services,
+        };
+      });
+
       setSales(salesData);
+
+      return;
     }
-  }, [addToast, selectedSale, statusSale]);
+
+    if (date && status) {
+      if (status === "ALL") {
+        query = { date };
+      } else {
+        query = { date, status };
+      }
+    }
+
+    if (date && !status) {
+      query = { date };
+    }
+
+    if (status && !date && status !== 'ALL') {
+      query = { status };
+    }
+
+    const updatedSales = await api.get('sale', { params: query })
+
+    const updatedSalesData = updatedSales.data;
+
+    const newSalesData: Sale[] = updatedSalesData.map((data: SaleRequestResponseData) => {
+      const services: Array<{ id: number; name: string; price: number }> = [];
+
+      data.serviceSale.forEach(service => {
+        services.push({
+          id: service.service.id,
+          name: service.service.name,
+          price: service.service.price,
+        });
+      });
+
+      return {
+        id: data.id,
+        seller: data.seller.name,
+        customer: data.person.name,
+        car: data.car.car,
+        carPlate: data.car.carPlate,
+        price: data.costPrice,
+        deliveryDate: data.deliveryDate,
+        status: data.status,
+        services,
+      };
+    });
+
+    setSales(newSalesData);
+  }, []);
+
+  const handleRemoveFilters = useCallback(async () => {
+    const salesWithoutFilter = await api.get('sale')
+
+    const salesWithoutFilterData = salesWithoutFilter.data;
+
+    const salesData: Sale[] = salesWithoutFilterData.map((data: SaleRequestResponseData) => {
+      const services: Array<{ id: number; name: string; price: number }> = [];
+
+      data.serviceSale.forEach(service => {
+        services.push({
+          id: service.service.id,
+          name: service.service.name,
+          price: service.service.price,
+        });
+      });
+
+      return {
+        id: data.id,
+        seller: data.seller.name,
+        customer: data.person.name,
+        car: data.car.car,
+        carPlate: data.car.carPlate,
+        price: data.costPrice,
+        deliveryDate: data.deliveryDate,
+        status: data.status,
+        services,
+      };
+    });
+
+    setSales(salesData);
+  }, [])
 
   return (
     <Container>
       <Header />
       <Breadcrumb text="Vendas realizadas" />
       <Content>
+        {user?.role === 'ADMIN' && (
+          <Form
+            ref={searchFormRef}
+            onSubmit={handleSearchSale}
+            style={{ display: 'flex', marginTop: 14 }}
+          >
+            <DatePicker
+              name="date"
+              placeholderText="Filtrar por data"
+              containerProps={{
+                width: 250,
+                height: 10,
+              }}
+            />
+
+            <Select
+              placeholder="Filtrar por situação"
+              height={8}
+              backgroundColor="#424242"
+              color="White"
+              name="status"
+              containerProps={{
+                marginLeft: 4,
+                width: 225,
+                height: 10,
+                border: '2px solid',
+                borderColor: '#585858',
+                backgroundColor: '#424242',
+              }}
+            >
+              <option value="ALL">Todos</option>
+              <option value="PENDING">Pendente</option>
+              <option value="CONFIRMED">Confirmado</option>
+              <option value="CANCELED">Cancelado</option>
+              <option value="FINISHED">Finalizado</option>
+            </Select>
+
+            <Tooltip
+              label="Pesquisar vendas por dia"
+              aria-label="Pesquisar vendas por dia"
+            >
+              <ChakraButton
+                _hover={{
+                  bg: '#df7468',
+                  color: 'gray.900',
+                }}
+                _focusWithin={{
+                  border: 0,
+                }}
+                height="40px"
+                backgroundColor="#FF6F60"
+                marginLeft={4}
+                type="submit"
+              >
+                <FiSearch />
+              </ChakraButton>
+            </Tooltip>
+
+            <Tooltip
+              label="Limpar filtros"
+              aria-label="Limpar filtros"
+            >
+              <ChakraButton
+                _hover={{
+                  bg: '#4e4e4e',
+                }}
+                _focusWithin={{
+                  border: 0,
+                }}
+                height="40px"
+                backgroundColor="#454545"
+                marginLeft={4}
+                onClick={handleRemoveFilters}
+              >
+                Limpar filtros
+              </ChakraButton>
+            </Tooltip>
+          </Form>
+        )}
         <Separator>
           <span>Vendas</span>
           <div />
-        </Separator >
+        </Separator>
         <div className="boxTitle">
+          <span>N°</span>
           <span>Vendedor</span>
           <span>Cliente</span>
           <span>Carro</span>
@@ -261,18 +514,41 @@ const Sales = () => {
         </div>
         <List>
           {sales.map(sale => (
-            <Box key={sale.id} onClick={user.role === 'ADMIN' ? () => handleSelectSale(sale.id) : () => { }}>
+            <Box
+              key={sale.id}
+              onClick={
+                user?.role === 'ADMIN'
+                  ? () => handleSelectSale(sale.id)
+                  : () => { }
+              }
+            >
               <div
-                className={selectedSale === sale.id ? "header-selected" : "header"}
-                style={OpenedServices.includes(sale.id) ? { borderRadius: '15px 15px 0 0', borderBottom: 0 } : { borderRadius: '15px' }}
+                className={
+                  selectedSales.includes(sale.id) ? 'header-selected' : 'header'
+                }
+                style={
+                  openedServices.includes(sale.id)
+                    ? { borderRadius: '15px 15px 0 0', borderBottom: 0 }
+                    : { borderRadius: '15px' }
+                }
               >
+                <span>{sale.id}</span>
                 <span>{sale.seller}</span>
                 <span>{sale.customer}</span>
                 <span>{sale.car}</span>
                 <span>{sale.carPlate}</span>
-                <span>{sale.price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
                 <span>
-                  {format(new Date(sale.deliveryDate), "dd'/'MM'/'yyyy '-' HH:mm'h'", { locale: ptBR })}
+                  {sale.price.toLocaleString('pt-br', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                </span>
+                <span>
+                  {format(
+                    new Date(sale.deliveryDate),
+                    "dd'/'MM'/'yyyy '-' HH:mm'h'",
+                    { locale: ptBR },
+                  )}
                 </span>
                 <div className="status">
                   <span>
@@ -281,88 +557,109 @@ const Sales = () => {
                   </span>
                 </div>
 
-                {OpenedServices.includes(sale.id)
-                  ? <FaArrowAltCircleUp onClick={() => handleCloseServices(sale.id)} style={{ cursor: 'pointer' }} size={26} />
-                  : <FaArrowAltCircleDown onClick={() => handleOpenServices(sale.id)} style={{ cursor: 'pointer' }} size={26} />
+                {openedServices.includes(sale.id) ? (
+                  <FaArrowAltCircleUp
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleCloseServices(sale.id);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    size={26}
+                  />
+                ) : (
+                    <FaArrowAltCircleDown
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleOpenServices(sale.id);
+                      }}
+                      style={{ cursor: 'pointer' }}
+                      size={26}
+                    />)
                 }
               </div>
 
               <div
                 className="dropDown"
-                hidden={OpenedServices.includes(sale.id) ? false : true}
-                style={selectedSale === sale.id ? { border: '2px solid #FF6F60', borderTop: 0 } : { border: 0 }}
+                hidden={!openedServices.includes(sale.id)}
+                style={
+                  selectedSales.includes(sale.id)
+                    ? { border: '2px solid #FF6F60', borderTop: 0 }
+                    : { border: 0 }
+                }
               >
                 <Separator className="separator">
                   <span>Serviços</span>
                   <div />
-                </Separator >
+                </Separator>
                 {sale.services.map(service => (
                   <div className="service" key={service.id}>
                     <span>{service.name}</span>
-                    <span>{service.price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
+                    <span>
+                      {service.price.toLocaleString('pt-br', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })}
+                    </span>
                   </div>
                 ))}
-                <div className="total" >
+                <div className="total">
                   <span>Total</span>
-                  <span>{sale.price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</span>
+                  <span>
+                    {sale.price.toLocaleString('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
+                  </span>
                 </div>
               </div>
             </Box>
           ))}
         </List>
 
-        {user.role === 'ADMIN' &&
+        {user?.role === 'ADMIN' && (
           <div
-            className={!selectedSale ? "udpdateSaleContainerHide" : "updateSaleContainer"}
-            hidden={!selectedSale ? true : false}
+            className={
+              selectedSales.length < 1
+                ? 'udpdateSaleContainerHide'
+                : 'updateSaleContainer'
+            }
+            hidden={selectedSales.length < 1}
           >
-            <div className="SelectContainer">
-              <div className="labels">
-                <span>Situação da venda:</span>
-              </div>
+            <Form
+              ref={formRef}
+              onSubmit={handleUpdateSale}
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
               <Select
-                styles={{
-                  control: base => ({
-                    ...base,
-                    marginTop: 14,
-                    borderRadius: 6,
-                    borderWidth: 2,
-                    borderColor: selectError ? '#c53030' : '#585858',
-                    backgroundColor: '#424242',
-                    width: 300,
-                    height: 20,
-                    boxShadow: 'none',
-                    fontSize: 16
-                  }),
-                  menu: base => ({
-                    ...base,
-                    backgroundColor: '#282828',
-                    color: '#F4EDE8'
-
-                  }),
-                  singleValue: base => ({
-                    ...base,
-                    color: '#F4EDE8'
-                  }),
-                }}
-                options={selectOptions}
-                onChange={handleChangeStatusSale}
-                label="Single select"
-                className="select"
-                clearable={false}
-                placeholder="Selecione o novo status da venda"
-                id="statusSale"
-                type="statusSale"
+                height={8}
+                backgroundColor="#424242"
+                color="White"
                 name="statusSale"
-              />
-            </div>
-            <Button onClick={handleUpdateSale}>Alterar Situação</Button>
+                containerProps={{
+                  marginTop: '36px',
+                  marginRight: 8,
+                  width: 300,
+                  height: 10,
+                  border: '2px solid',
+                  borderColor: '#585858',
+                  backgroundColor: '#424242',
+                }}
+              >
+                <option value="PENDING">Pendente</option>
+                <option value="CONFIRMED">Confirmado</option>
+                <option value="CANCELED">Cancelado</option>
+                <option value="FINISHED">Finalizado</option>
+              </Select>
+              <Button style={{ marginTop: '0px' }} type="submit">
+                Alterar Situação
+              </Button>
+            </Form>
           </div>
-        }
+        )}
 
       </Content>
-    </Container >
+    </Container>
   );
-}
+};
 
 export default Sales;

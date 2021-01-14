@@ -1,5 +1,4 @@
 import * as nodemailer from "nodemailer";
-import config from '../configs/configs';
 
 class Mail {
   sendMailToAdmin(text: string, subject: string) {
@@ -32,10 +31,13 @@ class Mail {
   sendMail(text: string, subject: string, to: string) {
 
     const transporter = nodemailer.createTransport({
-      host: config.host,
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      requireTLS: true,
       auth: {
-        user: config.user,
-        pass: config.password
+        user: "portaltotalclean@gmail.com",
+        pass: "Mm884741"
       },
       tls: { rejectUnauthorized: false }
     });

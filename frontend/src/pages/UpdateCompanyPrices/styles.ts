@@ -2,7 +2,7 @@ import { shade } from 'polished';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100vh;
 
   .edition-mode-container {
@@ -23,7 +23,7 @@ export const Container = styled.div`
       background: #323232;
       border-radius: 15px;
       border: 1.5px solid #525252;
-      .header{
+      .header {
         display: flex;
         align-items: center;
         flex-direction: column;
@@ -124,25 +124,25 @@ export const Content = styled.div`
 `;
 
 export const Separator = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
 
-    span {
-      font: 20px 'Ubuntu', sans-serif;
-      font-weight: bold;
-      color: #eee;
-    }
+  span {
+    font: 20px 'Ubuntu', sans-serif;
+    font-weight: bold;
+    color: #eee;
+  }
 
-    div {
-      height: 2px;
-      flex: 1;
+  div {
+    height: 2px;
+    flex: 1;
 
-      background: #686868;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
+    background: #686868;
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 `;
 
 export const List = styled.div`
@@ -160,7 +160,6 @@ export const List = styled.div`
     background: #525252;
     border-radius: 20px;
   }
-
 `;
 
 export const Box = styled.div`
@@ -193,6 +192,6 @@ export const Box = styled.div`
   }
 
   svg:hover {
-    color: ${shade(0.2, '#ccc')}
+    color: ${shade(0.2, '#ccc')};
   }
 `;

@@ -1,10 +1,10 @@
-import styled from 'styled-components';
 import { shade } from 'polished';
+import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
-height: 100%;
+  height: 100%;
 `;
 
 export const Content = styled.div`
@@ -26,7 +26,7 @@ export const ListBoxes = styled.div`
   grid-template-columns: 285px 285px 285px 285px;
   width: 100%;
   justify-content: space-between;
-`
+`;
 
 export const PriceBox = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ export const PriceBox = styled.div`
 
     span {
       font: 16px 'Ubuntu', sans-serif;
-      color: #F4EDE8;
+      color: #f4ede8;
     }
   }
 
@@ -62,7 +62,7 @@ export const PriceBox = styled.div`
     margin-top: 10px;
   }
 
- .inputs {
+  .inputs {
     max-width: 250px;
     margin-left: 16px;
 
@@ -78,7 +78,6 @@ export const Buttons = styled.div`
   width: 100%;
 
   button {
-
     max-width: 250px;
     & + button {
       margin-right: 16px;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100%;
 `;
 
@@ -32,25 +32,25 @@ export const Content = styled.div`
 `;
 
 export const Separator = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
 
-    span {
-      font: 20px 'Ubuntu', sans-serif;
-      font-weight: bold;
-      color: #eee;
-    }
+  span {
+    font: 20px 'Ubuntu', sans-serif;
+    font-weight: bold;
+    color: #eee;
+  }
 
-    div {
-      height: 2px;
-      flex: 1;
+  div {
+    height: 2px;
+    flex: 1;
 
-      background: #686868;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
+    background: #686868;
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 `;
 
 export const List = styled.div`

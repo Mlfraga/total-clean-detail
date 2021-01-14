@@ -1,28 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
 import { RiAddFill } from 'react-icons/ri'
+import { useHistory, Link } from 'react-router-dom';
 
-import { Container, Content, Separator, List, Box } from './styles';
 
 import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
+import { Container, Content, Separator, List, Box } from './styles';
 
 interface CompaniesResponseData {
-  id: number,
-  name: string,
-  telephone: string,
-  cnpj: string,
-  units: Array<{ id: number, name: string, telephone: string }>
+  id: number;
+  name: string;
+  telephone: string;
+  cnpj: string;
+  units: Array<{ id: number; name: string; telephone: string }>;
 }
 
 const Companies = () => {
   const [companies, setCompanies] = useState<CompaniesResponseData[]>([]);
-  const [openedCompanies, setOpenedCompanies] = useState<Number[]>([]);
+  const [openedCompanies, setOpenedCompanies] = useState<number[]>([]);
 
   const history = useHistory();
 
@@ -30,18 +30,26 @@ const Companies = () => {
     api.get('companies').then(response => {
       const companies: CompaniesResponseData[] = response.data;
       setCompanies(companies);
-    })
-  }, [])
+    });
+  }, []);
 
-  const handleOpenCompanies = useCallback((id: number) => {
-    setOpenedCompanies([...openedCompanies, id])
-  }, [openedCompanies])
+  const handleOpenCompanies = useCallback(
+    (id: number) => {
+      setOpenedCompanies([...openedCompanies, id]);
+    },
+    [openedCompanies],
+  );
 
-  const handleCloseCompanies = useCallback((id: number) => {
-    const newOpenedCompanies = openedCompanies.filter(companyId => companyId !== id);
+  const handleCloseCompanies = useCallback(
+    (id: number) => {
+      const newOpenedCompanies = openedCompanies.filter(
+        companyId => companyId !== id,
+      );
 
-    setOpenedCompanies(newOpenedCompanies);
-  }, [openedCompanies])
+      setOpenedCompanies(newOpenedCompanies);
+    },
+    [openedCompanies],
+  );
 
   return (
     <Container>
@@ -51,7 +59,7 @@ const Companies = () => {
         <Separator>
           <span>Concessionárias</span>
           <div />
-        </Separator >
+        </Separator>
         <div className="boxTitle">
           <span>Nome</span>
           <span>Contato</span>
@@ -59,28 +67,40 @@ const Companies = () => {
         </div>
         <List>
           {companies.map(company => (
-            <Box key={company.id} >
+            <Box key={company.id}>
               <div
                 className="header"
-                style={openedCompanies.includes(company.id) ? { borderRadius: '15px 15px 0 0' } : { borderRadius: 15 }}
+                style={
+                  openedCompanies.includes(company.id)
+                    ? { borderRadius: '15px 15px 0 0' }
+                    : { borderRadius: 15 }
+                }
               >
                 <span>{company.name}</span>
                 <span>{company.telephone}</span>
                 <span>{company.cnpj}</span>
-                {openedCompanies.includes(company.id)
-                  ? <FaArrowAltCircleUp onClick={() => handleCloseCompanies(company.id)} style={{ cursor: 'pointer' }} size={26} />
-                  : <FaArrowAltCircleDown onClick={() => handleOpenCompanies(company.id)} style={{ cursor: 'pointer' }} size={26} />
-                }
+                {openedCompanies.includes(company.id) ? (
+                  <FaArrowAltCircleUp
+                    onClick={() => handleCloseCompanies(company.id)}
+                    style={{ cursor: 'pointer' }}
+                    size={26}
+                  />
+                ) : (
+                    <FaArrowAltCircleDown
+                      onClick={() => handleOpenCompanies(company.id)}
+                      style={{ cursor: 'pointer' }}
+                      size={26}
+                    />)}
               </div>
 
               <div
                 className="dropDown"
-                hidden={openedCompanies.includes(company.id) ? false : true}
+                hidden={!openedCompanies.includes(company.id)}
               >
                 <Separator className="separator">
                   <span>Unidades</span>
                   <div />
-                </Separator >
+                </Separator>
 
                 <div className="title">
                   <span>Nome</span>
@@ -92,7 +112,6 @@ const Companies = () => {
                     <span>{unit.name}</span>
                     <span>{unit.telephone}</span>
                   </div>
-
                 ))}
                 <Link
                   className="createNewCompanyLink"
@@ -106,11 +125,17 @@ const Companies = () => {
         </List>
 
         <div className="button">
-          <Button onClick={() => { history.push('companies-register') }}>Registrar nova concessionária</Button>
+          <Button
+            onClick={() => {
+              history.push('companies-register');
+            }}
+          >
+            Registrar nova concessionária
+          </Button>
         </div>
       </Content>
-    </Container >
+    </Container>
   );
-}
+};
 
 export default Companies;

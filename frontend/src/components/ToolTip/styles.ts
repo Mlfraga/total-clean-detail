@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   position: relative;
 
-  span{
+  span {
     width: 160px;
     background: #ff9000;
     padding: 8px;
@@ -11,7 +11,7 @@ export const Container = styled.div`
     font-size: 14px;
     font-weight: 500;
     opacity: 0;
-    transition: opacity 0.4s ;
+    transition: opacity 0.4s;
     visibility: hidden;
 
     position: absolute;
@@ -21,7 +21,7 @@ export const Container = styled.div`
 
     color: #312e38;
 
-    &::before{
+    &::before {
       content: ';';
       border-style: solid;
       border-color: #ff9000 transparent;

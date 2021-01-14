@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { shade } from 'polished';
+import styled from 'styled-components';
 
 export const RegisterSuccessPage = styled.div`
   width: 100%;
@@ -16,7 +16,7 @@ export const RegisterSuccessPage = styled.div`
     svg {
       margin-bottom: 80px;
     }
-    h1{
+    h1 {
       margin-bottom: 30px;
     }
 
@@ -34,8 +34,8 @@ export const RegisterSuccessPage = styled.div`
 `;
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
   height: 100vh;
 `;
@@ -46,58 +46,23 @@ export const Content = styled.div`
   width: 100%;
   max-width: 1200px;
 
-  .DateTimeContainer {
-    width: 100%;
+  .DateTimesContainer {
+    width: 80%;
     display: flex;
+    flex-direction: 'row';
+    align-items: center;
 
-    div.availability {
-        width: 40%;
-        div.labels{
-          background: transparent;
-          border: 0;
-          display: flex;
-          justify-content: space-between;
-          margin-top: 25px;
-          max-width: 355px;
+    .DateTimeContainer {
+      width: 100%;
+      margin-right: 16px;
+      max-width: 330px;
 
-          span {
-            font: 18px 'Ubuntu', sans-serif;
-            margin-left: 4px;
-            font-weight: 400;
-            color: #eee;
-
-            & + span {
-              color: #FF6F60;
-            }
-          }
-        }
-        .MuiFormControl-root.MuiTextField-root.availability-date-time {
-        width: 100%;
-        max-width: 355px;
-          .MuiInput-underline:after {
-            border-bottom: 2px solid #FF6F60;
-          }
-        }
-
-        .MuiFormControl-root.MuiTextField-root.availability-date-time-errored {
-        width: 100%;
-        max-width: 355px;
-          .MuiInput-underline:after {
-            border-bottom: 2px solid #FF6F60;
-          }
-        }
-    }
-
-    div.delivery{
-      width: 40%;
-
-      div.labels{
+      div.labels {
         background: transparent;
         border: 0;
         display: flex;
         justify-content: space-between;
         margin-top: 25px;
-        max-width: 355px;
 
         span {
           font: 18px 'Ubuntu', sans-serif;
@@ -106,67 +71,11 @@ export const Content = styled.div`
           color: #eee;
 
           & + span {
-            color: #FF6F60;
+            color: #ff6f60;
           }
         }
       }
-
-      .MuiFormControl-root.MuiTextField-root.delivery-date-time {
-        width: 100%;
-        max-width: 355px;
-        .MuiInput-underline:after {
-          border-bottom: 2px solid #FF6F60;
-        }
-      }
     }
-
-      #date-times-availability {
-        margin-top: 10px;
-        width: 100%;
-
-        height: 30px;
-        border-radius: 6px;
-        background: #424242;
-        border: 2.5px solid #585858;
-
-        color: #ccc;
-      }
-
-      #date-times-availability-errored {
-        margin-top: 10px;
-        width: 100%;
-
-        height: 30px;
-        border-radius: 6px;
-        background: #424242;
-        border: 2.5px solid #c53030;
-
-        color: #ccc;
-      }
-
-      #date-times-delivery {
-        margin-top: 10px;
-        width: 100%;
-
-        height: 30px;
-        border-radius: 6px;
-        background: #424242;
-        border: 2.5px solid #585858;
-
-        color: #ccc;
-      }
-
-      #date-times-delivery-errored {
-        margin-top: 10px;
-        width: 100%;
-
-        height: 30px;
-        border-radius: 6px;
-        background: #424242;
-        border: 2.5px solid #c53030;
-
-        color: #ccc;
-      }
   }
 
   button {
@@ -177,25 +86,25 @@ export const Content = styled.div`
 `;
 
 export const Separator = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
 
-    span {
-      font: 18px 'Ubuntu', sans-serif;
-      font-weight: bold;
-      color: #eee;
-    }
+  span {
+    font: 18px 'Ubuntu', sans-serif;
+    font-weight: bold;
+    color: #eee;
+  }
 
-    div {
-      height: 2px;
-      flex: 1;
+  div {
+    height: 2px;
+    flex: 1;
 
-      background: #686868;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
+    background: #686868;
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 `;
 
 export const Inputs = styled.div`
@@ -203,14 +112,13 @@ export const Inputs = styled.div`
   max-width: 1200px;
   display: flex;
 
-    .SelectContainer {
-
-      div.labels{
-        background: transparent;
-        border: 0;
-        display: flex;
-        justify-content: space-between;
-        margin-top: 5px;
+  .SelectContainer {
+    div.labels {
+      background: transparent;
+      border: 0;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
 
       span {
         font: 18px 'Ubuntu', sans-serif;
@@ -219,7 +127,7 @@ export const Inputs = styled.div`
         color: #eee;
 
         & + span {
-          color: #FF6F60;
+          color: #ff6f60;
         }
       }
     }
@@ -227,45 +135,43 @@ export const Inputs = styled.div`
 `;
 
 export const InputContainer = styled.div`
+  & + div {
+    margin-left: 16px;
+  }
 
- & + div {
-   margin-left: 16px;
- }
-
-  div.labels{
+  div.labels {
     background: transparent;
     border: 0;
     display: flex;
     justify-content: space-between;
 
     span {
-    font: 18px 'Ubuntu', sans-serif;
-    margin-left: 4px;
-    font-weight: 400;
-    color: #eee;
+      font: 18px 'Ubuntu', sans-serif;
+      margin-left: 4px;
+      font-weight: 400;
+      color: #eee;
 
       & + span {
-        color: #FF6F60;
+        color: #ff6f60;
       }
     }
   }
 
-  div{
+  div {
     margin-top: 6px;
     height: 30px;
     border-radius: 6px;
     background: #424242;
 
-
-    div{
+    div {
       background: #424242;
       border: 0;
       height: 26px;
     }
   }
-`
+`;
 
-export const ServiceBox = styled.div `
+export const ServiceBox = styled.div`
   margin-top: 16px;
   max-width: 165px;
   height: 65px;
@@ -284,13 +190,13 @@ export const ServiceBox = styled.div `
   }
 
   span {
-    font-size:16px;
+    font-size: 16px;
     text-align: center;
     padding: 5px 5px;
   }
 `;
 
-export const Services = styled.div `
+export const Services = styled.div`
   width: 100%;
   height: 210px;
   margin-top: 10px;
@@ -301,6 +207,6 @@ export const Services = styled.div `
   grid-template-rows: 70px 70px 70px 70px 70px 70px 70px;
 
   .selected {
-    border-color: #FF6F60;
+    border-color: #ff6f60;
   }
 `;

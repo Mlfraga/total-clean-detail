@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Container, Content, Separator, List } from './styles';
-
-import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-
+import Header from '../../components/Header';
 import api from '../../services/api';
+import { Container, Content, Separator, List } from './styles';
 
 interface FormatRow {
-  id: number
+  id: number;
   name: string;
   telephone: string;
   enabled: boolean;
   user: {
     email: string;
     role: 'MANAGER' | 'SELLER';
-  }
+  };
   company: {
     name: string;
-  }
+  };
   unit: {
     name: string;
-  }
+  };
 }
 
 const Sellers = () => {
@@ -37,18 +35,18 @@ const Sellers = () => {
       console.log(sellers);
       setRows(sellers);
     });
-  }, [])
+  }, []);
 
   return (
     <Container>
       <Header />
 
-      <Breadcrumb text='Vendedores' />
+      <Breadcrumb text="Vendedores" />
       <Content>
         <Separator>
           <span>Vendedores</span>
           <div />
-        </Separator >
+        </Separator>
         <div className="boxTitle">
           <h3>Nome</h3>
           <h3>Telefone</h3>
@@ -66,18 +64,24 @@ const Sellers = () => {
               <span>{row.user.email}</span>
               <span>{row.company.name}</span>
               <span>{row.unit?.name}</span>
-              <span>{row.user?.role === 'MANAGER' ? 'Gerente' : 'Vendedor'}</span>
+              <span>
+                {row.user?.role === 'MANAGER' ? 'Gerente' : 'Vendedor'}
+              </span>
             </div>
           ))}
-
         </List>
         <div className="button">
-          <Button onClick={() => { history.push('sellers-register') }}>Registrar novo vendedor</Button>
+          <Button
+            onClick={() => {
+              history.push('sellers-register');
+            }}
+          >
+            Registrar novo vendedor
+          </Button>
         </div>
       </Content>
-
-    </Container >
+    </Container>
   );
-}
+};
 
 export default Sellers;

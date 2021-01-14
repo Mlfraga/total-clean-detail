@@ -13,6 +13,18 @@ class SaleRepository extends BaseRepository<Sale, SaleCreateInput, SaleUpdateInp
     return this.prisma.sale.findMany({ include: this.include, orderBy:{requestDate: 'desc'}  });
   }
 
+  findByDate(initialDate: Date, finalDate: Date): Promise<Sale[] | null> {
+    return this.prisma.sale.findMany({ where: { availabilityDate: {gte: initialDate, lte: finalDate } }, include: this.include });
+  }
+
+  findByDateAndStatus(initialDate: Date, finalDate: Date, status: Status): Promise<Sale[] | null> {
+    return this.prisma.sale.findMany({ where: { availabilityDate: {gte: initialDate, lte: finalDate }, status }, include: this.include });
+  }
+
+  findByStatus(status: Status): Promise<Sale[]> {
+    return this.prisma.sale.findMany({ where: { status }, include: this.include, orderBy:{requestDate: 'desc'} });
+  }
+
   findById(id: number): Promise<Sale | null> {
     return this.prisma.sale.findOne({ where: { id }, include: this.include });
   }
@@ -27,10 +39,6 @@ class SaleRepository extends BaseRepository<Sale, SaleCreateInput, SaleUpdateInp
 
   delete(id: number): Promise<Sale | null> {
     return this.prisma.sale.delete({ where: { id }, include: this.include });
-  }
-
-  findByStatus(status: Status): Promise<Sale[]> {
-    return this.prisma.sale.findMany({ where: { status }, include: this.include, orderBy:{requestDate: 'desc'} });
   }
 
   findByUnit(unitId: number): Promise<Sale[]> {

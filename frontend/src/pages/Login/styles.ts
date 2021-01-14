@@ -7,9 +7,8 @@ export const Container = styled.div`
 
   display: flex;
   align-items: stretch;
-`
+`;
 export const Content = styled.div`
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,26 +18,26 @@ export const Content = styled.div`
   width: 100%;
   max-width: 700px;
 
-  .logo{
+  .logo {
     max-width: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ff6659;
 
-    h1{
-    font: 45px 'Ubuntu', sans-serif;
-    font-weight: 700;
-    position: absolute;
+    h1 {
+      font: 45px 'Ubuntu', sans-serif;
+      font-weight: 700;
+      position: absolute;
     }
 
-    img{
-    height: 58px;
-    width: 58px;
-    margin-left: 246px;
-    padding-bottom: 13.4px;
+    img {
+      height: 58px;
+      width: 58px;
+      margin-left: 246px;
+      padding-bottom: 13.4px;
     }
-}
+  }
 
   form {
     margin: 80px 0;
@@ -57,4 +56,4 @@ export const Background = styled.div`
   background-size: cover;
 
   filter: grayscale(85%);
-  `;
+`;

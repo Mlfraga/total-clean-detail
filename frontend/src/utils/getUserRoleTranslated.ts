@@ -1,12 +1,12 @@
-export default function getUserRoleTranslated(role: string): string{
-  switch (role){
+export default function getUserRoleTranslated(role: string): string {
+  switch (role) {
     case 'SELLER':
-      return 'Vendedor'
+      return 'Vendedor';
     case 'MANAGER':
-      return 'Gerente'
+      return 'Gerente';
     case 'ADMIN':
-      return 'Administrador'
+      return 'Administrador';
     default:
-      return 'Outracoisa'
+      return 'Outracoisa';
   }
 }

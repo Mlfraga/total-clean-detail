@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100vh;
 `;
 
@@ -11,10 +11,9 @@ export const Content = styled.div`
   width: 100%;
   max-width: 1200px;
 
-
   .boxTitle {
     display: grid;
-    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 5% 12% 14% 14% 11% 10% 18% 12% 4%;
     align-items: center;
     justify-content: center;
     padding-left: 10px;
@@ -29,7 +28,7 @@ export const Content = styled.div`
       font-weight: bold;
     }
   }
-  div.updateSaleContainer{
+  div.updateSaleContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -37,7 +36,7 @@ export const Content = styled.div`
     width: 600px;
     float: right;
 
-    button{
+    button {
       width: 250px;
       height: 40px;
       margin-top: 36px;
@@ -45,49 +44,48 @@ export const Content = styled.div`
 
     .SelectContainer {
       width: 250px;
-      div.labels{
+      div.labels {
         background: transparent;
         border: 0;
         display: flex;
         justify-content: space-between;
         margin-top: 5px;
 
-      span {
-        font: 18px 'Ubuntu', sans-serif;
-        margin-left: 4px;
-        font-weight: 400;
-        color: #eee;
+        span {
+          font: 18px 'Ubuntu', sans-serif;
+          margin-left: 4px;
+          font-weight: 400;
+          color: #eee;
 
-        & + span {
-          color: #FF6F60;
+          & + span {
+            color: #ff6f60;
+          }
         }
       }
     }
   }
-
-  }
 `;
 
 export const Separator = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 14px;
 
-    span {
-      font: 20px 'Ubuntu', sans-serif;
-      font-weight: bold;
-      color: #eee;
-    }
+  span {
+    font: 20px 'Ubuntu', sans-serif;
+    font-weight: bold;
+    color: #eee;
+  }
 
-    div {
-      height: 2px;
-      flex: 1;
+  div {
+    height: 2px;
+    flex: 1;
 
-      background: #686868;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
+    background: #686868;
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 `;
 
 export const List = styled.div`
@@ -105,7 +103,6 @@ export const List = styled.div`
     background: #525252;
     border-radius: 20px;
   }
-
 `;
 
 export const Box = styled.div`
@@ -113,12 +110,12 @@ export const Box = styled.div`
     margin-top: 16px;
   }
 
- div.header{
+  div.header {
     padding-left: 10px;
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 5% 12% 14% 14% 11% 10% 18% 12% 4%;
     align-items: center;
     justify-content: center;
 
@@ -126,18 +123,18 @@ export const Box = styled.div`
     height: 60px;
     border-radius: 15px 15px 0 0;
 
-      span {
-        display: flex;
-        align-items: center;
-        font: 15px 'Ubuntu', sans-serif;
-        font-weight: 200;
-        div{
-          margin-right: 6px;
-          border-radius: 50%;
-          width: 12px;
-          height:12px;
-        }
+    span {
+      display: flex;
+      align-items: center;
+      font: 15px 'Ubuntu', sans-serif;
+      font-weight: 200;
+      div {
+        margin-right: 6px;
+        border-radius: 50%;
+        width: 12px;
+        height: 12px;
       }
+    }
   }
 
   div.header-selected {
@@ -145,36 +142,36 @@ export const Box = styled.div`
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 15% 16% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 5% 12% 14% 14% 11% 10% 18% 12% 4%;
     align-items: center;
     justify-content: center;
 
-    border: 2px solid #FF6F60;
+    border: 2px solid #ff6f60;
     background: #303030;
     height: 60px;
     border-radius: 15px 15px 0 0;
 
-      span {
-        display: flex;
-        align-items: center;
-        font: 15px 'Ubuntu', sans-serif;
-        font-weight: 400;
-        div{
-          margin-right: 6px;
-          border-radius: 50%;
-          width: 12px;
-          height:12px;
-        }
+    span {
+      display: flex;
+      align-items: center;
+      font: 15px 'Ubuntu', sans-serif;
+      font-weight: 400;
+      div {
+        margin-right: 6px;
+        border-radius: 50%;
+        width: 12px;
+        height: 12px;
       }
+    }
   }
 
   div.status {
     div.FINISHED {
-      background: #94EC94;
+      background: #94ec94;
     }
 
     div.CANCELED {
-      background: #FF6F60;
+      background: #ff6f60;
     }
 
     div.PENDING {
@@ -191,14 +188,14 @@ export const Box = styled.div`
     border-radius: 0 0 15px 15px;
     padding: 10px 16px 20px 16px;
 
-    div.separator{
+    div.separator {
       margin-top: 5px;
-      span{
+      span {
         font: 16px 'Ubuntu', sans-serif;
       }
     }
 
-    div.service{
+    div.service {
       margin-top: 16px;
       background: #424242;
       min-height: 35px;
@@ -212,7 +209,7 @@ export const Box = styled.div`
         margin-top: 8px;
       }
     }
-    div.total{
+    div.total {
       margin-top: 16px;
       background: #424242;
       min-height: 35px;

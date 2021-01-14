@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Route as ReactDOMRoute,
   RouteProps as ReactDOMRouteProps,
-  Redirect
+  Redirect,
 } from 'react-router-dom';
 
 import { useAuth } from '../context/auth';
@@ -15,24 +15,24 @@ interface RouteProps extends ReactDOMRouteProps {
 const Permission: React.FC<RouteProps> = ({
   permissions = ['MANAGER', 'SELLER', 'ADMIN'],
   component: Component,
-  ...rest }) => {
+  ...rest
+}) => {
   const { user } = useAuth();
 
   return (
     <ReactDOMRoute
       {...rest}
-      render={({ location }) => {
-        return !user ? (
+      render={({ location }) =>
+        !user ? (
           <Component />
         ) : permissions.includes(user.role) ? (
           <Component />
         ) : (
-              <Redirect to='/services' />
-            )
-      }}
+          <Redirect to="/services" />
+        )
+      }
     />
-  )
-}
+  );
+};
 
 export default Permission;
-

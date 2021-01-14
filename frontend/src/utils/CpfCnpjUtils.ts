@@ -1,4 +1,3 @@
-
 export default class CpfCnpjUtils {
   static isCpfValid(cpf: string): boolean {
     const cpfLength = 11;
@@ -18,7 +17,14 @@ export default class CpfCnpjUtils {
     const secondDotPosition = 5;
     const slashPosition = -1;
     const dashPosition = 8;
-    return this.format(cpf, correctDigitsLength, firstDotPosition, secondDotPosition, slashPosition, dashPosition);
+    return this.format(
+      cpf,
+      correctDigitsLength,
+      firstDotPosition,
+      secondDotPosition,
+      slashPosition,
+      dashPosition,
+    );
   }
 
   static formatCnpj(cnpj: string): string {
@@ -27,7 +33,14 @@ export default class CpfCnpjUtils {
     const secondDotPosition = 4;
     const slashPosition = 7;
     const dashPosition = 11;
-    return this.format(cnpj, correctDigitsLength, firstDotPosition, secondDotPosition, slashPosition, dashPosition);
+    return this.format(
+      cnpj,
+      correctDigitsLength,
+      firstDotPosition,
+      secondDotPosition,
+      slashPosition,
+      dashPosition,
+    );
   }
 
   private static format(
@@ -36,7 +49,7 @@ export default class CpfCnpjUtils {
     firstDotPosition: number,
     secondDotPosition: number,
     slashPosition: number,
-    dashPosition: number
+    dashPosition: number,
   ): string {
     const cleanDigits = this.getOnlyNumbers(digits);
     return cleanDigits
@@ -59,13 +72,26 @@ export default class CpfCnpjUtils {
       }, '');
   }
 
-  private static isValid(digits: string, correctDigitsLength: number, weights: number[]): boolean {
+  private static isValid(
+    digits: string,
+    correctDigitsLength: number,
+    weights: number[],
+  ): boolean {
     const cleanDigits = this.getOnlyNumbers(digits);
-    if (cleanDigits.length !== correctDigitsLength || this.isAllTheSameDigits(cleanDigits)) {
+    if (
+      cleanDigits.length !== correctDigitsLength ||
+      this.isAllTheSameDigits(cleanDigits)
+    ) {
       return false;
     }
-    const digitsWithoutChecker = cleanDigits.substring(0, correctDigitsLength - 2);
-    const digitsChecker = cleanDigits.substring(correctDigitsLength - 2, correctDigitsLength);
+    const digitsWithoutChecker = cleanDigits.substring(
+      0,
+      correctDigitsLength - 2,
+    );
+    const digitsChecker = cleanDigits.substring(
+      correctDigitsLength - 2,
+      correctDigitsLength,
+    );
     const calculetedChecker = this.calcChecker(digitsWithoutChecker, weights);
     return digitsChecker === calculetedChecker;
   }
@@ -75,16 +101,19 @@ export default class CpfCnpjUtils {
   }
 
   private static isAllTheSameDigits(digits: string): boolean {
-    return !digits.split('').some((digit) => digit !== digits[0]);
+    return !digits.split('').some(digit => digit !== digits[0]);
   }
 
   private static calcChecker(digits: string, weights: number[]): string {
     const digitsLength = digits.length;
     const digitsLengthWithoutChecker = weights.length - 1;
 
-    const sum = digits.split('').reduce((acc, digit, idx) => {
-      return acc + +digit * weights[digitsLength - 1 - idx];
-    }, 0);
+    const sum = digits
+      .split('')
+      .reduce(
+        (acc, digit, idx) => acc + +digit * weights[digitsLength - 1 - idx],
+        0,
+      );
     const sumDivisionRemainder = sum % 11;
     const checker = sumDivisionRemainder < 2 ? 0 : 11 - sumDivisionRemainder;
 
@@ -95,4 +124,3 @@ export default class CpfCnpjUtils {
     return `${digits[digitsLength - 1]}${checker}`;
   }
 }
-

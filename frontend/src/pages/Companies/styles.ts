@@ -1,8 +1,8 @@
-import styled from 'styled-components';
 import { shade } from 'polished';
+import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100vh;
 `;
 
@@ -38,25 +38,25 @@ export const Content = styled.div`
 `;
 
 export const Separator = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
 
-    span {
-      font: 20px 'Ubuntu', sans-serif;
-      font-weight: bold;
-      color: #eee;
-    }
+  span {
+    font: 20px 'Ubuntu', sans-serif;
+    font-weight: bold;
+    color: #eee;
+  }
 
-    div {
-      height: 2px;
-      flex: 1;
+  div {
+    height: 2px;
+    flex: 1;
 
-      background: #686868;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
+    background: #686868;
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 `;
 
 export const List = styled.div`
@@ -74,7 +74,6 @@ export const List = styled.div`
     background: #525252;
     border-radius: 20px;
   }
-
 `;
 
 export const Box = styled.div`
@@ -82,7 +81,7 @@ export const Box = styled.div`
     margin-top: 16px;
   }
 
- div.header{
+  div.header {
     padding-left: 10px;
     display: grid;
     max-width: 1200px;
@@ -95,18 +94,18 @@ export const Box = styled.div`
     height: 60px;
     border-radius: 15px 15px 0 0;
 
-      span {
-        display: flex;
-        align-items: center;
-        font: 15px 'Ubuntu', sans-serif;
-        font-weight: 400;
-        div{
-          margin-right: 6px;
-          border-radius: 50%;
-          width: 12px;
-          height:12px;
-        }
+    span {
+      display: flex;
+      align-items: center;
+      font: 15px 'Ubuntu', sans-serif;
+      font-weight: 400;
+      div {
+        margin-right: 6px;
+        border-radius: 50%;
+        width: 12px;
+        height: 12px;
       }
+    }
   }
 
   .dropDown {
@@ -127,18 +126,18 @@ export const Box = styled.div`
 
       margin-top: 16px;
       &:hover {
-      color: ${shade(0.2, '#ff6659')}
+        color: ${shade(0.2, '#ff6659')};
       }
     }
 
-    div.separator{
+    div.separator {
       margin-top: 5px;
-      span{
+      span {
         font: 16px 'Ubuntu', sans-serif;
       }
     }
 
-    div.title{
+    div.title {
       margin-top: 16px;
       background: #424242;
       min-height: 35px;
@@ -159,7 +158,7 @@ export const Box = styled.div`
       }
     }
 
-    div.unit{
+    div.unit {
       margin-top: 16px;
       background: #424242;
       min-height: 35px;

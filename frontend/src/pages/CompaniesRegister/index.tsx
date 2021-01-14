@@ -1,19 +1,17 @@
 import React, { useCallback, useRef } from 'react';
-import { Form } from '@unform/web';
+
 import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
 import * as Yup from 'yup';
 
-import CpfCnpjUtils from '../../utils/CpfCnpjUtils';
-import getValidationsErrors from '../../utils/getValidationError';
-import { useToast } from '../../context/toast';
-
-import api from '../../services/api';
-
-import Header from '../../components/Header';
-import Input from '../../components/Input';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-
+import Header from '../../components/Header';
+import Input from '../../components/Input';
+import { useToast } from '../../context/toast';
+import api from '../../services/api';
+import CpfCnpjUtils from '../../utils/CpfCnpjUtils';
+import getValidationsErrors from '../../utils/getValidationError';
 import { Container, Content, Separator, InputContainer } from './styles';
 
 interface FormData {
@@ -26,49 +24,69 @@ const CompaniesRegister = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
 
-  const handleSubmit = useCallback(async (data: FormData, { reset }) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSubmit = useCallback(
+    async (data: FormData, { reset }) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        companyName: Yup.string().required('Nome da concessionária obrigatório'),
-        companyTelephone: Yup.string().required('Telefone da concessionária obrigatório').min(9, 'O telefone deve ter no mínimo 9 dígitos').max(11, 'O telefone deve ter no máximo 11 dígitos'),
-        companyCnpj: Yup.string().required('Cnpj da concessionária obrigatório').length(14, 'O CNPJ deve ter 14 dígitos.'),
-      });
+        const schema = Yup.object().shape({
+          companyName: Yup.string().required(
+            'Nome da concessionária obrigatório',
+          ),
+          companyTelephone: Yup.string()
+            .required('Telefone da concessionária obrigatório')
+            .min(9, 'O telefone deve ter no mínimo 9 dígitos')
+            .max(11, 'O telefone deve ter no máximo 11 dígitos'),
+          companyCnpj: Yup.string()
+            .required('Cnpj da concessionária obrigatório')
+            .length(14, 'O CNPJ deve ter 14 dígitos.'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      const isCnpjValid = CpfCnpjUtils.isCnpjValid(data.companyCnpj);
+        const isCnpjValid = CpfCnpjUtils.isCnpjValid(data.companyCnpj);
 
-      if (isCnpjValid !== true) {
-        formRef.current?.setErrors({ companyCnpj: 'Cnpj inválido.' });
-        return;
-      };
+        if (isCnpjValid !== true) {
+          formRef.current?.setErrors({ companyCnpj: 'Cnpj inválido.' });
+          return;
+        }
 
-      const response = await api.post('companies', {
-        name: data.companyName,
-        telephone: data.companyTelephone,
-        cnpj: data.companyCnpj
-      });
+        const response = await api.post('companies', {
+          name: data.companyName,
+          telephone: data.companyTelephone,
+          cnpj: data.companyCnpj,
+        });
 
-      if (response.status === 200) {
-        addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: "Agora você já pode registrar unidades, vendedores e gerentes a essa concessionária." });
+        if (response.status === 200) {
+          addToast({
+            title: 'Cadastro realizado com sucesso.',
+            type: 'success',
+            description:
+              'Agora você já pode registrar unidades, vendedores e gerentes a essa concessionária.',
+          });
 
-        reset();
+          reset();
+        }
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationsErrors(err);
+
+          formRef.current?.setErrors(errors);
+          return;
+        }
+
+        addToast({
+          title: 'Não foi possível realizar o caadastro.',
+          description:
+            'Essa concessionária já foi criada ou ocorreu um erro, tente novamente.',
+          type: 'error',
+        });
       }
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationsErrors(err);
-
-        formRef.current?.setErrors(errors);
-        return
-      }
-
-      addToast({ title: "Não foi possível realizar o caadastro.", description: 'Essa concessionária já foi criada ou ocorreu um erro, tente novamente.', type: "error" })
-    }
-  }, [addToast]);
+    },
+    [addToast],
+  );
 
   return (
     <Container>
@@ -78,11 +96,11 @@ const CompaniesRegister = () => {
         <Separator>
           <span>Cadastro de concessionárias</span>
           <div />
-        </Separator >
+        </Separator>
 
-        <Form ref={formRef} onSubmit={handleSubmit} >
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <div className="inputs">
-            <InputContainer style={{ maxWidth: '375px', width: '100%' }} >
+            <InputContainer style={{ maxWidth: '375px', width: '100%' }}>
               <div className="labels">
                 <span>Nome da concessionária:</span>
                 <span>*</span>
@@ -96,7 +114,7 @@ const CompaniesRegister = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ maxWidth: '375px', width: '100%' }} >
+            <InputContainer style={{ maxWidth: '375px', width: '100%' }}>
               <div className="labels">
                 <span>Telefone da concessionária:</span>
                 <span>*</span>
@@ -110,7 +128,7 @@ const CompaniesRegister = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ maxWidth: '375px', width: '100%' }} >
+            <InputContainer style={{ maxWidth: '375px', width: '100%' }}>
               <div className="labels">
                 <span>Cnpj da concessionária:</span>
                 <span>*</span>
@@ -124,11 +142,11 @@ const CompaniesRegister = () => {
               />
             </InputContainer>
           </div>
-          <Button type='submit'>Cadastrar</Button>
+          <Button type="submit">Cadastrar</Button>
         </Form>
       </Content>
-    </Container >
+    </Container>
   );
-}
+};
 
 export default CompaniesRegister;

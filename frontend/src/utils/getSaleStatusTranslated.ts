@@ -1,14 +1,14 @@
-export default function getSaleStatusTranslated(status: string): string{
-  switch (status){
+export default function getSaleStatusTranslated(status: string): string {
+  switch (status) {
     case 'PENDING':
-      return 'Pendente'
+      return 'Pendente';
     case 'CANCELED':
-      return 'Cancelado'
+      return 'Cancelado';
     case 'CONFIRMED':
-      return 'Confirmado'
+      return 'Confirmado';
     case 'FINISHED':
-      return 'Finalizado'
+      return 'Finalizado';
     default:
-      return 'Outracoisa'
+      return 'Outracoisa';
   }
 }

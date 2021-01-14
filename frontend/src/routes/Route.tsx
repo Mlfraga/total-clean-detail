@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Route as ReactDOMRoute,
   RouteProps as ReactDOMRouteProps,
-  Redirect
+  Redirect,
 } from 'react-router-dom';
 
-import Permission from './Permission';
-
 import { useAuth } from '../context/auth';
+import Permission from './Permission';
 
 interface RouteProps extends ReactDOMRouteProps {
   isPrivate?: boolean;
@@ -19,25 +18,27 @@ const Route: React.FC<RouteProps> = ({
   permissions,
   isPrivate = false,
   component: Component,
-  ...rest }) => {
+  ...rest
+}) => {
   const { user } = useAuth();
 
   return (
     <ReactDOMRoute
       {...rest}
-      render={({ location }) => {
-        return isPrivate === !!user ? (
+      render={({ location }) =>
+        isPrivate === !!user ? (
           <Permission permissions={permissions} component={Component} />
         ) : (
-            <Redirect to={{
+          <Redirect
+            to={{
               pathname: isPrivate ? '/' : 'services',
-              state: { from: location }
-            }} />
-          )
-      }}
+              state: { from: location },
+            }}
+          />
+        )
+      }
     />
-  )
-}
+  );
+};
 
 export default Route;
-

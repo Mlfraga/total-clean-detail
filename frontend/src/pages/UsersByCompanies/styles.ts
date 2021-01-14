@@ -1,8 +1,8 @@
-import styled from 'styled-components';
 import { shade } from 'polished';
+import styled from 'styled-components';
 
 export const Container = styled.div`
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100%;
 `;
 
@@ -33,25 +33,25 @@ export const Content = styled.div`
 `;
 
 export const Separator = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
 
-    span {
-      font: 20px 'Ubuntu', sans-serif;
-      font-weight: bold;
-      color: #eee;
-    }
+  span {
+    font: 20px 'Ubuntu', sans-serif;
+    font-weight: bold;
+    color: #eee;
+  }
 
-    div {
-      height: 2px;
-      flex: 1;
+  div {
+    height: 2px;
+    flex: 1;
 
-      background: #686868;
-      margin-left: 10px;
-      margin-top: 3px;
-    }
+    background: #686868;
+    margin-left: 10px;
+    margin-top: 3px;
+  }
 `;
 
 export const List = styled.div`
@@ -94,7 +94,7 @@ export const List = styled.div`
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #FF6F60;
+        background: #ff6f60;
       }
 
       div.enabled {
@@ -102,7 +102,7 @@ export const List = styled.div`
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #94EC94;
+        background: #94ec94;
       }
     }
 
@@ -118,7 +118,7 @@ export const Box = styled.div`
     margin-top: 16px;
   }
 
-  div.header{
+  div.header {
     padding-left: 10px;
     display: grid;
     max-width: 1200px;
@@ -136,11 +136,11 @@ export const Box = styled.div`
       align-items: center;
       font: 15px 'Ubuntu', sans-serif;
       font-weight: 400;
-      div{
+      div {
         margin-right: 6px;
         border-radius: 50%;
         width: 12px;
-        height:12px;
+        height: 12px;
       }
     }
 
@@ -156,7 +156,7 @@ export const Box = styled.div`
       transition: color 0.2s;
 
       &:hover {
-      color: ${shade(0.2, '#ff6659')}
+        color: ${shade(0.2, '#ff6659')};
       }
     }
   }
@@ -168,14 +168,14 @@ export const Box = styled.div`
     width: 100%;
     max-width: 1200px;
 
-    div.separator{
+    div.separator {
       margin-top: 5px;
-      span{
+      span {
         font: 16px 'Ubuntu', sans-serif;
       }
     }
 
-    div.title{
+    div.title {
       margin-top: 16px;
       background: #424242;
       min-height: 35px;
@@ -196,7 +196,7 @@ export const Box = styled.div`
       }
     }
 
-    div.person{
+    div.person {
       margin-top: 16px;
       background: #424242;
       min-height: 35px;

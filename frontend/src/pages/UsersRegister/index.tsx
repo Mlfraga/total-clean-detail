@@ -1,22 +1,26 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Form } from '@unform/web';
-import { FormHandles } from '@unform/core';
-import * as Yup from 'yup';
-import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
 
-import getValidationsErrors from '../../utils/getValidationError';
-import { useToast } from '../../context/toast';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+import queryString from 'query-string';
+import * as Yup from 'yup';
 
-import api from '../../services/api';
-
-import Header from '../../components/Header';
-import Input from '../../components/Input';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import Select from 'react-select';
-
-import { Container, Content, Separator, InputContainer, Inputs } from './styles';
+import Header from '../../components/Header';
+import Input from '../../components/Input';
+import Select from '../../components/Select';
+import { useToast } from '../../context/toast';
+import api from '../../services/api';
+import getValidationsErrors from '../../utils/getValidationError';
+import {
+  Container,
+  Content,
+  Separator,
+  InputContainer,
+  Inputs,
+} from './styles';
 
 interface FormData {
   username: string;
@@ -24,6 +28,7 @@ interface FormData {
   password: string;
   confirmPassword: string;
   role: string;
+  unit: string;
   name: string;
   telephone: string;
 }
@@ -47,8 +52,8 @@ interface Company {
     {
       id: number;
       name: string;
-    }
-  ]
+    },
+  ];
 }
 
 const UsersRegister = () => {
@@ -57,16 +62,15 @@ const UsersRegister = () => {
   const { addToast } = useToast();
 
   const [company, setCompany] = useState<Company>({} as Company);
-  const [role, setRole] = useState<{ value: string, label: string } | null>(null);
-  const [roleSelectErrored, setRoleSelectErrored] = useState<boolean>(false);
-  const [unitSelectErrored, setUnitSelectErrored] = useState<boolean>(false);
-  const [unit, setUnit] = useState<{ value: string, label: string } | null>(null);
-  const [unitSelectOptions, setUnitSelectOptions] = useState<Array<{ value: number, label: string }>>([]);
+  const [role, setRole] = useState<string>('');
+  const [unitSelectOptions, setUnitSelectOptions] = useState<
+    Array<{ value: number; label: string }>
+  >([]);
 
   const roleSelectOptions = [
     { value: 'SELLER', label: 'Vendedor' },
-    { value: 'MANAGER', label: 'Gerente' }
-  ]
+    { value: 'MANAGER', label: 'Gerente' },
+  ];
 
   useEffect(() => {
     const query = history.location.search;
@@ -75,144 +79,160 @@ const UsersRegister = () => {
 
     if (!parsedQuery.company || typeof parsedQuery.company !== 'number') {
       history.push('/services');
-      return
+      return;
     }
 
-    api.get(`companies/${parsedQuery.company}`).then(response => {
-      const company: Company = response.data;
+    api
+      .get(`companies/${parsedQuery.company}`)
+      .then(response => {
+        const company: Company = response.data;
 
-      const unitiesOptions: Array<{ value: number, label: string }> = company.units.map((unit) => {
-        return { value: unit.id, label: unit.name }
+        const unitiesOptions: Array<{
+          value: number;
+          label: string;
+        }> = company.units.map(unit => ({ value: unit.id, label: unit.name }));
+
+        setUnitSelectOptions(unitiesOptions);
+        setCompany({
+          id: company.id,
+          name: company.name,
+          units: company.units,
+        });
+      })
+      .catch(() => {
+        history.push('/services');
       });
+  }, [history]);
 
-      setUnitSelectOptions(unitiesOptions);
-      setCompany({ id: company.id, name: company.name, units: company.units });
-    }).catch(() => {
-      history.push('/services');
-      return
-    });
-  }, [history])
+  const handleChangeRoleSelect = useCallback(
+    newValue => {
+      setRole(newValue.target.value);
+    },
+    [setRole],
+  );
 
-  const handleChangeRoleSelect = useCallback((newValue) => {
-    setRole(newValue);
-    setRoleSelectErrored(false);
-  }, []);
+  const handleSubmit = useCallback(
+    async (data: FormData, { reset }) => {
+      try {
+        formRef.current?.setErrors({});
 
-  const handleChangeUnitSelect = useCallback((newValue) => {
-    setUnit(newValue);
-    setUnitSelectErrored(false);
-  }, []);
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome do usuário obrigatório'),
+          telephone: Yup.string()
+            .min(9, 'O telefone deve ter no mínimo 9 dígitos')
+            .max(11, 'O telefone deve ter no máximo 11 dígitos'),
+          username: Yup.string().required('Nome de login obrigatório'),
+          email: Yup.string().required('E-mail obrigatório'),
+          role: Yup.string().required('Cargo do usuário obrigatório'),
+          unit:
+            role === 'SELLER'
+              ? Yup.string().required('Unidade do usuário obrigatório')
+              : Yup.string(),
+          password: Yup.string().required('Senha obrigatória'),
+          confirmPassword: Yup.string().required(
+            'Confirmação de senha obrigatória',
+          ),
+        });
 
-  const handleSubmit = useCallback(async (data: FormData, { reset }) => {
-    try {
-      formRef.current?.setErrors({});
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome do usuário obrigatório'),
-        telephone: Yup.string().min(9, 'O telefone deve ter no mínimo 9 dígitos').max(11, 'O telefone deve ter no máximo 11 dígitos'),
-        username: Yup.string().required('Nome de login obrigatório'),
-        email: Yup.string().required('E-mail obrigatório'),
-        password: Yup.string().required('Senha obrigatória'),
-        confirmPassword: Yup.string().required('Confirmação de senha obrigatória'),
-      });
-
-      await schema.validate(data, {
-        abortEarly: false
-      });
-
-      if (data.password !== data.confirmPassword) {
-        formRef.current?.setErrors({ password: 'As senhas não batem.', confirmPassword: 'As senhas não batem.' })
-        return
-      }
-
-      if (!role) {
-        setRoleSelectErrored(true);
-        return;
-      }
-
-      if (role.value === 'SELLER') {
-        if (!unit) {
-          setUnitSelectErrored(true);
+        if (data.password !== data.confirmPassword) {
+          formRef.current?.setErrors({
+            password: 'As senhas não batem.',
+            confirmPassword: 'As senhas não batem.',
+          });
           return;
         }
 
-        const formDataToCreateSeller: DataSubmit = {
+        if (role === 'SELLER') {
+          const formDataToCreateSeller: DataSubmit = {
+            username: data.username,
+            email: data.email,
+            password: data.password,
+            role: data.role,
+            name: data.name,
+            telephone: data.telephone,
+            companyId: company?.id,
+            unitId: Number(data.unit),
+            enabled: true,
+          };
+
+          const response = await api.post(
+            'auth/signup',
+            formDataToCreateSeller,
+          );
+
+          if (response.status === 200) {
+            addToast({
+              title: 'Cadastro realizado com sucesso.',
+              type: 'success',
+              description: `Agora o usuário ${data.username} já pode utilizar o sistema.`,
+            });
+
+            setRole('');
+
+            reset();
+          }
+          return;
+        }
+
+        const formDataToCreateManager: DataSubmit = {
           username: data.username,
           email: data.email,
           password: data.password,
-          role: role.value,
+          role: data.role,
           name: data.name,
           telephone: data.telephone,
-          companyId: company?.id,
-          unitId: Number(unit.value),
+          companyId: company.id,
           enabled: true,
-        }
+        };
 
-        const response = await api.post('auth/signup', formDataToCreateSeller);
+        const response = await api.post('auth/signup', formDataToCreateManager);
 
         if (response.status === 200) {
-          addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: `Agora o usuário ${data.username} já pode utilizar o sistema.` });
+          addToast({
+            title: 'Cadastro realizado com sucesso.',
+            type: 'success',
+            description: `Agora o usuário ${data.username} já pode utilizar o sistema.`,
+          });
 
           reset();
         }
-        return;
-      }
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationsErrors(err);
 
-      const formDataToCreateManager: DataSubmit = {
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        role: role.value,
-        name: data.name,
-        telephone: data.telephone,
-        companyId: company.id,
-        enabled: true,
-      }
-
-      const response = await api.post('auth/signup', formDataToCreateManager);
-
-      if (response.status === 200) {
-        addToast({ title: "Cadastro realizado com sucesso.", type: 'success', description: `Agora o usuário ${data.username} já pode utilizar o sistema.` });
-
-        reset();
-      }
-
-    } catch (err) {
-      if (!role) {
-        setRoleSelectErrored(true);
-      }
-
-      if (role?.value === 'SELLER') {
-        if (!unit) {
-          setUnitSelectErrored(true);
+          formRef.current?.setErrors(errors);
+        } else {
+          addToast({
+            title: 'Não foi possível realizar o cadastro.',
+            description:
+              'Esse usuário já foi criado ou ocorreu um erro, tente novamente.',
+            type: 'error',
+          });
         }
       }
-
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationsErrors(err);
-
-        formRef.current?.setErrors(errors);
-        return
-      } else {
-        addToast({ title: "Não foi possível realizar o cadastro.", description: 'Esse usuário já foi criado ou ocorreu um erro, tente novamente.', type: "error" });
-      }
-    }
-  }, [addToast, company, role, unit]);
+    },
+    [addToast, company, role],
+  );
 
   return (
     <Container>
       <Header />
-      <Breadcrumb text={`Registro de novos usuários a concessionŕia ${company.name}`} />
+      <Breadcrumb
+        text={`Registro de novos usuários a concessionŕia ${company.name}`}
+      />
       <Content>
-        <Form ref={formRef} onSubmit={handleSubmit} >
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <Separator>
             <span>Dados do usário</span>
             <div />
-          </Separator >
+          </Separator>
 
-          <Inputs >
-
-            <InputContainer style={{ width: '250px' }} >
+          <Inputs>
+            <InputContainer style={{ width: '250px' }}>
               <div className="labels">
                 <span>Nome:</span>
                 <span>*</span>
@@ -226,7 +246,7 @@ const UsersRegister = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ width: '250px' }} >
+            <InputContainer style={{ width: '250px' }}>
               <div className="labels">
                 <span>Telephone:</span>
                 <span>*</span>
@@ -246,95 +266,69 @@ const UsersRegister = () => {
                 <span>*</span>
               </div>
               <Select
-                styles={{
-                  control: base => ({
-                    ...base,
-                    marginTop: 14,
-                    borderRadius: 6,
-                    borderWidth: 2,
-                    borderColor: roleSelectErrored ? '#c53030' : '#585858',
-                    backgroundColor: '#424242',
-                    width: 265,
-                    height: 20,
-                    boxShadow: 'none',
-                    fontSize: 16
-                  }),
-                  menu: base => ({
-                    ...base,
-                    backgroundColor: '#282828',
-                    color: '#F4EDE8'
-
-                  }),
-                  singleValue: base => ({
-                    ...base,
-                    color: '#F4EDE8'
-                  }),
-                }}
-                options={roleSelectOptions}
-                onChange={handleChangeRoleSelect}
-                label="Single select"
-                className="select"
-                clearable={false}
-                placeholder="Selecione o cargo do usuário"
-                id="unit"
-                type="unit"
-                name="unit"
-              />
-            </div>
-
-            <div
-              hidden={role?.value === "SELLER" ? false : true}
-              className="SelectContainer">
-              <div className="labels">
-                <span>Unidade do vendedor:</span>
-                <span>*</span>
-              </div>
-              <Select
-                styles={{
-                  control: base => ({
-                    ...base,
-                    marginTop: 14,
-                    borderRadius: 6,
-                    borderWidth: 2,
-                    borderColor: unitSelectErrored ? '#c53030' : '#585858',
-                    backgroundColor: '#424242',
-                    width: 297,
-                    boxShadow: 'none',
-                    fontSize: 16
-                  }),
-                  menu: base => ({
-                    ...base,
-                    backgroundColor: '#282828',
-                    color: '#F4EDE8'
-
-                  }),
-                  singleValue: base => ({
-                    ...base,
-                    color: '#F4EDE8'
-                  }),
-                }}
-                options={unitSelectOptions}
-                onChange={handleChangeUnitSelect}
-                label="Single select"
-                className="select"
-                clearable={false}
-                placeholder="Selecione a unidade do vendedor"
-                id="role"
-                type="role"
+                height="34px"
+                backgroundColor="#424242"
+                color="White"
                 name="role"
-              />
+                onChange={handleChangeRoleSelect}
+                placeholder="Selecione o cargo do usuário"
+                containerProps={{
+                  marginTop: '16px',
+                  marginRight: 8,
+                  width: '100%',
+                  height: '37px',
+                  border: '2px solid',
+                  borderColor: '#585858',
+                  backgroundColor: '#424242',
+                }}
+              >
+                {roleSelectOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </Select>
             </div>
 
+            {role === 'SELLER' && (
+              <div className="SelectContainer">
+                <div className="labels">
+                  <span>Unidade do vendedor:</span>
+                  <span>*</span>
+                </div>
+                <Select
+                  height="34px"
+                  backgroundColor="#424242"
+                  color="White"
+                  name="unit"
+                  placeholder="Selecione a unidade do vendedor"
+                  containerProps={{
+                    marginTop: '16px',
+                    marginRight: 8,
+                    width: '100%',
+                    height: '37px',
+                    border: '2px solid',
+                    borderColor: '#585858',
+                    backgroundColor: '#424242',
+                  }}
+                >
+                  {unitSelectOptions.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            )}
           </Inputs>
 
           <Separator>
             <span>Dados do conta</span>
             <div />
-          </Separator >
+          </Separator>
 
-          <Inputs >
-
-            <InputContainer style={{ width: '275px' }} >
+          <Inputs>
+            <InputContainer style={{ width: '275px' }}>
               <div className="labels">
                 <span>Nome de login:</span>
                 <span>*</span>
@@ -348,7 +342,7 @@ const UsersRegister = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ width: '300px' }} >
+            <InputContainer style={{ width: '300px' }}>
               <div className="labels">
                 <span>E-mail:</span>
                 <span>*</span>
@@ -362,7 +356,7 @@ const UsersRegister = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ width: '250px' }} >
+            <InputContainer style={{ width: '250px' }}>
               <div className="labels">
                 <span>Senha:</span>
                 <span>*</span>
@@ -376,7 +370,7 @@ const UsersRegister = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ width: '250px' }} >
+            <InputContainer style={{ width: '250px' }}>
               <div className="labels">
                 <span>Confirmar senha:</span>
                 <span>*</span>
@@ -389,14 +383,13 @@ const UsersRegister = () => {
                 style={{ width: '30px' }}
               />
             </InputContainer>
-
           </Inputs>
 
-          <Button type='submit'>Salvar</Button>
+          <Button type="submit">Salvar</Button>
         </Form>
       </Content>
-    </Container >
+    </Container>
   );
-}
+};
 
 export default UsersRegister;
