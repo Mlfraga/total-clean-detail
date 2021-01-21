@@ -24,6 +24,7 @@ api.interceptors.response.use(
     if (!error.config.url) {
       return error.config;
     }
+
     if (
       !error.config.url.endsWith('login') ||
       !error.config.url.endsWith('refresh')
@@ -53,6 +54,24 @@ api.interceptors.response.use(
       }
 
       if (error.response.status === 403 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        return api
+          .post('/auth/refresh', {
+            token: localStorage.getItem('@TotalClean:refresh-token'),
+          })
+          .then(res => {
+            localStorage.setItem(
+              '@TotalClean:access-token',
+              res.data.accessToken,
+            );
+            api.defaults.headers.common[
+              'Authorization'
+            ] = `Bearer ${localStorage.getItem('@TotalClean:access-token')}`;
+            return api(originalRequest);
+          });
+      }
+
+      if (error.response.status === 404 && !originalRequest._retry) {
         originalRequest._retry = true;
         return api
           .post('/auth/refresh', {

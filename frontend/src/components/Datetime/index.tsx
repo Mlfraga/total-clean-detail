@@ -15,9 +15,9 @@ type IDateTimeProps = TextFieldProps & {
   name: string;
 };
 
-const DateTime: React.FC<IDateTimeProps> = ({ name, children, ...rest }) => {
+const DateTime: React.FC<IDateTimeProps> = ({ name }) => {
   const dateTimeRef = useRef<HTMLDivElement>(null);
-  const { fieldName, defaultValue, error, registerField } = useField(name);
+  const { fieldName, error, registerField } = useField(name);
   const [dateValue, setDateValue] = useState<{ value: string }>({ value: '' });
 
   useEffect(() => {

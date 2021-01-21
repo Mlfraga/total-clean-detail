@@ -22,7 +22,7 @@ import {
   InputContainer,
 } from './styles';
 
-interface FormData {
+interface IFormData {
   username: string;
   email: string;
   password: string;
@@ -32,7 +32,7 @@ interface FormData {
   unit: string;
 }
 
-interface Unit {
+interface IUnit {
   id: number;
   name: string;
 }
@@ -51,7 +51,7 @@ const RegsiterSellers = () => {
     api
       .get(`units/${user?.profile.companyId}`)
       .then(response => {
-        const unities: Unit[] = response.data;
+        const unities: IUnit[] = response.data;
 
         const unitiesOptions: Array<{
           value: number;
@@ -66,7 +66,7 @@ const RegsiterSellers = () => {
   }, [history, user]);
 
   const handleSubmit = useCallback(
-    async (data: FormData, { reset }) => {
+    async (data: IFormData, { reset }) => {
       try {
         formRef.current?.setErrors({});
 

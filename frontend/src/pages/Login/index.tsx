@@ -14,7 +14,7 @@ import { useToast } from '../../context/toast';
 import getValidationsErrors from '../../utils/getValidationError';
 import { Container, Content, Background } from './styles';
 
-interface SignInFormData {
+interface ISignInFormData {
   username: string;
   password: string;
 }
@@ -27,7 +27,7 @@ const Login = () => {
   const { addToast } = useToast();
 
   const handleSubmit = useCallback(
-    async (data: SignInFormData) => {
+    async (data: ISignInFormData) => {
       try {
         formRef.current?.setErrors({});
 

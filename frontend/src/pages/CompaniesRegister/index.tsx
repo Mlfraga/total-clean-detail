@@ -14,7 +14,7 @@ import CpfCnpjUtils from '../../utils/CpfCnpjUtils';
 import getValidationsErrors from '../../utils/getValidationError';
 import { Container, Content, Separator, InputContainer } from './styles';
 
-interface FormData {
+interface IFormData {
   companyName: string;
   companyTelephone: string;
   companyCnpj: string;
@@ -25,7 +25,7 @@ const CompaniesRegister = () => {
   const { addToast } = useToast();
 
   const handleSubmit = useCallback(
-    async (data: FormData, { reset }) => {
+    async (data: IFormData, { reset }) => {
       try {
         formRef.current?.setErrors({});
 

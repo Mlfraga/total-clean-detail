@@ -21,6 +21,17 @@ class SaleRepository extends BaseRepository<Sale, SaleCreateInput, SaleUpdateInp
     return this.prisma.sale.findMany({ where: { availabilityDate: {gte: initialDate, lte: finalDate }, status }, include: this.include });
   }
 
+  findWithAllFilters(company: number, service: number, initialDate: Date, finalDate: Date): Promise<Sale[] | null> {
+    return this.prisma.sale.findMany({ where: {
+       availabilityDate: {
+        gte: initialDate,
+        lte: finalDate
+      },
+      seller: {companyId: company},
+      serviceSale: {some: {id: service}}
+    }, include: this.include });
+  }
+
   findByStatus(status: Status): Promise<Sale[]> {
     return this.prisma.sale.findMany({ where: { status }, include: this.include, orderBy:{requestDate: 'desc'} });
   }

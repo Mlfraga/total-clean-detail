@@ -19,6 +19,7 @@ import AppError from '../errors/AppError';
 interface Validate {
   store: SchemaOptions;
   index: SchemaOptions;
+  listSalesForReport: SchemaOptions;
   findByStatus: SchemaOptions;
   findByUnit: SchemaOptions;
   findBySeller: SchemaOptions;
@@ -46,6 +47,14 @@ class SaleController {
       query: Joi.object({
         date: Joi.date().allow(null),
         status: Joi.string().allow(null),
+      })
+    },
+    listSalesForReport: {
+      query: Joi.object({
+        initialDate: Joi.date().allow(null),
+        finalDate: Joi.date().allow(null),
+        company: Joi.number().allow(null),
+        service: Joi.number().allow(null),
       })
     },
     findByStatus: {
@@ -115,6 +124,24 @@ class SaleController {
 
     return response.json(sales);
   }
+
+  async listSalesForReport(request: Request, response: Response) {
+    const {company, service, initialDate, finalDate} = request.query;
+
+    let sales;
+
+    if(company && service && initialDate && finalDate){
+      sales = await SaleRepository.findWithAllFilters(Number(company), Number(service), startOfDay(new Date(initialDate.toString())), endOfDay(new Date(finalDate.toString())));
+
+      console.log('FILTER');
+    }
+
+    sales = await SaleRepository.findAll();
+
+    return response.json(sales);
+  }
+
+
 
   async store(request: Request, response: Response) {
     const { deliveryDate, availabilityDate, done, companyPrice, costPrice, source, name, cpf, car, carPlate, carColor,

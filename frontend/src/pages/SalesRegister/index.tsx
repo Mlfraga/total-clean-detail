@@ -1,9 +1,4 @@
-import React, {
-  useRef,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { FiCheckCircle } from 'react-icons/fi';
 
 import { FormHandles } from '@unform/core';
@@ -31,14 +26,14 @@ import {
   RegisterSuccessPage,
 } from './styles';
 
-interface Services {
+interface IServices {
   id: number;
   name: string;
   price: number;
   enabled: boolean;
 }
 
-interface FormData {
+interface IFormData {
   car: string;
   carColor: string;
   carModel: string;
@@ -61,10 +56,8 @@ const SalesRegister = () => {
     saleId?: number;
   } | null>(null);
 
-  const [services, setServices] = useState<Services[]>([]);
+  const [services, setServices] = useState<IServices[]>([]);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
-  const [availabilityDate, setAvailabilityDate] = useState('');
-  const [deliveryDate, setDeliveryDate] = useState('');
 
   const selectOptions: Array<{ value: string; label: string }> = [
     { value: 'NEW', label: '0 KM' },
@@ -74,9 +67,9 @@ const SalesRegister = () => {
 
   useEffect(() => {
     api.get('services').then(response => {
-      const services: Services[] = response.data;
+      const responseServices: IServices[] = response.data;
 
-      setServices(services);
+      setServices(responseServices);
     });
   }, []);
 
@@ -96,7 +89,7 @@ const SalesRegister = () => {
   );
 
   const handleSubmit = useCallback(
-    async (data: FormData, { reset }) => {
+    async (data: IFormData, { reset }) => {
       const responseCompanyBudget = await api.post(
         '/sale/getcompanysalebudget',
         { companyId: user?.profile.companyId, services: selectedServices },
@@ -178,9 +171,9 @@ const SalesRegister = () => {
               isAvailable: true,
               saleId: responseCreatedSale.data.id,
             });
+
             setSelectedServices([]);
-            setDeliveryDate('');
-            setAvailabilityDate('');
+
             reset();
           } else {
             addToast({
@@ -211,7 +204,7 @@ const SalesRegister = () => {
         });
       }
     },
-    [addToast, availabilityDate, deliveryDate, selectedServices, user],
+    [addToast, selectedServices, user],
   );
 
   const handleCreateAnotherSale = useCallback(() => {

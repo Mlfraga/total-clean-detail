@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import {
   Route as ReactDOMRoute,
   RouteProps as ReactDOMRouteProps,
@@ -8,13 +8,13 @@ import {
 import { useAuth } from '../context/auth';
 import Permission from './Permission';
 
-interface RouteProps extends ReactDOMRouteProps {
+interface IRouteProps extends ReactDOMRouteProps {
   isPrivate?: boolean;
   component: React.ComponentType;
   permissions?: string[];
 }
 
-const Route: React.FC<RouteProps> = ({
+const Route: React.FC<IRouteProps> = ({
   permissions,
   isPrivate = false,
   component: Component,

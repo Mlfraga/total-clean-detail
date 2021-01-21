@@ -15,7 +15,7 @@ import api from '../../services/api';
 import { currencyMasker } from '../../utils/masks';
 import { Container, Content, Buttons, ListBoxes, PriceBox } from './styles';
 
-interface Services {
+interface IServices {
   id: number;
   name: string;
   price: number;
@@ -28,13 +28,13 @@ const SetCompanyPrices = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
-  const [services, setServices] = useState<Services[]>([]);
+  const [services, setServices] = useState<IServices[]>([]);
 
   useEffect(() => {
     api.get('services').then(response => {
-      const services: Services[] = response.data;
+      const newServices: IServices[] = response.data;
 
-      setServices(services);
+      setServices(newServices);
     });
 
     api.get('companyservices/company').then(response => {
@@ -60,10 +60,11 @@ const SetCompanyPrices = () => {
         const ids = Object.keys(data);
 
         const newServices = ids.map(id => ({
-          serviceId: parseInt(id),
+          serviceId: Number(id),
           price: parseFloat(data[id]),
         }));
 
+        // eslint-disable-next-line no-restricted-globals
         const voidValues = newServices.filter(value => isNaN(value.price));
 
         const voidInputsClassesNames = voidValues.map(value => value.serviceId);

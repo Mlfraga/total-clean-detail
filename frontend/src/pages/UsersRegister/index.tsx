@@ -22,7 +22,7 @@ import {
   Inputs,
 } from './styles';
 
-interface FormData {
+interface IFormData {
   username: string;
   email: string;
   password: string;
@@ -33,7 +33,7 @@ interface FormData {
   telephone: string;
 }
 
-interface DataSubmit {
+interface IDataSubmit {
   username: string;
   email: string;
   password: string;
@@ -45,7 +45,7 @@ interface DataSubmit {
   enabled: boolean;
 }
 
-interface Company {
+interface ICompany {
   id: number;
   name: string;
   units: [
@@ -61,7 +61,7 @@ const UsersRegister = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
 
-  const [company, setCompany] = useState<Company>({} as Company);
+  const [company, setCompany] = useState<ICompany>({} as ICompany);
   const [role, setRole] = useState<string>('');
   const [unitSelectOptions, setUnitSelectOptions] = useState<
     Array<{ value: number; label: string }>
@@ -85,18 +85,21 @@ const UsersRegister = () => {
     api
       .get(`companies/${parsedQuery.company}`)
       .then(response => {
-        const company: Company = response.data;
+        const newCompany: ICompany = response.data;
 
         const unitiesOptions: Array<{
           value: number;
           label: string;
-        }> = company.units.map(unit => ({ value: unit.id, label: unit.name }));
+        }> = newCompany.units.map(unit => ({
+          value: unit.id,
+          label: unit.name,
+        }));
 
         setUnitSelectOptions(unitiesOptions);
         setCompany({
-          id: company.id,
-          name: company.name,
-          units: company.units,
+          id: newCompany.id,
+          name: newCompany.name,
+          units: newCompany.units,
         });
       })
       .catch(() => {
@@ -112,7 +115,7 @@ const UsersRegister = () => {
   );
 
   const handleSubmit = useCallback(
-    async (data: FormData, { reset }) => {
+    async (data: IFormData, { reset }) => {
       try {
         formRef.current?.setErrors({});
 
@@ -147,7 +150,7 @@ const UsersRegister = () => {
         }
 
         if (role === 'SELLER') {
-          const formDataToCreateSeller: DataSubmit = {
+          const formDataToCreateSeller: IDataSubmit = {
             username: data.username,
             email: data.email,
             password: data.password,
@@ -178,7 +181,7 @@ const UsersRegister = () => {
           return;
         }
 
-        const formDataToCreateManager: DataSubmit = {
+        const formDataToCreateManager: IDataSubmit = {
           username: data.username,
           email: data.email,
           password: data.password,

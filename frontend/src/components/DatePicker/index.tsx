@@ -14,11 +14,12 @@ interface IDatePickerProps extends Omit<ReactDatePickerProps, 'onChange'> {
     event: React.SyntheticEvent<any> | undefined,
   ) => void;
   containerProps?: ChakraPseudoBoxProps;
+  initialDate?: Date;
 }
-
 const DatePicker: React.FC<IDatePickerProps> = ({
   name,
   containerProps,
+  initialDate,
   ...rest
 }) => {
   const datePickerRef = useRef<ReactDatePicker>(null);
@@ -28,10 +29,21 @@ const DatePicker: React.FC<IDatePickerProps> = ({
   const [selected, setSelected] = useState(defaultValue);
 
   useEffect(() => {
+    setSelected(initialDate);
+  }, [initialDate]);
+
+  useEffect(() => {
     registerField({
       name: fieldName,
       ref: datePickerRef.current,
       path: 'props.selected',
+      clearValue() {
+        setSelected('');
+      },
+      setValue(ref, value) {
+        console.log(value);
+        setSelected(value);
+      },
     });
   }, [fieldName, registerField]);
 

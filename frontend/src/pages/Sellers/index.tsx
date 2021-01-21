@@ -7,7 +7,7 @@ import Header from '../../components/Header';
 import api from '../../services/api';
 import { Container, Content, Separator, List } from './styles';
 
-interface FormatRow {
+interface IFormatRow {
   id: number;
   name: string;
   telephone: string;
@@ -25,13 +25,13 @@ interface FormatRow {
 }
 
 const Sellers = () => {
-  const [rows, setRows] = useState<FormatRow[]>([]);
+  const [rows, setRows] = useState<IFormatRow[]>([]);
 
   const history = useHistory();
 
   useEffect(() => {
     api.get('users/company').then(response => {
-      const sellers: FormatRow[] = response.data;
+      const sellers: IFormatRow[] = response.data;
       console.log(sellers);
       setRows(sellers);
     });

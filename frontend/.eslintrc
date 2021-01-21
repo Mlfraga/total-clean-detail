@@ -67,6 +67,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
+    "react/jsx-curly-newline": "off",
     "react/button-has-type": "off",
     "react/no-danger": "off",
     "react/require-default-props": "off",

@@ -1,4 +1,4 @@
-import express, { request, Request, Response } from 'express';
+import express from 'express';
 import { celebrate } from 'celebrate';
 
 import CompanyController from './controllers/CompanyController';
@@ -53,6 +53,7 @@ routes.get('/companyservices/sale', RoleMiddleware.isManagerOrSeller, celebrate(
 routes.put('/companyservices/updateprice', RoleMiddleware.isManager, CompanyServiceController.updatePrice);
 
 routes.post('/sale', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.store), SaleController.store);
+routes.get('/sales-report-data', celebrate(SaleController.validate.listSalesForReport) ,SaleController.listSalesForReport);
 routes.get('/sale', celebrate(SaleController.validate.index) ,SaleController.index);
 routes.get('/sale/unit/:unitId', celebrate(SaleController.validate.findByUnit), SaleController.findByUnit);
 routes.get('/sale/seller/', RoleMiddleware.isManagerOrSeller, celebrate(SaleController.validate.findBySeller), SaleController.findBySeller);

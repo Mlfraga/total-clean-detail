@@ -1,22 +1,20 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
+import { FiDollarSign } from 'react-icons/fi';
+import { MdModeEdit } from 'react-icons/md';
 
-import { MdModeEdit } from 'react-icons/md'
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
+import Breadcrumb from '../../components/Breadcrumb';
+import Button from '../../components/Button';
+import Header from '../../components/Header';
+import Input from '../../components/Input';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
-
-import { Container, Content, Separator, List, Box } from './styles';
-import { FiDollarSign } from 'react-icons/fi';
-
 import { currencyMasker } from '../../utils/masks';
-import Header from '../../components/Header';
-import Breadcrumb from '../../components/Breadcrumb';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+import { Container, Content, Separator, List, Box } from './styles';
 
-interface CompanyService {
+interface ICompanyService {
   id: number;
   price: number;
   service: {
@@ -30,36 +28,38 @@ const UpdateCompanyPrices = () => {
   const { addToast } = useToast();
   const formRef = useRef<FormHandles>(null);
 
-  const [companyServices, setCompanyServices] = useState<CompanyService[]>([]);
+  const [companyServices, setCompanyServices] = useState<ICompanyService[]>([]);
   const [editionMode, setEditionMode] = useState<boolean>(false);
   const [
     companyServiceSelected,
     setCompanyServiceSelected,
-  ] = useState<CompanyService>({} as CompanyService);
-
-  useEffect(() => {
-    loadCompanyServices();
-  }, []);
+  ] = useState<ICompanyService>({} as ICompanyService);
 
   const loadCompanyServices = useCallback(() => {
     api.get('companyservices/company').then(response => {
       const { data } = response;
 
-      const services: CompanyService[] = data.map((companyService: CompanyService) => {
-        const { id, price, service } = companyService;
+      const services: ICompanyService[] = data.map(
+        (companyService: ICompanyService) => {
+          const { id, price, service } = companyService;
 
-        return {
-          id,
-          price,
-          service,
-        };
-      });
+          return {
+            id,
+            price,
+            service,
+          };
+        },
+      );
 
       setCompanyServices(services);
     });
   }, []);
 
-  const handleEditClick = useCallback((companyService: CompanyService) => {
+  useEffect(() => {
+    loadCompanyServices();
+  }, [loadCompanyServices]);
+
+  const handleEditClick = useCallback((companyService: ICompanyService) => {
     setCompanyServiceSelected(companyService);
 
     setEditionMode(true);
@@ -75,7 +75,7 @@ const UpdateCompanyPrices = () => {
 
   const handleCancelEdition = useCallback(() => {
     setEditionMode(false);
-    setCompanyServiceSelected({} as CompanyService);
+    setCompanyServiceSelected({} as ICompanyService);
   }, []);
 
   const handleSubmit = useCallback(
@@ -114,7 +114,7 @@ const UpdateCompanyPrices = () => {
         });
       }
     },
-    [addToast, companyServiceSelected],
+    [addToast, companyServiceSelected, loadCompanyServices],
   );
 
   return (
@@ -190,7 +190,7 @@ const UpdateCompanyPrices = () => {
             </div>
             <Form ref={formRef} onSubmit={handleSubmit}>
               <div className="input">
-                <label>Novo valor:</label>
+                <p>Novo valor:</p>
                 <Input
                   onKeyUp={handleKeyUp}
                   name="newValue"

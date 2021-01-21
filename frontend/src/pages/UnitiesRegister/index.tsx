@@ -15,12 +15,12 @@ import api from '../../services/api';
 import getValidationsErrors from '../../utils/getValidationError';
 import { Container, Content, Separator, InputContainer } from './styles';
 
-interface Company {
+interface ICompany {
   id: number;
   name: string;
 }
 
-interface FormData {
+interface IFormData {
   unitName: string;
   unitTelephone: string;
 }
@@ -30,7 +30,7 @@ const UnitiesRegister = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
 
-  const [company, setCompany] = useState<Company | null>(null);
+  const [company, setCompany] = useState<ICompany | null>(null);
 
   useEffect(() => {
     const query = history.location.search;
@@ -45,9 +45,9 @@ const UnitiesRegister = () => {
     api
       .get(`companies/${parsedQuery.company}`)
       .then(response => {
-        const company = response.data;
+        const newCompany = response.data;
 
-        setCompany({ id: company.id, name: company.name });
+        setCompany({ id: newCompany.id, name: newCompany.name });
       })
       .catch(() => {
         history.push('/services');
@@ -55,7 +55,7 @@ const UnitiesRegister = () => {
   }, [history]);
 
   const handleSubmit = useCallback(
-    async (data: FormData, { reset }) => {
+    async (data: IFormData, { reset }) => {
       try {
         formRef.current?.setErrors({});
 

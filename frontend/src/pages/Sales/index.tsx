@@ -1,28 +1,25 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
-
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { FiSearch } from 'react-icons/fi';
+
+import { Button as ChakraButton, Tooltip } from '@chakra-ui/core';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale'
+import { ptBR } from 'date-fns/locale';
 
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
+import Breadcrumb from '../../components/Breadcrumb';
+import Button from '../../components/Button';
+import DatePicker from '../../components/DatePicker';
+import Header from '../../components/Header';
+import Select from '../../components/Select';
 import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
-
-import getSaleStatusTranslated from '../../utils/getSaleStatusTranslated'
-
+import getSaleStatusTranslated from '../../utils/getSaleStatusTranslated';
 import { Container, Content, Separator, List, Box } from './styles';
-import { Button as ChakraButton, Tooltip } from '@chakra-ui/core';
 
-import Select from '../../components/Select';
-import Header from '../../components/Header';
-import Breadcrumb from '../../components/Breadcrumb';
-import DatePicker from '../../components/DatePicker';
-import Button from '../../components/Button';
-
-interface Sale {
+interface ISale {
   id: number;
   seller: string;
   customer: string;
@@ -38,7 +35,7 @@ interface Sale {
   }>;
 }
 
-interface SaleRequestResponseData {
+interface ISaleRequestResponseData {
   id: number;
   deliveryDate: string;
   status: string;
@@ -76,7 +73,7 @@ const Sales = () => {
   const formRef = useRef<FormHandles>(null);
   const searchFormRef = useRef<FormHandles>(null);
 
-  const [sales, setSales] = useState<Sale[]>([]);
+  const [sales, setSales] = useState<ISale[]>([]);
   const [openedServices, setOpenedServices] = useState<number[]>([]);
   const [selectedSales, setSelectedSales] = React.useState<number[]>([]);
 
@@ -85,35 +82,41 @@ const Sales = () => {
       api.get('sale/company').then(response => {
         const { data } = response;
 
-        const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          const services: Array<{ id: number; name: string; price: number }> = [];
+        const salesData: ISale[] = data.map(
+          (sale: ISaleRequestResponseData) => {
+            const services: Array<{
+              id: number;
+              name: string;
+              price: number;
+            }> = [];
 
-          data.serviceSale.forEach(service => {
-            api
-              .get(`companyservices/sale?serviceId=${service.service.id}`)
-              .then(response => {
-                const companyService = response.data;
-                services.push({
-                  id: companyService[0].service.id,
-                  name: companyService[0].service.name,
-                  price: companyService[0].price,
+            sale.serviceSale.forEach(service => {
+              api
+                .get(`companyservices/sale?serviceId=${service.service.id}`)
+                .then(res => {
+                  const companyService = res.data;
+                  services.push({
+                    id: companyService[0].service.id,
+                    name: companyService[0].service.name,
+                    price: companyService[0].price,
+                  });
                 });
-              });
-            return services;
-          });
+              return services;
+            });
 
-          return {
-            id: data.id,
-            seller: data.seller.name,
-            customer: data.person.name,
-            car: data.car.car,
-            carPlate: data.car.carPlate,
-            price: data.companyPrice,
-            deliveryDate: data.deliveryDate,
-            status: data.status,
-            services,
-          };
-        });
+            return {
+              id: sale.id,
+              seller: sale.seller.name,
+              customer: sale.person.name,
+              car: sale.car.car,
+              carPlate: sale.car.carPlate,
+              price: sale.companyPrice,
+              deliveryDate: sale.deliveryDate,
+              status: sale.status,
+              services,
+            };
+          },
+        );
         setSales(salesData);
       });
     }
@@ -122,34 +125,40 @@ const Sales = () => {
       api.get('sale/seller').then(response => {
         const { data } = response;
 
-        const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          const services: Array<{ id: number; name: string; price: number }> = [];
+        const salesData: ISale[] = data.map(
+          (sale: ISaleRequestResponseData) => {
+            const services: Array<{
+              id: number;
+              name: string;
+              price: number;
+            }> = [];
 
-          data.serviceSale.forEach(service => {
-            api
-              .get(`companyservices/sale?serviceId=${service.service.id}`)
-              .then(response => {
-                const companyService = response.data;
-                services.push({
-                  id: companyService[0].service.id,
-                  name: companyService[0].service.name,
-                  price: companyService[0].price,
+            sale.serviceSale.forEach(service => {
+              api
+                .get(`companyservices/sale?serviceId=${service.service.id}`)
+                .then(res => {
+                  const companyService = res.data;
+                  services.push({
+                    id: companyService[0].service.id,
+                    name: companyService[0].service.name,
+                    price: companyService[0].price,
+                  });
                 });
-              });
-          });
+            });
 
-          return {
-            id: data.id,
-            seller: data.seller.name,
-            customer: data.person.name,
-            car: data.car.car,
-            carPlate: data.car.carPlate,
-            price: data.companyPrice,
-            deliveryDate: data.deliveryDate,
-            status: data.status,
-            services,
-          };
-        });
+            return {
+              id: sale.id,
+              seller: sale.seller.name,
+              customer: sale.person.name,
+              car: sale.car.car,
+              carPlate: sale.car.carPlate,
+              price: sale.companyPrice,
+              deliveryDate: sale.deliveryDate,
+              status: sale.status,
+              services,
+            };
+          },
+        );
         setSales(salesData);
       });
     }
@@ -157,35 +166,40 @@ const Sales = () => {
     if (user?.role === 'ADMIN') {
       api.get('sale').then(response => {
         const { data } = response;
+        const salesData: ISale[] = data.map(
+          (sale: ISaleRequestResponseData) => {
+            const services: Array<{
+              id: number;
+              name: string;
+              price: number;
+            }> = [];
 
-        const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          const services: Array<{ id: number; name: string; price: number }> = [];
-
-          data.serviceSale.forEach(service => {
-            services.push({
-              id: service.service.id,
-              name: service.service.name,
-              price: service.service.price,
+            sale.serviceSale.forEach(service => {
+              services.push({
+                id: service.service.id,
+                name: service.service.name,
+                price: service.service.price,
+              });
             });
-          });
 
-          return {
-            id: data.id,
-            seller: data.seller.name,
-            customer: data.person.name,
-            car: data.car.car,
-            carPlate: data.car.carPlate,
-            price: data.costPrice,
-            deliveryDate: data.deliveryDate,
-            status: data.status,
-            services,
-          };
-        });
+            return {
+              id: sale.id,
+              seller: sale.seller.name,
+              customer: sale.person.name,
+              car: sale.car.car,
+              carPlate: sale.car.carPlate,
+              price: sale.costPrice,
+              deliveryDate: sale.deliveryDate,
+              status: sale.status,
+              services,
+            };
+          },
+        );
 
         setSales(salesData);
       });
     }
-  }, [user, user?.role]);
+  }, [user]);
 
   const handleOpenServices = useCallback(
     (id: number) => {
@@ -248,7 +262,7 @@ const Sales = () => {
         return;
       }
 
-      const response = await api.patch(`sale/status/`, {
+      const response = await api.patch('sale/status/', {
         status: data.statusSale,
         sales: selectedSales,
       });
@@ -261,11 +275,126 @@ const Sales = () => {
           type: 'success',
         });
 
-        const response = await api.get('sale');
-        const { data } = response;
+        const res = await api.get('sale');
+        const updatedSaleData = res.data;
 
-        const salesData: Sale[] = data.map((data: SaleRequestResponseData) => {
-          const services: Array<{ id: number, name: string, price: number }> = [];
+        const salesData: ISale[] = updatedSaleData.map(
+          (sale: ISaleRequestResponseData) => {
+            const services: Array<{
+              id: number;
+              name: string;
+              price: number;
+            }> = [];
+
+            sale.serviceSale.forEach(service => {
+              services.push({
+                id: service.service.id,
+                name: service.service.name,
+                price: service.service.price,
+              });
+            });
+
+            return {
+              id: sale.id,
+              seller: sale.seller.name,
+              customer: sale.person.name,
+              car: sale.car.car,
+              carPlate: sale.car.carPlate,
+              price: sale.costPrice,
+              deliveryDate: sale.deliveryDate,
+              status: sale.status,
+              services,
+            };
+          },
+        );
+
+        setSales(salesData);
+      }
+    },
+    [addToast, selectedSales],
+  );
+
+  const handleSearchSale = useCallback(
+    async ({ date, status }: IFormDataFilter) => {
+      let query;
+
+      if (!date && !status) {
+        searchFormRef.current?.setErrors({
+          status: 'Por favor selecione algum filtro.',
+          date: 'Por favor selecione algum filtro.',
+        });
+
+        addToast({
+          title: 'Por favor preencha algum campo para realizar a pesquisa.',
+          type: 'error',
+        });
+
+        const salesWithoutFilter = await api.get('sale');
+
+        const salesWithoutFilterData = salesWithoutFilter.data;
+
+        const salesData: ISale[] = salesWithoutFilterData.map(
+          (data: ISaleRequestResponseData) => {
+            const services: Array<{
+              id: number;
+              name: string;
+              price: number;
+            }> = [];
+
+            data.serviceSale.forEach(service => {
+              services.push({
+                id: service.service.id,
+                name: service.service.name,
+                price: service.service.price,
+              });
+            });
+
+            return {
+              id: data.id,
+              seller: data.seller.name,
+              customer: data.person.name,
+              car: data.car.car,
+              carPlate: data.car.carPlate,
+              price: data.costPrice,
+              deliveryDate: data.deliveryDate,
+              status: data.status,
+              services,
+            };
+          },
+        );
+
+        setSales(salesData);
+
+        return;
+      }
+
+      if (date && status) {
+        if (status === 'ALL') {
+          query = { date };
+        } else {
+          query = { date, status };
+        }
+      }
+
+      if (date && !status) {
+        query = { date };
+      }
+
+      if (status && !date && status !== 'ALL') {
+        query = { status };
+      }
+
+      const updatedSales = await api.get('sale', { params: query });
+
+      const updatedSalesData = updatedSales.data;
+
+      const newSalesData: ISale[] = updatedSalesData.map(
+        (data: ISaleRequestResponseData) => {
+          const services: Array<{
+            id: number;
+            name: string;
+            price: number;
+          }> = [];
 
           data.serviceSale.forEach(service => {
             services.push({
@@ -286,27 +415,21 @@ const Sales = () => {
             status: data.status,
             services,
           };
-        });
+        },
+      );
 
-        setSales(salesData);
-      }
+      setSales(newSalesData);
     },
-    [addToast, selectedSales],
+    [addToast],
   );
 
-  const handleSearchSale = useCallback(async ({ date, status }: IFormDataFilter) => {
-    let query
+  const handleRemoveFilters = useCallback(async () => {
+    const salesWithoutFilter = await api.get('sale');
 
-    if (!date && !status) {
-      searchFormRef.current?.setErrors({ status: "Por favor selecione algum filtro.", date: "Por favor selecione algum filtro." });
+    const salesWithoutFilterData = salesWithoutFilter.data;
 
-      addToast({ title: 'Por favor preencha algum campo para realizar a pesquisa.', type: 'error' });
-
-      const salesWithoutFilter = await api.get('sale')
-
-      const salesWithoutFilterData = salesWithoutFilter.data;
-
-      const salesData: Sale[] = salesWithoutFilterData.map((data: SaleRequestResponseData) => {
+    const salesData: ISale[] = salesWithoutFilterData.map(
+      (data: ISaleRequestResponseData) => {
         const services: Array<{ id: number; name: string; price: number }> = [];
 
         data.serviceSale.forEach(service => {
@@ -328,91 +451,13 @@ const Sales = () => {
           status: data.status,
           services,
         };
-      });
+      },
+    );
 
-      setSales(salesData);
-
-      return;
-    }
-
-    if (date && status) {
-      if (status === "ALL") {
-        query = { date };
-      } else {
-        query = { date, status };
-      }
-    }
-
-    if (date && !status) {
-      query = { date };
-    }
-
-    if (status && !date && status !== 'ALL') {
-      query = { status };
-    }
-
-    const updatedSales = await api.get('sale', { params: query })
-
-    const updatedSalesData = updatedSales.data;
-
-    const newSalesData: Sale[] = updatedSalesData.map((data: SaleRequestResponseData) => {
-      const services: Array<{ id: number; name: string; price: number }> = [];
-
-      data.serviceSale.forEach(service => {
-        services.push({
-          id: service.service.id,
-          name: service.service.name,
-          price: service.service.price,
-        });
-      });
-
-      return {
-        id: data.id,
-        seller: data.seller.name,
-        customer: data.person.name,
-        car: data.car.car,
-        carPlate: data.car.carPlate,
-        price: data.costPrice,
-        deliveryDate: data.deliveryDate,
-        status: data.status,
-        services,
-      };
-    });
-
-    setSales(newSalesData);
-  }, []);
-
-  const handleRemoveFilters = useCallback(async () => {
-    const salesWithoutFilter = await api.get('sale')
-
-    const salesWithoutFilterData = salesWithoutFilter.data;
-
-    const salesData: Sale[] = salesWithoutFilterData.map((data: SaleRequestResponseData) => {
-      const services: Array<{ id: number; name: string; price: number }> = [];
-
-      data.serviceSale.forEach(service => {
-        services.push({
-          id: service.service.id,
-          name: service.service.name,
-          price: service.service.price,
-        });
-      });
-
-      return {
-        id: data.id,
-        seller: data.seller.name,
-        customer: data.person.name,
-        car: data.car.car,
-        carPlate: data.car.carPlate,
-        price: data.costPrice,
-        deliveryDate: data.deliveryDate,
-        status: data.status,
-        services,
-      };
-    });
+    searchFormRef.current?.reset();
 
     setSales(salesData);
-  }, [])
+  }, []);
 
   return (
     <Container>
@@ -477,10 +522,7 @@ const Sales = () => {
               </ChakraButton>
             </Tooltip>
 
-            <Tooltip
-              label="Limpar filtros"
-              aria-label="Limpar filtros"
-            >
+            <Tooltip label="Limpar filtros" aria-label="Limpar filtros">
               <ChakraButton
                 _hover={{
                   bg: '#4e4e4e',
@@ -519,7 +561,9 @@ const Sales = () => {
               onClick={
                 user?.role === 'ADMIN'
                   ? () => handleSelectSale(sale.id)
-                  : () => { }
+                  : () => {
+                      console.log('click');
+                    }
               }
             >
               <div
@@ -528,8 +572,12 @@ const Sales = () => {
                 }
                 style={
                   openedServices.includes(sale.id)
-                    ? { borderRadius: '15px 15px 0 0', borderBottom: 0 }
-                    : { borderRadius: '15px' }
+                    ? {
+                        borderRadius: '15px 15px 0 0',
+                        borderBottom: 0,
+                        cursor: 'pointer',
+                      }
+                    : { borderRadius: '15px', cursor: 'pointer' }
                 }
               >
                 <span>{sale.id}</span>
@@ -567,15 +615,15 @@ const Sales = () => {
                     size={26}
                   />
                 ) : (
-                    <FaArrowAltCircleDown
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleOpenServices(sale.id);
-                      }}
-                      style={{ cursor: 'pointer' }}
-                      size={26}
-                    />)
-                }
+                  <FaArrowAltCircleDown
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleOpenServices(sale.id);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    size={26}
+                  />
+                )}
               </div>
 
               <div
@@ -656,7 +704,6 @@ const Sales = () => {
             </Form>
           </div>
         )}
-
       </Content>
     </Container>
   );

@@ -15,7 +15,7 @@ import getValidationsErrors from '../../utils/getValidationError';
 import { currencyMasker } from '../../utils/masks';
 import { Container, Content, Separator, InputContainer } from './styles';
 
-interface FormData {
+interface IFormData {
   name: string;
   price: number;
 }
@@ -48,7 +48,7 @@ const ServicesRegister = () => {
           abortEarly: false,
         });
 
-        const formData: FormData = {
+        const formData: IFormData = {
           name: data.serviceName,
           price: data.serviceValue,
         };

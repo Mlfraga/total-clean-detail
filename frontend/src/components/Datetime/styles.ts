@@ -1,7 +1,6 @@
 import { Box, DefaultTheme } from '@chakra-ui/core';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
-import { transparentize } from 'polished';
 
 interface IContainerProps {
   theme: DefaultTheme;

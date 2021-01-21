@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 import JWT from 'jsonwebtoken';
 
@@ -19,19 +19,19 @@ interface IUser {
   };
 }
 
-interface AuthState {
+interface IAuthState {
   accessToken: string;
   refreshToken: string;
   user: IUser;
-  buttons: Button[];
+  buttons: IButton[];
 }
 
-interface SignInCredentials {
+interface ISignInCredentials {
   username: string;
   password: string;
 }
 
-interface AuthContextData {
+interface IAuthContextData {
   user: {
     role: 'ADMIN' | 'MANAGER' | 'SELLER';
     profile: {
@@ -39,26 +39,26 @@ interface AuthContextData {
       unitId: number;
     };
   };
-  buttons: Button[];
-  signIn(credentials: SignInCredentials): Promise<void>;
+  buttons: IButton[];
+  signIn(credentials: ISignInCredentials): Promise<void>;
   signOut(): void;
 }
 
-interface Button {
+interface IButton {
   name: string;
   enable: boolean;
   route: string;
 }
 
-export const AuthContext = createContext<AuthContextData>(
-  {} as AuthContextData,
+export const AuthContext = createContext<IAuthContextData>(
+  {} as IAuthContextData,
 );
 
 export const AuthProvider: React.FC = ({ children }) => {
   const history = useHistory();
 
-  const [data, setData] = useState<AuthState>(
-    (): AuthState => {
+  const [data, setData] = useState<IAuthState>(
+    (): IAuthState => {
       const accessToken = localStorage.getItem('@TotalClean:access-token');
       const refreshToken = localStorage.getItem('@TotalClean:refresh-token');
       const user = localStorage.getItem('@TotalClean:user');
@@ -67,7 +67,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         const decodedAccessToken: any = JWT.decode(String(accessToken), {
           complete: true,
         });
-        let buttons: Button[] = [];
+        let buttons: IButton[] = [];
 
         if (decodedAccessToken.payload.user.role === 'MANAGER') {
           buttons = [
@@ -162,7 +162,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         return { accessToken, refreshToken, user: JSON.parse(user), buttons };
       }
 
-      return {} as AuthState;
+      return {} as IAuthState;
     },
   );
 
@@ -290,14 +290,14 @@ export const AuthProvider: React.FC = ({ children }) => {
         buttons,
       });
     });
-  }, [history]);
+  }, [history, isLoggedIn, data]);
 
   const signIn = useCallback(async ({ username, password }) => {
     const response = await api.post('/auth/login/', { username, password });
 
     const user = response.data.userByUsername;
     const { accessToken, refreshToken } = response.data;
-    let buttons: Button[] = [];
+    let buttons: IButton[] = [];
 
     if (user.role === 'MANAGER') {
       buttons = [
@@ -401,7 +401,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     localStorage.removeItem('@TotalClean:refresh-token');
     localStorage.removeItem('@TotalClean:user');
 
-    setData({} as AuthState);
+    setData({} as IAuthState);
   }, []);
 
   return (
@@ -413,7 +413,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   );
 };
 
-export function useAuth(): AuthContextData {
+export function useAuth(): IAuthContextData {
   const context = useContext(AuthContext);
 
   if (!context) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import {
   Route as ReactDOMRoute,
@@ -7,12 +8,12 @@ import {
 
 import { useAuth } from '../context/auth';
 
-interface RouteProps extends ReactDOMRouteProps {
+interface IRouteProps extends ReactDOMRouteProps {
   permissions?: string[];
   component: React.ComponentType;
 }
 
-const Permission: React.FC<RouteProps> = ({
+const Permission: React.FC<IRouteProps> = ({
   permissions = ['MANAGER', 'SELLER', 'ADMIN'],
   component: Component,
   ...rest
@@ -22,7 +23,7 @@ const Permission: React.FC<RouteProps> = ({
   return (
     <ReactDOMRoute
       {...rest}
-      render={({ location }) =>
+      render={() =>
         !user ? (
           <Component />
         ) : permissions.includes(user.role) ? (

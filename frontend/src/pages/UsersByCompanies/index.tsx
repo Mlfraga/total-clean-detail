@@ -1,17 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
-import { RiAddFill } from 'react-icons/ri'
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import { RiAddFill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
-
 import api from '../../services/api';
 import getUserRoleTranslated from '../../utils/getUserRoleTranslated';
-
 import { Container, Content, Separator, List, Box } from './styles';
 
-interface FormatRow {
+interface IFormatRow {
   id: number;
   name: string;
   telephone: string;
@@ -29,14 +27,14 @@ interface FormatRow {
 }
 
 const UsersByUnits = () => {
-  const [companies, setCompanies] = useState<FormatRow[]>([]);
+  const [companies, setCompanies] = useState<IFormatRow[]>([]);
   const [openedCompanies, setOpenedCommpanies] = useState<number[]>([]);
 
   useEffect(() => {
     api.get('companies').then(response => {
-      const companies: FormatRow[] = response.data;
+      const newCompanies: IFormatRow[] = response.data;
 
-      setCompanies(companies);
+      setCompanies(newCompanies);
     });
   }, []);
 
@@ -98,12 +96,12 @@ const UsersByUnits = () => {
                     size={26}
                   />
                 ) : (
-                    <FaArrowAltCircleDown
-                      onClick={() => handleOpenUnities(company.id)}
-                      style={{ cursor: 'pointer' }}
-                      size={26}
-                    />
-                  )}
+                  <FaArrowAltCircleDown
+                    onClick={() => handleOpenUnities(company.id)}
+                    style={{ cursor: 'pointer' }}
+                    size={26}
+                  />
+                )}
               </div>
 
               <div

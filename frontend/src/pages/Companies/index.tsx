@@ -1,18 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
-
-import api from '../../services/api';
-
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa'
-import { RiAddFill } from 'react-icons/ri'
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import { RiAddFill } from 'react-icons/ri';
 import { useHistory, Link } from 'react-router-dom';
 
-
-import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
+import Header from '../../components/Header';
+import api from '../../services/api';
 import { Container, Content, Separator, List, Box } from './styles';
 
-interface CompaniesResponseData {
+interface ICompaniesResponseData {
   id: number;
   name: string;
   telephone: string;
@@ -21,15 +18,16 @@ interface CompaniesResponseData {
 }
 
 const Companies = () => {
-  const [companies, setCompanies] = useState<CompaniesResponseData[]>([]);
+  const [companies, setCompanies] = useState<ICompaniesResponseData[]>([]);
   const [openedCompanies, setOpenedCompanies] = useState<number[]>([]);
 
   const history = useHistory();
 
   useEffect(() => {
     api.get('companies').then(response => {
-      const companies: CompaniesResponseData[] = response.data;
-      setCompanies(companies);
+      const newCompanies: ICompaniesResponseData[] = response.data;
+
+      setCompanies(newCompanies);
     });
   }, []);
 
@@ -86,11 +84,12 @@ const Companies = () => {
                     size={26}
                   />
                 ) : (
-                    <FaArrowAltCircleDown
-                      onClick={() => handleOpenCompanies(company.id)}
-                      style={{ cursor: 'pointer' }}
-                      size={26}
-                    />)}
+                  <FaArrowAltCircleDown
+                    onClick={() => handleOpenCompanies(company.id)}
+                    style={{ cursor: 'pointer' }}
+                    size={26}
+                  />
+                )}
               </div>
 
               <div

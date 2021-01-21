@@ -1,11 +1,11 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
-import AlertDevelopingPage from '../pages/AlertDevelopingPage';
 import Companies from '../pages/Companies';
 import CompaniesRegister from '../pages/CompaniesRegister';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
+import Reports from '../pages/Reports';
 import Sales from '../pages/Sales';
 import SalesRegister from '../pages/SalesRegister';
 import Sellers from '../pages/Sellers';
@@ -69,12 +69,6 @@ const Routes: React.FC = () => (
       permissions={['MANAGER', 'SELLER', 'ADMIN']}
     />
     <Route
-      path="/reports"
-      component={AlertDevelopingPage}
-      isPrivate
-      permissions={['MANAGER', 'ADMIN']}
-    />
-    <Route
       path="/prices"
       component={UpdateCompanyPrices}
       isPrivate
@@ -104,6 +98,13 @@ const Routes: React.FC = () => (
       component={UsersRegister}
       isPrivate
       permissions={['ADMIN']}
+    />
+
+    <Route
+      path="/reports"
+      component={Reports}
+      isPrivate
+      permissions={['MANAGER', 'ADMIN']}
     />
 
     <Route path="*" component={NotFound} exact />
