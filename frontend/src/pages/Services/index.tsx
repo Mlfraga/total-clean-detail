@@ -33,7 +33,21 @@ const Services = () => {
       <Header />
 
       <Breadcrumb text="Serviços" />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+        marginTop="25px"
+        justifyContent="space-bettween"
+        gridTemplateColumns="32.3% 32.3% 32.3%"
+      >
         <div onClick={() => history.push('/service/vitrificacao')}>
           <img className="images" src={signInBackgroundImg} alt="img" />
           <span id="text">Vitrificação de Pintura</span>

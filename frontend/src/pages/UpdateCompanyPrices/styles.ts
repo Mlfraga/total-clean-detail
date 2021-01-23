@@ -1,3 +1,4 @@
+import { Box as ChakraBox } from '@chakra-ui/core';
 import { shade } from 'polished';
 import styled from 'styled-components';
 
@@ -97,12 +98,7 @@ export const Container = styled.div`
   }
 `;
 
-export const Content = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  max-width: 1200px;
-
+export const Content = styled(ChakraBox)`
   .boxTitle {
     display: grid;
     grid-template-columns: 25% 15% 15% 40% 5%;

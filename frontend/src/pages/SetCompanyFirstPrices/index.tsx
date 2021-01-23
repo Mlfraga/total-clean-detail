@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { FiDollarSign } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 
+import { Grid } from '@chakra-ui/core';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
@@ -13,7 +14,7 @@ import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
 import { currencyMasker } from '../../utils/masks';
-import { Container, Content, Buttons, ListBoxes, PriceBox } from './styles';
+import { Container, Content, Buttons, PriceBox } from './styles';
 
 interface IServices {
   id: number;
@@ -107,9 +108,32 @@ const SetCompanyPrices = () => {
     <Container>
       <Header></Header>
       <Breadcrumb text="Configure o preço de cada serviço em seu estabelecimento." />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         <Form ref={formRef} onSubmit={handleSubmit}>
-          <ListBoxes>
+          <Grid
+            width="100%"
+            marginTop={4}
+            maxWidth={{
+              xs: '90vw',
+              sm: '90vw',
+              md: '90vw',
+              lg: '72vw',
+              xl: '62vw',
+            }}
+            gridTemplateColumns="23% 23% 23% 23%"
+            justifyContent="space-between"
+          >
             {services.map(service => (
               <PriceBox key={service.id}>
                 <div className="title-container">
@@ -137,7 +161,7 @@ const SetCompanyPrices = () => {
                 </div>
               </PriceBox>
             ))}
-          </ListBoxes>
+          </Grid>
           <Buttons>
             <Button type="submit">Salvar</Button>
             <Button skipButton>Pular</Button>

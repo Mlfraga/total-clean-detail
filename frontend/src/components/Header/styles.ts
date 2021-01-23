@@ -1,9 +1,11 @@
+import { Box, Flex } from '@chakra-ui/core';
 import { shade } from 'polished';
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled(Box)`
   @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 
+  z-index: 1000;
   display: flex;
   align-items: center;
   height: 80px;
@@ -12,12 +14,11 @@ export const Container = styled.div`
   position: fixed;
 `;
 
-export const Buttons = styled.div`
+export const Buttons = styled(Flex)`
   flex: 1;
   margin-right: 50px;
   height: 100%;
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
 
   svg {

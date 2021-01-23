@@ -32,7 +32,18 @@ const AdminServices = () => {
       <Header />
 
       <Breadcrumb text="Serviços" />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         <Separator>
           <span>Serviços</span>
           <div />

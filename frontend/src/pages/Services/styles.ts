@@ -1,3 +1,4 @@
+import { Grid as ChakraGrid } from '@chakra-ui/core';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -6,15 +7,7 @@ export const Container = styled.div`
   height: 100vh;
 `;
 
-export const Content = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 25px;
-  width: 100%;
-  max-width: 1200px;
-
-  display: grid;
-  justify-content: space-between;
+export const Content = styled(ChakraGrid)`
   grid-template-columns: 32.3% 32.3% 32.3%;
 
   div {

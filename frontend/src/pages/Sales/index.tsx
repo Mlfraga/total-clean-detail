@@ -1,4 +1,10 @@
-import React, { useRef, useCallback, useEffect, useState } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { FiSearch } from 'react-icons/fi';
 
@@ -26,6 +32,7 @@ interface ISale {
   car: string;
   carPlate: string;
   price: number;
+  availabilityDate: string;
   deliveryDate: string;
   status: string;
   services: Array<{
@@ -33,15 +40,23 @@ interface ISale {
     name: string;
     price: number;
   }>;
+  serviceSale: Array<{
+    id: number;
+    service: {
+      id: number;
+      name: string;
+      price: number;
+    };
+  }>;
 }
 
 interface ISaleRequestResponseData {
   id: number;
+  availabilityDate: string;
   deliveryDate: string;
   status: string;
   companyPrice: number;
   costPrice: number;
-
   seller: {
     name: string;
   };
@@ -73,7 +88,7 @@ const Sales = () => {
   const formRef = useRef<FormHandles>(null);
   const searchFormRef = useRef<FormHandles>(null);
 
-  const [sales, setSales] = useState<ISale[]>([]);
+  const [sales, setSales] = useState<ISaleRequestResponseData[]>([]);
   const [openedServices, setOpenedServices] = useState<number[]>([]);
   const [selectedSales, setSelectedSales] = React.useState<number[]>([]);
 
@@ -82,42 +97,7 @@ const Sales = () => {
       api.get('sale/company').then(response => {
         const { data } = response;
 
-        const salesData: ISale[] = data.map(
-          (sale: ISaleRequestResponseData) => {
-            const services: Array<{
-              id: number;
-              name: string;
-              price: number;
-            }> = [];
-
-            sale.serviceSale.forEach(service => {
-              api
-                .get(`companyservices/sale?serviceId=${service.service.id}`)
-                .then(res => {
-                  const companyService = res.data;
-                  services.push({
-                    id: companyService[0].service.id,
-                    name: companyService[0].service.name,
-                    price: companyService[0].price,
-                  });
-                });
-              return services;
-            });
-
-            return {
-              id: sale.id,
-              seller: sale.seller.name,
-              customer: sale.person.name,
-              car: sale.car.car,
-              carPlate: sale.car.carPlate,
-              price: sale.companyPrice,
-              deliveryDate: sale.deliveryDate,
-              status: sale.status,
-              services,
-            };
-          },
-        );
-        setSales(salesData);
+        setSales(data);
       });
     }
 
@@ -125,81 +105,68 @@ const Sales = () => {
       api.get('sale/seller').then(response => {
         const { data } = response;
 
-        const salesData: ISale[] = data.map(
-          (sale: ISaleRequestResponseData) => {
-            const services: Array<{
-              id: number;
-              name: string;
-              price: number;
-            }> = [];
-
-            sale.serviceSale.forEach(service => {
-              api
-                .get(`companyservices/sale?serviceId=${service.service.id}`)
-                .then(res => {
-                  const companyService = res.data;
-                  services.push({
-                    id: companyService[0].service.id,
-                    name: companyService[0].service.name,
-                    price: companyService[0].price,
-                  });
-                });
-            });
-
-            return {
-              id: sale.id,
-              seller: sale.seller.name,
-              customer: sale.person.name,
-              car: sale.car.car,
-              carPlate: sale.car.carPlate,
-              price: sale.companyPrice,
-              deliveryDate: sale.deliveryDate,
-              status: sale.status,
-              services,
-            };
-          },
-        );
-        setSales(salesData);
+        setSales(data);
       });
     }
 
     if (user?.role === 'ADMIN') {
       api.get('sale').then(response => {
         const { data } = response;
-        const salesData: ISale[] = data.map(
-          (sale: ISaleRequestResponseData) => {
-            const services: Array<{
-              id: number;
-              name: string;
-              price: number;
-            }> = [];
 
-            sale.serviceSale.forEach(service => {
-              services.push({
-                id: service.service.id,
-                name: service.service.name,
-                price: service.service.price,
-              });
-            });
-
-            return {
-              id: sale.id,
-              seller: sale.seller.name,
-              customer: sale.person.name,
-              car: sale.car.car,
-              carPlate: sale.car.carPlate,
-              price: sale.costPrice,
-              deliveryDate: sale.deliveryDate,
-              status: sale.status,
-              services,
-            };
-          },
-        );
-
-        setSales(salesData);
+        setSales(data);
       });
     }
   }, [user]);
+
+  const formattedSales = useMemo(
+    () =>
+      sales.map(sale => {
+        const services: Array<{
+          id: number;
+          name: string;
+          price: number;
+        }> = [];
+
+        if (user?.role !== 'ADMIN') {
+          sale.serviceSale.forEach(service => {
+            api
+              .get(`companyservices/sale?serviceId=${service.service.id}`)
+              .then(res => {
+                const companyService = res.data;
+
+                services.push({
+                  id: companyService[0].service.id,
+                  name: companyService[0].service.name,
+                  price: companyService[0].price,
+                });
+              });
+
+            return services;
+          });
+        } else {
+          sale.serviceSale.forEach(service => {
+            services.push({
+              id: service.service.id,
+              name: service.service.name,
+              price: service.service.price,
+            });
+          });
+        }
+        return {
+          id: sale.id,
+          seller: sale.seller.name,
+          customer: sale.person.name,
+          car: sale.car.car,
+          carPlate: sale.car.carPlate,
+          price: sale.companyPrice,
+          availabilityDate: sale.availabilityDate,
+          deliveryDate: sale.deliveryDate,
+          status: sale.status,
+          services,
+        };
+      }),
+    [sales],
+  );
 
   const handleOpenServices = useCallback(
     (id: number) => {
@@ -276,39 +243,8 @@ const Sales = () => {
         });
 
         const res = await api.get('sale');
-        const updatedSaleData = res.data;
 
-        const salesData: ISale[] = updatedSaleData.map(
-          (sale: ISaleRequestResponseData) => {
-            const services: Array<{
-              id: number;
-              name: string;
-              price: number;
-            }> = [];
-
-            sale.serviceSale.forEach(service => {
-              services.push({
-                id: service.service.id,
-                name: service.service.name,
-                price: service.service.price,
-              });
-            });
-
-            return {
-              id: sale.id,
-              seller: sale.seller.name,
-              customer: sale.person.name,
-              car: sale.car.car,
-              carPlate: sale.car.carPlate,
-              price: sale.costPrice,
-              deliveryDate: sale.deliveryDate,
-              status: sale.status,
-              services,
-            };
-          },
-        );
-
-        setSales(salesData);
+        setSales(res.data);
       }
     },
     [addToast, selectedSales],
@@ -333,37 +269,7 @@ const Sales = () => {
 
         const salesWithoutFilterData = salesWithoutFilter.data;
 
-        const salesData: ISale[] = salesWithoutFilterData.map(
-          (data: ISaleRequestResponseData) => {
-            const services: Array<{
-              id: number;
-              name: string;
-              price: number;
-            }> = [];
-
-            data.serviceSale.forEach(service => {
-              services.push({
-                id: service.service.id,
-                name: service.service.name,
-                price: service.service.price,
-              });
-            });
-
-            return {
-              id: data.id,
-              seller: data.seller.name,
-              customer: data.person.name,
-              car: data.car.car,
-              carPlate: data.car.carPlate,
-              price: data.costPrice,
-              deliveryDate: data.deliveryDate,
-              status: data.status,
-              services,
-            };
-          },
-        );
-
-        setSales(salesData);
+        setSales(salesWithoutFilterData);
 
         return;
       }
@@ -386,39 +292,9 @@ const Sales = () => {
 
       const updatedSales = await api.get('sale', { params: query });
 
-      const updatedSalesData = updatedSales.data;
+      const res = updatedSales.data;
 
-      const newSalesData: ISale[] = updatedSalesData.map(
-        (data: ISaleRequestResponseData) => {
-          const services: Array<{
-            id: number;
-            name: string;
-            price: number;
-          }> = [];
-
-          data.serviceSale.forEach(service => {
-            services.push({
-              id: service.service.id,
-              name: service.service.name,
-              price: service.service.price,
-            });
-          });
-
-          return {
-            id: data.id,
-            seller: data.seller.name,
-            customer: data.person.name,
-            car: data.car.car,
-            carPlate: data.car.carPlate,
-            price: data.costPrice,
-            deliveryDate: data.deliveryDate,
-            status: data.status,
-            services,
-          };
-        },
-      );
-
-      setSales(newSalesData);
+      setSales(res);
     },
     [addToast],
   );
@@ -428,42 +304,27 @@ const Sales = () => {
 
     const salesWithoutFilterData = salesWithoutFilter.data;
 
-    const salesData: ISale[] = salesWithoutFilterData.map(
-      (data: ISaleRequestResponseData) => {
-        const services: Array<{ id: number; name: string; price: number }> = [];
-
-        data.serviceSale.forEach(service => {
-          services.push({
-            id: service.service.id,
-            name: service.service.name,
-            price: service.service.price,
-          });
-        });
-
-        return {
-          id: data.id,
-          seller: data.seller.name,
-          customer: data.person.name,
-          car: data.car.car,
-          carPlate: data.car.carPlate,
-          price: data.costPrice,
-          deliveryDate: data.deliveryDate,
-          status: data.status,
-          services,
-        };
-      },
-    );
-
     searchFormRef.current?.reset();
 
-    setSales(salesData);
+    setSales(salesWithoutFilterData);
   }, []);
 
   return (
     <Container>
       <Header />
       <Breadcrumb text="Vendas realizadas" />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         {user?.role === 'ADMIN' && (
           <Form
             ref={searchFormRef}
@@ -540,6 +401,7 @@ const Sales = () => {
             </Tooltip>
           </Form>
         )}
+
         <Separator>
           <span>Vendas</span>
           <div />
@@ -547,15 +409,25 @@ const Sales = () => {
         <div className="boxTitle">
           <span>N°</span>
           <span>Vendedor</span>
-          <span>Cliente</span>
           <span>Carro</span>
           <span>Placa</span>
-          <span>Preço</span>
           <span>Data de entrega</span>
+          <span>Data de disponibilidade</span>
           <span>Situação</span>
         </div>
-        <List>
-          {sales.map(sale => (
+        <List
+          width="100%"
+          height={{
+            xs: '70vh',
+            sm: '70vh',
+            md: '30vh',
+            lg: '45vh',
+            xl: '50vh',
+          }}
+          overflow="auto"
+          marginTop={4}
+        >
+          {formattedSales.map(sale => (
             <Box
               key={sale.id}
               onClick={
@@ -582,14 +454,14 @@ const Sales = () => {
               >
                 <span>{sale.id}</span>
                 <span>{sale.seller}</span>
-                <span>{sale.customer}</span>
                 <span>{sale.car}</span>
                 <span>{sale.carPlate}</span>
                 <span>
-                  {sale.price.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
+                  {format(
+                    new Date(sale.availabilityDate),
+                    "dd'/'MM'/'yyyy '-' HH:mm'h'",
+                    { locale: ptBR },
+                  )}
                 </span>
                 <span>
                   {format(

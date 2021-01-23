@@ -216,7 +216,18 @@ const SalesRegister = () => {
       <Container hidden={!!successPage}>
         <Header />
         <Breadcrumb text="Registro de vendas" />
-        <Content>
+        <Content
+          marginLeft="auto"
+          marginRight="auto"
+          width="100%"
+          maxWidth={{
+            xs: '100vw',
+            sm: '100vw',
+            md: '100vw',
+            lg: '72vw',
+            xl: '62vw',
+          }}
+        >
           <Form ref={formRef} onSubmit={handleSubmit}>
             <Separator>
               <span>Dados do cliente</span>
