@@ -62,9 +62,19 @@ const Reports: React.FC = () => {
         justifyContent="center"
         width="100%"
       >
-        <Separator text="Filtros" />
-
-        <Flex width="100%" maxWidth="1200px">
+        <Box
+          marginLeft="auto"
+          marginRight="auto"
+          width="100%"
+          maxWidth={{
+            xs: '100vw',
+            sm: '100vw',
+            md: '100vw',
+            lg: '72vw',
+            xl: '62vw',
+          }}
+        >
+          <Separator text="Filtros" />
           <Form ref={formRef} onSubmit={handleSearch}>
             <Flex marginBottom={8}>
               <Select
@@ -145,7 +155,7 @@ const Reports: React.FC = () => {
               </ChakraButton>
             </Tooltip>
           </Form>
-        </Flex>
+        </Box>
       </Flex>
     </Box>
   );

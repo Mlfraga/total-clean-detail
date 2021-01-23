@@ -1,3 +1,4 @@
+import { Box as ChakraBox } from '@chakra-ui/core';
 import { shade } from 'polished';
 import styled from 'styled-components';
 
@@ -7,13 +8,7 @@ export const Container = styled.div`
   height: 100%;
 `;
 
-export const Content = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 25px;
-  width: 100%;
-  max-width: 1200px;
-
+export const Content = styled(ChakraBox)`
   form {
     margin-left: auto;
     margin-right: auto;

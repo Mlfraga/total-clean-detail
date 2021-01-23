@@ -53,7 +53,18 @@ const Companies = () => {
     <Container>
       <Header />
       <Breadcrumb text="Concessionárias cadastradas" />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         <Separator>
           <span>Concessionárias</span>
           <div />

@@ -107,7 +107,18 @@ const SetCompanyPrices = () => {
     <Container>
       <Header></Header>
       <Breadcrumb text="Configure o preço de cada serviço em seu estabelecimento." />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         <Form ref={formRef} onSubmit={handleSubmit}>
           <ListBoxes>
             {services.map(service => (

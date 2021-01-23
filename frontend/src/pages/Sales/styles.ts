@@ -1,3 +1,4 @@
+import { Box as ChakraBox } from '@chakra-ui/core';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -5,20 +6,15 @@ export const Container = styled.div`
   height: 100vh;
 `;
 
-export const Content = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  max-width: 1200px;
-
+export const Content = styled(ChakraBox)`
   .boxTitle {
     display: grid;
-    grid-template-columns: 5% 12% 14% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 5% 14% 13% 13% 18% 18% 14% 5%;
     align-items: center;
     justify-content: center;
     padding-left: 10px;
 
-    margin-top: 25px;
+    margin-top: 12px;
     background: #282828;
     height: 60px;
     border-radius: 15px;
@@ -88,12 +84,7 @@ export const Separator = styled.div`
   }
 `;
 
-export const List = styled.div`
-  width: 100%;
-  height: 550px;
-  overflow: auto;
-  margin-top: 16px;
-
+export const List = styled(ChakraBox)`
   ::-webkit-scrollbar {
     width: 6px;
     background: #383838;
@@ -115,7 +106,7 @@ export const Box = styled.div`
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 5% 12% 14% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 5% 14% 13% 13% 18% 18% 14% 5%;
     align-items: center;
     justify-content: center;
 
@@ -142,7 +133,7 @@ export const Box = styled.div`
     display: grid;
     max-width: 1200px;
     width: 100%;
-    grid-template-columns: 5% 12% 14% 14% 11% 10% 18% 12% 4%;
+    grid-template-columns: 5% 14% 13% 13% 18% 18% 14% 5%;
     align-items: center;
     justify-content: center;
 

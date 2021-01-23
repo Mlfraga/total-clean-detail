@@ -92,7 +92,18 @@ const CompaniesRegister = () => {
     <Container>
       <Header />
       <Breadcrumb text="Adicionar novas concessionárias" />
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         <Separator>
           <span>Cadastro de concessionárias</span>
           <div />

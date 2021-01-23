@@ -149,7 +149,18 @@ const RegsiterSellers = () => {
 
       <Breadcrumb text="Registro de vendedores" />
 
-      <Content>
+      <Content
+        marginLeft="auto"
+        marginRight="auto"
+        width="100%"
+        maxWidth={{
+          xs: '90vw',
+          sm: '90vw',
+          md: '90vw',
+          lg: '72vw',
+          xl: '62vw',
+        }}
+      >
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Separator>
             <span>Dados do vendedor</span>
