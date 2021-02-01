@@ -7,8 +7,8 @@ import * as Yup from 'yup';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import Input from '../../components/Input';
+import Menu from '../../components/Menu';
 import Select from '../../components/Select';
 import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
@@ -145,7 +145,7 @@ const RegsiterSellers = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
 
       <Breadcrumb text="Registro de vendedores" />
 
@@ -156,9 +156,9 @@ const RegsiterSellers = () => {
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         <Form ref={formRef} onSubmit={handleSubmit}>
@@ -240,7 +240,7 @@ const RegsiterSellers = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ width: '28%' }}>
+            <InputContainer style={{ width: '26%' }}>
               <div className="labels">
                 <span>E-mail:</span>
                 <span>*</span>
@@ -248,7 +248,7 @@ const RegsiterSellers = () => {
               <Input className="input" id="email" type="email" name="email" />
             </InputContainer>
 
-            <InputContainer style={{ width: '25%', marginLeft: 16 }}>
+            <InputContainer style={{ width: '22%', marginLeft: 16 }}>
               <div className="labels">
                 <span>Senha:</span>
                 <span>*</span>
@@ -261,7 +261,7 @@ const RegsiterSellers = () => {
               />
             </InputContainer>
 
-            <InputContainer style={{ width: '25%', marginLeft: 16 }}>
+            <InputContainer style={{ width: '23%', marginLeft: 16 }}>
               <div className="labels">
                 <span>Confirmar Senha:</span>
                 <span>*</span>

@@ -69,8 +69,6 @@ class AuthenticationMiddleware {
       delete decoded.exp
       delete decoded.nbf
 
-      console.log(decoded.user.id)
-
       const accessToken = JWT.sign(decoded, String(process.env.ACCESS_TOKEN_SECRET), { expiresIn: '1000s' });
       accessTokens.push(accessToken);
 

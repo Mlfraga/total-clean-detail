@@ -6,9 +6,14 @@ export const Container = styled.div`
   @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
   height: 100vh;
 
+  @media (min-width: 1224px) {
+    padding-left: 80px;
+    padding-top: 45px;
+  }
+
   .edition-mode-container {
     position: absolute;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     top: 0;
     background: rgba(0, 0, 0, 0.3);

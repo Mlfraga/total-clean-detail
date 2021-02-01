@@ -18,8 +18,8 @@ class ServiceController {
     },
     update: {
       body: Joi.object().keys({
-        name: Joi.string().required(),
-        price: Joi.number().required()
+        name: Joi.string().allow(null),
+        price: Joi.number().allow(null),
       }),
       params: Joi.object().keys({
         id: Joi.number().required(),
@@ -69,18 +69,46 @@ class ServiceController {
     const { id } = request.params;
     const { name, price } = request.body;
 
-    const serviceByName = await ServiceRepository.findByName(name);
+    if(name){
+      const serviceByName = await ServiceRepository.findByName(name);
 
-    if (serviceByName.length > 0) {
-      return response
-        .status(409)
-        .json({ error: 'Already has a service with this name.' });
+      if (serviceByName.length > 0) {
+        return response
+          .status(409)
+          .json({ error: 'Already has a service with this name.' });
+      }
     }
 
-    const service = await ServiceRepository.update(Number(id), {
-      name: name,
-      price: price
-    })
+    const serviceById = await ServiceRepository.findById(Number(id));
+
+    if (!serviceById) {
+      return response
+        .status(404)
+        .json({ error: 'Service does not exists.' });
+    }
+
+    let dataSubmit = {}
+
+    if(name && price){
+      dataSubmit = {
+        name: name,
+        price: price
+      }
+    }
+
+    if(name && !price){
+      dataSubmit = {
+        name: name,
+      }
+    }
+
+    if(!name && price){
+      dataSubmit = {
+        price: price,
+      }
+    }
+
+    const service = await ServiceRepository.update(Number(id), dataSubmit)
 
     return response.json(service);
   }

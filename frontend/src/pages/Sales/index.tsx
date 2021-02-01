@@ -8,7 +8,13 @@ import React, {
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { FiSearch } from 'react-icons/fi';
 
-import { Button as ChakraButton, Tooltip } from '@chakra-ui/core';
+import {
+  Button as ChakraButton,
+  Tooltip,
+  Text,
+  Box as ChakraBox,
+  Flex as ChakraFlex,
+} from '@chakra-ui/core';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { format } from 'date-fns';
@@ -17,38 +23,14 @@ import { ptBR } from 'date-fns/locale';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
 import DatePicker from '../../components/DatePicker';
-import Header from '../../components/Header';
+// import Header from '../../components/Header';
+import Menu from '../../components/Menu';
 import Select from '../../components/Select';
 import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
 import getSaleStatusTranslated from '../../utils/getSaleStatusTranslated';
 import { Container, Content, Separator, List, Box } from './styles';
-
-interface ISale {
-  id: number;
-  seller: string;
-  customer: string;
-  car: string;
-  carPlate: string;
-  price: number;
-  availabilityDate: string;
-  deliveryDate: string;
-  status: string;
-  services: Array<{
-    id: number;
-    name: string;
-    price: number;
-  }>;
-  serviceSale: Array<{
-    id: number;
-    service: {
-      id: number;
-      name: string;
-      price: number;
-    };
-  }>;
-}
 
 interface ISaleRequestResponseData {
   id: number;
@@ -57,6 +39,7 @@ interface ISaleRequestResponseData {
   status: string;
   companyPrice: number;
   costPrice: number;
+  comments: string;
   seller: {
     name: string;
   };
@@ -134,6 +117,10 @@ const Sales = () => {
               .then(res => {
                 const companyService = res.data;
 
+                if (!companyService[0]) {
+                  return;
+                }
+
                 services.push({
                   id: companyService[0].service.id,
                   name: companyService[0].service.name,
@@ -156,6 +143,7 @@ const Sales = () => {
           id: sale.id,
           seller: sale.seller.name,
           customer: sale.person.name,
+          comments: sale.comments,
           car: sale.car.car,
           carPlate: sale.car.carPlate,
           price: sale.companyPrice,
@@ -165,7 +153,7 @@ const Sales = () => {
           services,
         };
       }),
-    [sales],
+    [sales, user],
   );
 
   const handleOpenServices = useCallback(
@@ -311,25 +299,27 @@ const Sales = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
       <Breadcrumb text="Vendas realizadas" />
       <Content
+        height="100%"
         marginLeft="auto"
         marginRight="auto"
         width="100%"
+        marginTop="26px"
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         {user?.role === 'ADMIN' && (
           <Form
             ref={searchFormRef}
             onSubmit={handleSearchSale}
-            style={{ display: 'flex', marginTop: 14 }}
+            style={{ display: 'flex', marginBottom: '36px' }}
           >
             <DatePicker
               name="date"
@@ -511,26 +501,51 @@ const Sales = () => {
                   <span>Serviços</span>
                   <div />
                 </Separator>
-                {sale.services.map(service => (
-                  <div className="service" key={service.id}>
-                    <span>{service.name}</span>
-                    <span>
-                      {service.price.toLocaleString('pt-br', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      })}
-                    </span>
-                  </div>
-                ))}
-                <div className="total">
-                  <span>Total</span>
-                  <span>
-                    {sale.price.toLocaleString('pt-br', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
-                  </span>
-                </div>
+                <ChakraFlex>
+                  <ChakraBox width="70%">
+                    {sale.services.map(service => (
+                      <div className="service" key={service.id}>
+                        <span>{service.name}</span>
+                        <span>
+                          {service.price.toLocaleString('pt-br', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="total">
+                      <span>Total</span>
+                      <span>
+                        {sale.price.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                      </span>
+                    </div>
+                  </ChakraBox>
+                  <ChakraFlex
+                    wordBreak="break-all"
+                    marginTop="16px"
+                    marginLeft={2}
+                    borderRadius="md"
+                    width="30%"
+                    padding={6}
+                    flexShrink="initial"
+                    background="#303030"
+                  >
+                    <Text
+                      width="100%"
+                      textAlign="center"
+                      lineHeight={2}
+                      fontSize={16}
+                    >
+                      <strong>Observações:</strong>
+                      <br />
+                      {sale.comments}
+                    </Text>
+                  </ChakraFlex>
+                </ChakraFlex>
               </div>
             </Box>
           ))}

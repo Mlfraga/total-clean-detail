@@ -1,8 +1,9 @@
+import Box from '@chakra-ui/core/dist/Box';
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled(Box)`
   width: 100%;
-  max-width: 1200px;
+
   display: flex;
   align-items: center;
   margin-top: 25px;

@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components';
 
 import ToolTip from '../ToolTip';
 
-interface ContainerProps {
+interface IContainerProps {
   isErrored: boolean;
 }
 
-export const Container = styled.div<ContainerProps>`
+export const Container = styled.div<IContainerProps>`
   @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
 

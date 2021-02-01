@@ -41,6 +41,7 @@ class SaleController {
         carPlate: Joi.string().required().min(7).max(8),
         carModel: Joi.string().required(),
         carColor: Joi.string().required(),
+        comments: Joi.string(),
       })
     },
     index: {
@@ -132,8 +133,6 @@ class SaleController {
 
     if(company && service && initialDate && finalDate){
       sales = await SaleRepository.findWithAllFilters(Number(company), Number(service), startOfDay(new Date(initialDate.toString())), endOfDay(new Date(finalDate.toString())));
-
-      console.log('FILTER');
     }
 
     sales = await SaleRepository.findAll();
@@ -141,11 +140,22 @@ class SaleController {
     return response.json(sales);
   }
 
-
-
   async store(request: Request, response: Response) {
-    const { deliveryDate, availabilityDate, done, companyPrice, costPrice, source, name, cpf, car, carPlate, carColor,
-      carModel, } = request.body;
+    const {
+      deliveryDate,
+      availabilityDate,
+      comments,
+      companyPrice,
+      costPrice,
+      source,
+      name,
+      cpf,
+      car,
+      carPlate,
+      carColor,
+      carModel,
+     } = request.body;
+
     const authHeader = request.headers['authorization'];
     const token = authHeader && authHeader?.split(' ')[1];
     const decoded: any = JWT.decode(String(token), { complete: true });
@@ -191,29 +201,29 @@ class SaleController {
           .json({ error: 'Car cannot be registered.' })
       }
 
-      const sale = await SaleRepository.create(
-        {
-          deliveryDate,
-          availabilityDate,
-          companyPrice,
-          costPrice,
-          source,
-          seller: {
-            connect: {
-              userId: sellerId
-            }
-          },
-          person: {
-            connect: {
-              id: person?.id
-            }
-          },
-          car: {
-            connect: {
-              id: createdCar.id
-            }
+      const sale = await SaleRepository.create({
+        deliveryDate,
+        availabilityDate,
+        companyPrice,
+        costPrice,
+        source,
+        comments,
+        seller: {
+          connect: {
+            userId: sellerId
           }
-        })
+        },
+        person: {
+          connect: {
+            id: person?.id
+          }
+        },
+        car: {
+          connect: {
+            id: createdCar.id
+          }
+        }
+      })
 
       return response.json(sale);
     } else if (personByCpf.length > 1) {
@@ -235,7 +245,7 @@ class SaleController {
             id: personByCpf[0].id
           }
         }
-      })
+      });
 
       if (!createdCar) {
         return response
@@ -243,29 +253,29 @@ class SaleController {
           .json({ error: 'Car cannot be registered.' })
       }
 
-      const sale = await SaleRepository.create(
-        {
-          deliveryDate,
-          availabilityDate,
-          companyPrice,
-          costPrice,
-          source,
-          seller: {
-            connect: {
-              userId: sellerId
-            }
-          },
-          person: {
-            connect: {
-              id: personByCpf[0].id
-            }
-          },
-          car: {
-            connect: {
-              id: createdCar.id
-            }
+      const sale = await SaleRepository.create({
+        deliveryDate,
+        availabilityDate,
+        companyPrice,
+        costPrice,
+        source,
+        comments,
+        seller: {
+          connect: {
+            userId: sellerId
           }
-        })
+        },
+        person: {
+          connect: {
+            id: personByCpf[0].id
+          }
+        },
+        car: {
+          connect: {
+            id: createdCar.id
+          }
+        }
+      });
 
       return response.json(sale);
     }
@@ -277,6 +287,7 @@ class SaleController {
         companyPrice,
         costPrice,
         source,
+        comments,
         seller: {
           connect: {
             userId: sellerId
@@ -292,7 +303,7 @@ class SaleController {
             id: carByPlateAndPersonId[0].id
           }
         }
-      })
+      });
 
     return response.json(sale);
   }
@@ -311,7 +322,6 @@ class SaleController {
     const sales = await SaleRepository.findByUnit(parseInt(unitId));
 
     return response.json(sales);
-
   }
 
   async findBySeller(request: Request, response: Response) {
@@ -391,7 +401,6 @@ class SaleController {
     return response
       .status(200)
       .json('updatedSales');
-
   }
 
   async getSaleBudget(request: Request, response: Response){
@@ -401,7 +410,6 @@ class SaleController {
 
     services.filter(async (id: number ) => {
       const serviceById = await ServiceRepository.findById(id);
-      console.log(serviceById);
 
       if (!serviceById) {
         return response

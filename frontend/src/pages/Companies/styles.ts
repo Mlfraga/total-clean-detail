@@ -2,9 +2,14 @@ import { Box as ChakraBox } from '@chakra-ui/core';
 import { shade } from 'polished';
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled(ChakraBox)`
   @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
-  height: 100vh;
+  height: 100%;
+
+  @media (min-width: 1224px) {
+    padding-left: 80px;
+    padding-top: 45px;
+  }
 `;
 
 export const Content = styled(ChakraBox)`
@@ -80,7 +85,6 @@ export const Box = styled.div`
   div.header {
     padding-left: 10px;
     display: grid;
-    max-width: 1200px;
     width: 100%;
     grid-template-columns: 15% 15% 65% 5%;
     align-items: center;

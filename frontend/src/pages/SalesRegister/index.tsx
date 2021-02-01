@@ -8,9 +8,10 @@ import * as Yup from 'yup';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
 import Datetime from '../../components/Datetime';
-import Header from '../../components/Header';
 import Input from '../../components/Input';
+import Menu from '../../components/Menu';
 import Select from '../../components/Select';
+import Textarea from '../../components/Textarea';
 import { useAuth } from '../../context/auth';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
@@ -43,6 +44,7 @@ interface IFormData {
   availabilityDate: string;
   deliveryDate: string;
   name: string;
+  comments?: string;
 }
 
 const SalesRegister = () => {
@@ -120,6 +122,7 @@ const SalesRegister = () => {
           name: Yup.string().required('Nome obrigatório'),
           sourceCar: Yup.string().required('Origem do carro obrigatório'),
           deliveryDate: Yup.string().required('Data de entrega obrigatória'),
+          comments: Yup.string(),
           availabilityDate: Yup.string().required(
             'Data de disponibilidade obrigatória',
           ),
@@ -142,6 +145,7 @@ const SalesRegister = () => {
           source: data.sourceCar,
           name: data.name,
           cpf: data.cpf,
+          comments: data.comments,
           car: data.car,
           carModel: data.carModel,
           carPlate: data.carPlate,
@@ -214,18 +218,19 @@ const SalesRegister = () => {
   return (
     <>
       <Container hidden={!!successPage}>
-        <Header />
+        <Menu />
         <Breadcrumb text="Registro de vendas" />
         <Content
           marginLeft="auto"
           marginRight="auto"
           width="100%"
+          marginTop="26px"
           maxWidth={{
-            xs: '100vw',
-            sm: '100vw',
-            md: '100vw',
-            lg: '72vw',
-            xl: '62vw',
+            xs: '90vw',
+            sm: '90vw',
+            md: '80vw',
+            lg: '78vw',
+            xl: '90vw',
           }}
         >
           <Form ref={formRef} onSubmit={handleSubmit}>
@@ -234,8 +239,17 @@ const SalesRegister = () => {
               <div />
             </Separator>
 
-            <Inputs style={{ marginTop: '20px' }}>
-              <InputContainer style={{ width: '280px' }}>
+            <Inputs
+              maxWidth={{
+                xs: '90vw',
+                sm: '90vw',
+                md: '90vw',
+                lg: '72vw',
+                xl: '62vw',
+              }}
+              marginTop="20px"
+            >
+              <InputContainer width="100%" maxWidth="280px">
                 <div className="labels">
                   <span>Nome:</span>
                   <span>*</span>
@@ -249,7 +263,7 @@ const SalesRegister = () => {
                 />
               </InputContainer>
 
-              <InputContainer style={{ width: '280px' }}>
+              <InputContainer width="100%" maxWidth="280px">
                 <div className="labels">
                   <span>Cpf:</span>
                   <span>*</span>
@@ -263,7 +277,7 @@ const SalesRegister = () => {
                 />
               </InputContainer>
 
-              <InputContainer style={{ width: '200px' }}>
+              <InputContainer width="100%" maxWidth="200px">
                 <div className="labels">
                   <span>Carro:</span>
                   <span>*</span>
@@ -277,7 +291,7 @@ const SalesRegister = () => {
                 />
               </InputContainer>
 
-              <InputContainer style={{ width: '200px' }}>
+              <InputContainer width="100%" maxWidth="200px">
                 <div className="labels">
                   <span>Modelo:</span>
                 </div>
@@ -290,7 +304,7 @@ const SalesRegister = () => {
                 />
               </InputContainer>
 
-              <InputContainer style={{ width: '180px' }}>
+              <InputContainer width="100%" maxWidth="180px">
                 <div className="labels">
                   <span>Placa:</span>
                   <span>*</span>
@@ -306,7 +320,7 @@ const SalesRegister = () => {
             </Inputs>
 
             <Inputs style={{ marginTop: '16px' }}>
-              <InputContainer style={{ width: '180px' }}>
+              <InputContainer width="100%" maxWidth="280px">
                 <div className="labels">
                   <span>Cor do carro:</span>
                   <span>*</span>
@@ -319,6 +333,7 @@ const SalesRegister = () => {
                   style={{ width: '30px' }}
                 />
               </InputContainer>
+
               <div className="SelectContainer">
                 <div className="labels">
                   <span>Origem do carro:</span>
@@ -347,6 +362,8 @@ const SalesRegister = () => {
                   ))}
                 </Select>
               </div>
+
+              <Textarea name="comments" />
             </Inputs>
 
             <Separator>
@@ -376,7 +393,15 @@ const SalesRegister = () => {
               <span>Serviços </span>
               <div />
             </Separator>
-            <Services>
+            <Services
+              templateColumns={{
+                xs: '15% 15% 15%',
+                sm: '23% 23% 23% 23%',
+                md: '17% 17% 17% 17% 17%',
+                lg: '20% 20% 20% 20% 20%',
+                xl: '15.6% 15.6% 15.6% 15.6% 15.6% 15.6%',
+              }}
+            >
               {services.map(service => (
                 <ServiceBox
                   onClick={() => handleSelectService(service.id)}

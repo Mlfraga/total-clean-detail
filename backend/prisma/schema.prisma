@@ -30,14 +30,14 @@ enum Source {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  username   String  @unique
-  email      String  @unique
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
   password   String
-  role       Role    @default(SELLER)
-  enabled    Boolean @default(true)
-  firstLogin Boolean @default(true)
-  profile    Profile
+  role       Role     @default(SELLER)
+  enabled    Boolean  @default(true)
+  firstLogin Boolean  @default(true)
+  profile    Profile?
 }
 
 model Profile {
@@ -119,6 +119,7 @@ model Sale {
   companyPrice     Float
   costPrice        Float
   source           Source        @default(WORKSHOP)
+  comments         String?
   sellerId         Int
   personId         Int
   carId            Int

@@ -1,0 +1,18 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "User",
+      "field": "profile",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Sale",
+      "field": "comments",
+      "type": "String",
+      "arity": "Required"
+    }
+  ]
+}

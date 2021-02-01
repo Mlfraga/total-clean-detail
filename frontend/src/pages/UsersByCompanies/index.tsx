@@ -4,7 +4,7 @@ import { RiAddFill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
 import Breadcrumb from '../../components/Breadcrumb';
-import Header from '../../components/Header';
+import Menu from '../../components/Menu';
 import api from '../../services/api';
 import getUserRoleTranslated from '../../utils/getUserRoleTranslated';
 import { Container, Content, Separator, List, Box } from './styles';
@@ -56,19 +56,20 @@ const UsersByUnits = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
 
       <Breadcrumb text="Usuários por concessionária" />
       <Content
         marginLeft="auto"
         marginRight="auto"
         width="100%"
+        marginTop="26px"
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         <Separator>

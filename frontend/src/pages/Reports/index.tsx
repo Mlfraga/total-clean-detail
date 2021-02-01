@@ -7,11 +7,12 @@ import { Form } from '@unform/web';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import DatePicker from '../../components/DatePicker';
-import Header from '../../components/Header';
+import Menu from '../../components/Menu';
 import ReportPDF from '../../components/ReportPDF';
 import Select from '../../components/Select';
 import Separator from '../../components/Separator';
 import api from '../../services/api';
+import { Container } from './styles';
 
 interface ICompaniesResponseData {
   id: number;
@@ -53,8 +54,8 @@ const Reports: React.FC = () => {
   }, []);
 
   return (
-    <Box>
-      <Header />
+    <Container>
+      <Menu />
       <Breadcrumb text="Relatórios" />
       <Flex
         direction="column"
@@ -67,11 +68,11 @@ const Reports: React.FC = () => {
           marginRight="auto"
           width="100%"
           maxWidth={{
-            xs: '100vw',
-            sm: '100vw',
-            md: '100vw',
-            lg: '72vw',
-            xl: '62vw',
+            xs: '90vw',
+            sm: '90vw',
+            md: '80vw',
+            lg: '78vw',
+            xl: '90vw',
           }}
         >
           <Separator text="Filtros" />
@@ -157,7 +158,7 @@ const Reports: React.FC = () => {
           </Form>
         </Box>
       </Flex>
-    </Box>
+    </Container>
   );
 };
 

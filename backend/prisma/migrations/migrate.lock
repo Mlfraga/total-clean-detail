@@ -10,3 +10,6 @@
 20200726214212-change-factory-source-to-new
 20201001120058-delete-address-table-improve-car-table
 20201014165839-alter-company-service-collumn-name-from-company-model
+20210124212550-add-comments-field-to-sale-table
+20210124213525-add-comments-column-to-sales-table
+20210124213706-change-comments-column-to-nullable

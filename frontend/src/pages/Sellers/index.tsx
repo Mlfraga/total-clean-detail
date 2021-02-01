@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
+import Menu from '../../components/Menu';
 import api from '../../services/api';
 import { Container, Content, Separator, List } from './styles';
 
@@ -32,14 +32,14 @@ const Sellers = () => {
   useEffect(() => {
     api.get('users/company').then(response => {
       const sellers: IFormatRow[] = response.data;
-      console.log(sellers);
+
       setRows(sellers);
     });
   }, []);
 
   return (
     <Container>
-      <Header />
+      <Menu />
 
       <Breadcrumb text="Vendedores" />
       <Content
@@ -49,9 +49,9 @@ const Sellers = () => {
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         <Separator>

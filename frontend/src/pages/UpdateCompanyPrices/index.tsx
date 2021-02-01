@@ -7,8 +7,8 @@ import { Form } from '@unform/web';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import Input from '../../components/Input';
+import Menu from '../../components/Menu';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
 import { currencyMasker } from '../../utils/masks';
@@ -119,7 +119,7 @@ const UpdateCompanyPrices = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
       <Breadcrumb text="Preços dos serviços" />
       <Content
         marginLeft="auto"
@@ -128,9 +128,9 @@ const UpdateCompanyPrices = () => {
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         <Separator>

@@ -5,6 +5,15 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { AiOutlineTool } from 'react-icons/ai';
+import {
+  FiList,
+  FiTag,
+  FiUsers,
+  FiFileText,
+  FiDollarSign,
+} from 'react-icons/fi';
+import { MdBusiness } from 'react-icons/md';
 import { useHistory } from 'react-router-dom';
 
 import JWT from 'jsonwebtoken';
@@ -48,6 +57,7 @@ interface IButton {
   name: string;
   enable: boolean;
   route: string;
+  icon?: JSX.Element;
 }
 
 export const AuthContext = createContext<IAuthContextData>(
@@ -75,31 +85,37 @@ export const AuthProvider: React.FC = ({ children }) => {
               name: 'Serviços',
               enable: true,
               route: '/services',
+              icon: <AiOutlineTool color="#fff" />,
             },
             {
               name: 'Registro de vendas',
               enable: true,
               route: '/sales-register',
+              icon: <FiDollarSign color="#fff" />,
             },
             {
               name: 'Vendedores',
               enable: true,
               route: '/sellers',
+              icon: <FiUsers color="#fff" />,
             },
             {
               name: 'Vendas registradas',
               enable: true,
               route: '/sales',
+              icon: <FiList color="#fff" />,
             },
             {
               name: 'Relatórios',
               enable: true,
               route: '/reports',
+              icon: <FiFileText color="#fff" />,
             },
             {
               name: 'Preços',
               enable: true,
               route: '/prices',
+              icon: <FiTag color="#fff" />,
             },
           ];
         }
@@ -110,31 +126,37 @@ export const AuthProvider: React.FC = ({ children }) => {
               name: 'Concessionárias',
               enable: false,
               route: '/companies',
+              icon: <MdBusiness color="#fff" />,
             },
             {
               name: 'Usuários',
               enable: false,
               route: '/users',
+              icon: <FiUsers color="#fff" />,
             },
             {
               name: 'Serviços',
               enable: false,
               route: '/services',
+              icon: <AiOutlineTool color="#fff" />,
             },
             {
               name: 'Administrar Serviços',
               enable: false,
               route: '/administration-services',
+              icon: <FiTag color="#fff" />,
             },
             {
               name: 'Vendas',
               enable: false,
               route: '/sales',
+              icon: <FiList color="#fff" />,
             },
             {
               name: 'Relatórios',
               enable: false,
               route: '/reports',
+              icon: <FiFileText color="#fff" />,
             },
           ];
         }
@@ -145,16 +167,19 @@ export const AuthProvider: React.FC = ({ children }) => {
               name: 'Serviços',
               enable: false,
               route: '/services',
+              icon: <AiOutlineTool color="#fff" />,
             },
             {
               name: 'Registro de vendas',
               enable: false,
               route: '/sales-register',
+              icon: <FiDollarSign color="#fff" />,
             },
             {
               name: 'Vendas',
               enable: false,
               route: '/sales',
+              icon: <FiList color="#fff" />,
             },
           ];
         }
@@ -196,31 +221,37 @@ export const AuthProvider: React.FC = ({ children }) => {
             name: 'Serviços',
             enable: true,
             route: '/services',
+            icon: <AiOutlineTool color="#fff" />,
           },
           {
             name: 'Registro de vendas',
             enable: true,
             route: '/sales-register',
+            icon: <FiDollarSign color="#fff" />,
           },
           {
             name: 'Vendedores',
             enable: true,
             route: '/sellers',
+            icon: <FiUsers color="#fff" />,
           },
           {
             name: 'Vendas registradas',
             enable: true,
             route: '/sales',
+            icon: <FiList color="#fff" />,
           },
           {
             name: 'Relatórios',
             enable: true,
             route: '/reports',
+            icon: <FiFileText color="#fff" />,
           },
           {
             name: 'Preços',
             enable: true,
             route: '/prices',
+            icon: <FiTag color="#fff" />,
           },
         ];
       }
@@ -231,31 +262,37 @@ export const AuthProvider: React.FC = ({ children }) => {
             name: 'Concessionárias',
             enable: false,
             route: '/companies',
+            icon: <MdBusiness color="#fff" />,
           },
           {
             name: 'Usuários',
             enable: false,
             route: '/users',
+            icon: <FiUsers color="#fff" />,
           },
           {
             name: 'Serviços',
             enable: false,
             route: '/services',
+            icon: <AiOutlineTool color="#fff" />,
           },
           {
             name: 'Administrar Serviços',
             enable: false,
             route: '/administration-services',
+            icon: <FiTag color="#fff" />,
           },
           {
             name: 'Vendas',
             enable: false,
             route: '/sales',
+            icon: <FiList color="#fff" />,
           },
           {
             name: 'Relatórios',
             enable: false,
             route: '/reports',
+            icon: <FiFileText color="#fff" />,
           },
         ];
       }
@@ -266,16 +303,19 @@ export const AuthProvider: React.FC = ({ children }) => {
             name: 'Serviços',
             enable: false,
             route: '/services',
+            icon: <AiOutlineTool color="#fff" />,
           },
           {
             name: 'Registro de vendas',
             enable: false,
             route: '/sales-register',
+            icon: <FiDollarSign color="#fff" />,
           },
           {
             name: 'Vendas',
             enable: false,
             route: '/sales',
+            icon: <FiList color="#fff" />,
           },
         ];
       }
@@ -305,31 +345,37 @@ export const AuthProvider: React.FC = ({ children }) => {
           name: 'Serviços',
           enable: true,
           route: '/services',
+          icon: <AiOutlineTool color="#fff" />,
         },
         {
           name: 'Registro de vendas',
           enable: true,
           route: '/sales-register',
+          icon: <FiDollarSign color="#fff" />,
         },
         {
           name: 'Vendedores',
           enable: true,
           route: '/sellers',
+          icon: <FiUsers colorRendering="#fff" color="#fff" />,
         },
         {
           name: 'Vendas registradas',
           enable: true,
           route: '/sales',
+          icon: <FiList color="#fff" />,
         },
         {
           name: 'Relatórios',
           enable: true,
           route: '/reports',
+          icon: <FiFileText color="#fff" />,
         },
         {
           name: 'Preços',
           enable: true,
           route: '/prices',
+          icon: <FiTag color="#fff" />,
         },
       ];
     }
@@ -340,31 +386,37 @@ export const AuthProvider: React.FC = ({ children }) => {
           name: 'Concessionárias',
           enable: false,
           route: '/companies',
+          icon: <MdBusiness color="#fff" />,
         },
         {
           name: 'Usuários',
           enable: false,
           route: '/users',
+          icon: <FiUsers color="#fff" />,
         },
         {
           name: 'Serviços',
           enable: false,
           route: '/services',
+          icon: <AiOutlineTool color="#fff" />,
         },
         {
           name: 'Administrar Serviços',
           enable: false,
           route: '/administration-services',
+          icon: <FiTag color="#fff" />,
         },
         {
           name: 'Vendas',
           enable: false,
           route: '/sales',
+          icon: <FiList color="#fff" />,
         },
         {
           name: 'Relatórios',
           enable: false,
           route: '/reports',
+          icon: <FiFileText color="#fff" />,
         },
       ];
     }
@@ -375,16 +427,19 @@ export const AuthProvider: React.FC = ({ children }) => {
           name: 'Serviços',
           enable: false,
           route: '/services',
+          icon: <AiOutlineTool color="#fff" />,
         },
         {
           name: 'Registro de vendas',
           enable: false,
           route: '/sales-register',
+          icon: <FiDollarSign color="#fff" />,
         },
         {
           name: 'Vendas',
           enable: false,
           route: '/sales',
+          icon: <FiList color="#fff" />,
         },
       ];
     }

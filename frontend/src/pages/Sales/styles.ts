@@ -1,9 +1,14 @@
 import { Box as ChakraBox } from '@chakra-ui/core';
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled(ChakraBox)`
   @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
-  height: 100vh;
+  height: 100%;
+
+  @media (min-width: 1224px) {
+    padding-left: 80px;
+    padding-top: 45px;
+  }
 `;
 
 export const Content = styled(ChakraBox)`
@@ -96,7 +101,9 @@ export const List = styled(ChakraBox)`
   }
 `;
 
-export const Box = styled.div`
+export const Box = styled(ChakraBox)`
+  width: 100%;
+
   & + div {
     margin-top: 16px;
   }
@@ -104,7 +111,6 @@ export const Box = styled.div`
   div.header {
     padding-left: 10px;
     display: grid;
-    max-width: 1200px;
     width: 100%;
     grid-template-columns: 5% 14% 13% 13% 18% 18% 14% 5%;
     align-items: center;
@@ -131,7 +137,6 @@ export const Box = styled.div`
   div.header-selected {
     padding-left: 10px;
     display: grid;
-    max-width: 1200px;
     width: 100%;
     grid-template-columns: 5% 14% 13% 13% 18% 18% 14% 5%;
     align-items: center;
@@ -175,6 +180,7 @@ export const Box = styled.div`
   }
 
   .dropDown {
+    width: 100%;
     background: #353535;
     border-radius: 0 0 15px 15px;
     padding: 10px 16px 20px 16px;
@@ -187,6 +193,7 @@ export const Box = styled.div`
     }
 
     div.service {
+      width: 100%;
       margin-top: 16px;
       background: #424242;
       min-height: 35px;

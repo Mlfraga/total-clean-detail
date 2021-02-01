@@ -7,8 +7,8 @@ import * as Yup from 'yup';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import Input from '../../components/Input';
+import Menu from '../../components/Menu';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
 import getValidationsErrors from '../../utils/getValidationError';
@@ -84,7 +84,7 @@ const ServicesRegister = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
       <Breadcrumb text="Adicionar serviços" />
       <Content
         marginLeft="auto"
@@ -93,9 +93,9 @@ const ServicesRegister = () => {
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         <Separator>

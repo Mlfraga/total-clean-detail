@@ -11,7 +11,6 @@ export const Container = styled(Box)`
   height: 80px;
   background: #282828;
   width: 100%;
-  position: fixed;
 `;
 
 export const Buttons = styled(Flex)`

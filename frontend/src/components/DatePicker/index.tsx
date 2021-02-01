@@ -41,7 +41,6 @@ const DatePicker: React.FC<IDatePickerProps> = ({
         setSelected('');
       },
       setValue(ref, value) {
-        console.log(value);
         setSelected(value);
       },
     });

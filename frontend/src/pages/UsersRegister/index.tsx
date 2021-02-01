@@ -8,8 +8,8 @@ import * as Yup from 'yup';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import Input from '../../components/Input';
+import Menu from '../../components/Menu';
 import Select from '../../components/Select';
 import { useToast } from '../../context/toast';
 import api from '../../services/api';
@@ -223,7 +223,7 @@ const UsersRegister = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
       <Breadcrumb
         text={`Registro de novos usuários a concessionŕia ${company.name}`}
       />
@@ -231,12 +231,13 @@ const UsersRegister = () => {
         marginLeft="auto"
         marginRight="auto"
         width="100%"
+        marginTop="26px"
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
       >
         <Form ref={formRef} onSubmit={handleSubmit}>

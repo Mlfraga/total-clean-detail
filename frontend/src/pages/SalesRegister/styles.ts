@@ -1,4 +1,8 @@
-import { Box as ChakraBox } from '@chakra-ui/core';
+import {
+  Box as ChakraBox,
+  Flex as ChakraFlex,
+  Grid as ChakraGrid,
+} from '@chakra-ui/core';
 import { shade } from 'polished';
 import styled from 'styled-components';
 
@@ -39,9 +43,18 @@ export const Container = styled.div`
   @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
 
   height: 100vh;
+
+  @media (min-width: 1224px) {
+    padding-left: 80px;
+    padding-top: 45px;
+  }
 `;
 
 export const Content = styled(ChakraBox)`
+  textarea::placeholder {
+    color: #fff;
+  }
+
   .DateTimesContainer {
     width: 80%;
     display: flex;
@@ -103,12 +116,15 @@ export const Separator = styled.div`
   }
 `;
 
-export const Inputs = styled.div`
+export const Inputs = styled(ChakraFlex)`
   width: 100%;
-  max-width: 1200px;
   display: flex;
 
   .SelectContainer {
+    width: 100%;
+    max-width: 280px;
+    margin-right: 16px;
+
     div.labels {
       background: transparent;
       border: 0;
@@ -130,7 +146,7 @@ export const Inputs = styled.div`
   }
 `;
 
-export const InputContainer = styled.div`
+export const InputContainer = styled(ChakraBox)`
   & + div {
     margin-left: 16px;
   }
@@ -168,7 +184,6 @@ export const InputContainer = styled.div`
 `;
 
 export const ServiceBox = styled.div`
-  margin-top: 16px;
   max-width: 165px;
   height: 65px;
   background: #424242;
@@ -192,14 +207,13 @@ export const ServiceBox = styled.div`
   }
 `;
 
-export const Services = styled.div`
+export const Services = styled(ChakraGrid)`
   width: 100%;
   height: 210px;
   margin-top: 10px;
   overflow: auto;
-  display: grid;
   justify-content: space-between;
-  grid-template-columns: 165px 165px 165px 165px 165px 165px 165px;
+  grid-template-columns: 13% 13% 13% 13% 13% 13% 13%;
   grid-template-rows: 70px 70px 70px 70px 70px 70px 70px;
 
   .selected {

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import signInBackgroundImg from '../../assets/sign-in-background-3.jpg';
 import Breadcrumb from '../../components/Breadcrumb';
-import Header from '../../components/Header';
+import Menu from '../../components/Menu';
 import { useAuth } from '../../context/auth';
 import api from '../../services/api';
 import { Container, Content } from './styles';
@@ -30,7 +30,7 @@ const Services = () => {
 
   return (
     <Container>
-      <Header />
+      <Menu />
 
       <Breadcrumb text="Serviços" />
       <Content
@@ -40,10 +40,11 @@ const Services = () => {
         maxWidth={{
           xs: '90vw',
           sm: '90vw',
-          md: '90vw',
-          lg: '72vw',
-          xl: '62vw',
+          md: '80vw',
+          lg: '78vw',
+          xl: '90vw',
         }}
+        justifyItems="space-between"
         marginTop="25px"
         justifyContent="space-bettween"
         gridTemplateColumns="32.3% 32.3% 32.3%"

@@ -18,6 +18,15 @@ import HeaderMiddleware from './middlewares/HeaderMiddleware'
 
 const routes = express.Router();
 
+
+routes.get('/', (_request, response) =>
+  response.json({
+    name: 'Total-Clean API',
+    version: '1.0.0',
+    author: 'https://github.com/Mlfraga'
+  }),
+);
+
 routes.post('/auth/login', celebrate(AutheticationController.validate.login), AutheticationController.login);
 
 routes.post('/auth/refresh', AuthenticationMiddleware.refreshToken)

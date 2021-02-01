@@ -1,11 +1,11 @@
 import { shade } from 'polished';
 import styled, { css } from 'styled-components';
 
-interface ContainerProps {
+interface IContainerProps {
   skipbutton: boolean;
 }
 
-export const Container = styled.button<ContainerProps>`
+export const Container = styled.button<IContainerProps>`
   background: #ff6659;
   height: 56px;
   border-radius: 10px;

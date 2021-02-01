@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url = "***"
+  url      = "***"
 }
 
 generator client {
@@ -17,13 +17,13 @@ enum Role {
 }
 
 model User {
-  id         Int     @id @default(autoincrement())
-  username   String  @unique
-  email      String  @unique
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
   password   String
-  role       Role    @default(SELLER)
-  firstLogin Boolean @default(true)
-  profile    Profile
+  role       Role     @default(SELLER)
+  firstLogin Boolean  @default(true)
+  profile    Profile?
 }
 
 model Profile {
